@@ -26,10 +26,10 @@ sandbox: release copy copyRelease
 
 sandboxDebug: debug copy copyDebug
 
-r: sandbox
+run: sandbox
 	cd sandbox && ./run.sh local
 
-d: sandboxDebug
+drun: sandboxDebug
 	cd sandbox && ./debug.sh local
 
 v: sandboxDebug

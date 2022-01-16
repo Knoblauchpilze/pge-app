@@ -1,11 +1,8 @@
-#ifndef    VIEWPORT_HXX
-# define   VIEWPORT_HXX
 
 # include "Viewport.hh"
 
 namespace pge {
 
-  inline
   Viewport
   newViewport(const olc::vf2d& origin,
               const olc::vf2d& size) noexcept
@@ -14,5 +11,3 @@ namespace pge {
   }
 
 }
-
-#endif    /* VIEWPORT_HXX */

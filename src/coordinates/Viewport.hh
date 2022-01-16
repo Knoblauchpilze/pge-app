@@ -33,6 +33,4 @@ namespace pge {
 
 }
 
-# include "Viewport.hxx"
-
 #endif    /* VIEWPORT_HH */

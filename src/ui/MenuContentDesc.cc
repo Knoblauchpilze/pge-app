@@ -1,12 +1,9 @@
-#ifndef    MENU_CONTENT_DESC_HXX
-# define   MENU_CONTENT_DESC_HXX
 
 # include "MenuContentDesc.hh"
 
 namespace pge {
   namespace menu {
 
-    inline
     MenuContentDesc
     newTextContent(const std::string& text,
                    const olc::Pixel& color,
@@ -29,7 +26,6 @@ namespace pge {
       return m;
     }
 
-    inline
     MenuContentDesc
     newImageContent(const std::string& sprite, const olc::vi2d& size) noexcept {
       MenuContentDesc m;
@@ -49,7 +45,6 @@ namespace pge {
       return m;
     }
 
-    inline
     MenuContentDesc
     newMenuContent(const std::string& text,
                    const std::string& sprite,
@@ -75,5 +70,3 @@ namespace pge {
 
   }
 }
-
-#endif    /* MENU_CONTENT_DESC_HXX */

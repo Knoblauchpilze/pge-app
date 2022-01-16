@@ -75,6 +75,4 @@ namespace pge {
   using ActionShPtr = std::shared_ptr<Action>;
 }
 
-# include "Action.hxx"
-
 #endif    /* ACTION_HH */

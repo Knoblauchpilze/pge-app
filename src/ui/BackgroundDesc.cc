@@ -1,12 +1,9 @@
-#ifndef    BACKGROUND_DESC_HXX
-# define   BACKGROUND_DESC_HXX
 
 # include "BackgroundDesc.hh"
 
 namespace pge {
   namespace menu {
 
-    inline
     BackgroundDesc
     newColoredBackground(const olc::Pixel& c) noexcept {
       olc::Pixel hsl = pge::RGBToHSL(c);
@@ -20,7 +17,6 @@ namespace pge {
       return bd;
     }
 
-    inline
     void
     updateFromColor(BackgroundDesc& bg,
                     const olc::Pixel& c) noexcept
@@ -37,5 +33,3 @@ namespace pge {
 
   }
 }
-
-#endif    /* BACKGROUND_DESC_HXX */

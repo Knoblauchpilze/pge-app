@@ -44,6 +44,4 @@ namespace pge {
   }
 }
 
-# include "BackgroundDesc.hxx"
-
 #endif    /* BACKGROUND_DESC_HH */

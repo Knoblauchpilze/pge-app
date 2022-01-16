@@ -13,22 +13,22 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules")
 
-project(pge_app)
+project(pge-app LANGUAGES CXX)
 
-add_subdirectory(src)
+add_executable(pge-app)
 
-set (SOURCES
-  main.cpp
-  )
+add_subdirectory(
+	${CMAKE_CURRENT_SOURCE_DIR}/src
+	)
 
-add_executable(pge_app
-  ${SOURCES}
-  )
+target_sources (pge-app PRIVATE
+	${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+	)
 
-target_include_directories (pge_app PRIVATE
-  )
+target_include_directories (pge-app PUBLIC
+	)
 
-target_link_libraries(pge_app
-  core_utils
-  pge_app_lib
-  )
+target_link_libraries(pge-app
+	core_utils
+	pge-app_lib
+	)

@@ -18,8 +18,8 @@ main(int /*argc*/, char** /*argv*/) {
   // Create the logger.
   utils::StdLogger raw;
   raw.setLevel(utils::Level::Debug);
-  utils::PrefixedLogger logger(raw, "pge", "main");
-  utils::LoggerLocator::provide(&logger);
+  utils::PrefixedLogger logger("pge", "main");
+  utils::LoggerLocator::provide(&raw);
 
   try {
     logger.logMessage(utils::Level::Notice, "Starting application");

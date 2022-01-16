@@ -1,18 +1,14 @@
-#ifndef    TOPVIEW_FRAME_HXX
-# define   TOPVIEW_FRAME_HXX
 
 # include "TopViewFrame.hh"
 
 namespace pge {
 
-  inline
   TopViewFrame::TopViewFrame(const Viewport& cvp,
                              const Viewport& pvp,
                              const olc::vi2d& tileSize):
     CoordinateFrame(cvp, pvp, tileSize)
   {}
 
-  inline
   Viewport
   TopViewFrame::cellsViewport() const noexcept {
     // We know the position of the origin point
@@ -34,7 +30,6 @@ namespace pge {
     return out;
   }
 
-  inline
   olc::vf2d
   TopViewFrame::tileCoordsToPixels(float x,
                                    float y,
@@ -75,7 +70,6 @@ namespace pge {
     return tp;
   }
 
-  inline
   olc::vi2d
   TopViewFrame::pixelCoordsToTiles(const olc::vi2d& pixels, olc::vf2d* intraTile) const noexcept {
     // The conversion to float value is necessary in the
@@ -115,5 +109,3 @@ namespace pge {
   }
 
 }
-
-#endif    /* TOPVIEW_FRAME_HXX */

@@ -71,6 +71,4 @@ namespace pge {
 
 }
 
-# include "TopViewFrame.hxx"
-
 #endif    /* TOPVIEW_FRAME_HH */

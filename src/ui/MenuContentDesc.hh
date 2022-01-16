@@ -85,6 +85,4 @@ namespace pge {
   }
 }
 
-# include "MenuContentDesc.hxx"
-
 #endif    /* MENU_CONTENT_DESC_HH */

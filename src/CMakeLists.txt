@@ -26,7 +26,7 @@ add_subdirectory (
 	)
 
 target_sources (pge-app_lib PRIVATE
-	${CMAKE_CURRENT_SOURCE_DIR}/DefaultApp.cc
+	${CMAKE_CURRENT_SOURCE_DIR}/App.cc
 	)
 
 set (TDEF_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}" PARENT_SCOPE)

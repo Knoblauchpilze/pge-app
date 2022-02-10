@@ -1,20 +1,21 @@
 
-# include "DefaultApp.hh"
+# include "App.hh"
 # include <maths_utils/ComparisonUtils.hh>
 
 namespace pge {
 
-  DefaultApp::DefaultApp(const AppDesc& desc):
+  App::App(const AppDesc& desc):
     PGEApp(desc),
 
     m_game(nullptr),
+    m_state(nullptr),
     m_menus(),
 
     m_packs(std::make_shared<TexturePack>())
   {}
 
   bool
-  DefaultApp::onFrame(float fElapsed) {
+  App::onFrame(float fElapsed) {
     // Handle case where no game is defined.
     if (m_game == nullptr) {
       return false;
@@ -28,8 +29,8 @@ namespace pge {
   }
 
   void
-  DefaultApp::onInputs(const controls::State& c,
-                       const CoordinateFrame& cf)
+  App::onInputs(const controls::State& c,
+                const CoordinateFrame& cf)
   {
     // Handle case where no game is defined.
     if (m_game == nullptr) {
@@ -43,6 +44,11 @@ namespace pge {
 
     for (unsigned id = 0u ; id < m_menus.size() ; ++id) {
       menu::InputHandle ih = m_menus[id]->processUserInput(c, actions);
+      relevant = (relevant || ih.relevant);
+    }
+
+    if (m_state != nullptr) {
+      menu::InputHandle ih = m_state->processUserInput(c, actions);
       relevant = (relevant || ih.relevant);
     }
 
@@ -64,28 +70,95 @@ namespace pge {
   }
 
   void
-  DefaultApp::drawDecal(const RenderDesc& /*res*/) {
+  App::loadData() {
+    log("Load app data as needed", utils::Level::Info);
+
+    // Create the game and its state.
+    m_game = std::make_shared<Game>();
+  }
+
+  void
+  App::loadResources() {
+    // Assign a specific tint to the regular
+    // drawing layer so that we have a built
+    // in transparency.
+    // We can't do it directly when drawing
+    // in the rendering function because as
+    // the whole layer will be drawn as one
+    // quad in opengl with an opaque alpha,
+    // we will lose this info.
+    // This means that everything is indeed
+    // transparent but that's the only way
+    // for now to achieve it.
+    setLayerTint(Layer::Draw, olc::Pixel(255, 255, 255, alpha::SemiOpaque));
+  }
+
+  void
+  App::loadMenuResources() {
+    // Generate the game state.
+    m_state = std::make_shared<GameState>(
+      olc::vi2d(ScreenWidth(), ScreenHeight()),
+      Screen::Home
+    );
+
+    log("Generate menus and register them in the 'm_menus' attribute", utils::Level::Info);
+  }
+
+  void
+  App::cleanResources() {
+    log("Clean app data as needed", utils::Level::Info);
+  }
+
+  void
+  App::cleanMenuResources() {
+    m_menus.clear();
+  }
+
+  void
+  App::drawDecal(const RenderDesc& /*res*/) {
     // Clear rendering target.
     SetPixelMode(olc::Pixel::ALPHA);
     Clear(olc::VERY_DARK_GREY);
 
-    SetPixelMode(olc::Pixel::NORMAL);
-  }
-
-  void
-  DefaultApp::draw(const RenderDesc& /*res*/) {
-    // Clear rendering target.
-    SetPixelMode(olc::Pixel::ALPHA);
-    Clear(olc::Pixel(255, 255, 255, alpha::Transparent));
+    // In case we're not in the game screen, do nothing.
+    if (m_state->getScreen() != Screen::Game) {
+      SetPixelMode(olc::Pixel::NORMAL);
+      return;
+    }
 
     SetPixelMode(olc::Pixel::NORMAL);
   }
 
   void
-  DefaultApp::drawUI(const RenderDesc& /*res*/) {
+  App::draw(const RenderDesc& /*res*/) {
     // Clear rendering target.
     SetPixelMode(olc::Pixel::ALPHA);
     Clear(olc::Pixel(255, 255, 255, alpha::Transparent));
+
+    // In case we're not in game mode, just render
+    // the state.
+    if (m_state->getScreen() != Screen::Game) {
+      m_state->render(this);
+      SetPixelMode(olc::Pixel::NORMAL);
+      return;
+    }
+
+    SetPixelMode(olc::Pixel::NORMAL);
+  }
+
+  void
+  App::drawUI(const RenderDesc& /*res*/) {
+    // Clear rendering target.
+    SetPixelMode(olc::Pixel::ALPHA);
+    Clear(olc::Pixel(255, 255, 255, alpha::Transparent));
+
+    // In case we're not in game mode, just render
+    // the state.
+    if (m_state->getScreen() != Screen::Game) {
+      m_state->render(this);
+      SetPixelMode(olc::Pixel::NORMAL);
+      return;
+    }
 
     // Render the game menus.
     for (unsigned id = 0u ; id < m_menus.size() ; ++id) {
@@ -96,10 +169,18 @@ namespace pge {
   }
 
   void
-  DefaultApp::drawDebug(const RenderDesc& res) {
+  App::drawDebug(const RenderDesc& res) {
     // Clear rendering target.
     SetPixelMode(olc::Pixel::ALPHA);
     Clear(olc::Pixel(255, 255, 255, alpha::Transparent));
+
+    // In case we're not in game mode, just render
+    // the state.
+    if (m_state->getScreen() != Screen::Game) {
+      m_state->render(this);
+      SetPixelMode(olc::Pixel::NORMAL);
+      return;
+    }
 
     // Draw cursor's position.
     olc::vi2d mp = GetMousePos();

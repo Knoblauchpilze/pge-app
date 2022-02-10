@@ -11,7 +11,7 @@
 # include <core_utils/CoreException.hh>
 # include "AppDesc.hh"
 # include "TopViewFrame.hh"
-# include "DefaultApp.hh"
+# include "App.hh"
 
 int
 main(int /*argc*/, char** /*argv*/) {
@@ -33,7 +33,7 @@ main(int /*argc*/, char** /*argv*/) {
       olc::vi2d(64, 64)
     );
     pge::AppDesc ad = pge::newDesc(olc::vi2d(800, 600), cf, "pge-app");
-    pge::DefaultApp demo(ad);
+    pge::App demo(ad);
 
     demo.Start();
   }

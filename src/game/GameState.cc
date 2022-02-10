@@ -185,9 +185,33 @@ namespace pge {
 
   void
   GameState::generateGameOverScreen(const olc::vi2d& dims) {
-    // Generate the game over screen.
-    /// TODO: Handle this.
-    m_gameOver = generateDefaultScreen(dims, olc::VERY_DARK_MAGENTA);
+    // Generate the main screen.
+    m_gameOver = generateDefaultScreen(dims, olc::DARK_MAGENTA);
+
+    MenuShPtr m = generateScreenOption(dims, "Back to main screen", olc::VERY_DARK_MAGENTA, "back_to_main", true);
+    m->setSimpleAction(
+      [this](Game& /*g*/) {
+        setScreen(Screen::Home);
+      }
+    );
+    m_gameOver->addMenu(m);
+
+    m = generateScreenOption(dims, "Restart", olc::VERY_DARK_MAGENTA, "restart", true);
+    m->setSimpleAction(
+      [this](Game& /*g*/) {
+        setScreen(Screen::Game);
+      }
+    );
+    m_gameOver->addMenu(m);
+
+    m = generateScreenOption(dims, "Quit", olc::VERY_DARK_MAGENTA, "quit", true);
+    m->setSimpleAction(
+      [this](Game& g) {
+        setScreen(Screen::Exit);
+        g.terminate();
+      }
+    );
+    m_gameOver->addMenu(m);
   }
 
 }

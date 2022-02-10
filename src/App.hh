@@ -1,14 +1,15 @@
-#ifndef    DEFAULT_APP_HH
-# define   DEFAULT_APP_HH
+#ifndef    APP_HH
+# define   APP_HH
 
 # include "PGEApp.hh"
 # include "TexturePack.hh"
 # include "Menu.hh"
 # include "Game.hh"
+# include "GameState.hh"
 
 namespace pge {
 
-  class DefaultApp: public PGEApp {
+  class App: public PGEApp {
     public:
 
       /**
@@ -17,12 +18,12 @@ namespace pge {
        *               create the canvas needed by the app and
        *               set up base properties.
        */
-      DefaultApp(const AppDesc& desc);
+      App(const AppDesc& desc);
 
       /**
        * @brief - Desctruction of the object.
        */
-      ~DefaultApp() = default;
+      ~App() = default;
 
     protected:
 
@@ -116,6 +117,13 @@ namespace pge {
       GameShPtr m_game;
 
       /**
+       * @brief - The management of the game state, which includes
+       *          loading the saved games, handling game over and
+       *          such things.
+       */
+      GameStateShPtr m_state;
+
+      /**
        * @brief - Defines the list of menus available for
        *          this app.
        */
@@ -130,6 +138,6 @@ namespace pge {
 
 }
 
-# include "DefaultApp.hxx"
+# include "App.hxx"
 
-#endif    /* DEFAULT_APP_HH */
+#endif    /* APP_HH */

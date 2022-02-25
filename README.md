@@ -16,6 +16,13 @@ It is meant as a simple way to build an application without having to reinvent t
 
 Don't forget to add `/usr/local/lib` to your `LD_LIBRARY_PATH` to be able to load shared libraries at runtime. This is handled automatically when using the `make r` target (which internally uses the [run.sh](https://github.com/Knoblauchpilze/pge-app/blob/master/data/run.sh) script).
 
+If the user wants to update the project to another name and start with a more complex app, a convenience script is [provided](configureProject.sh) which allows to perform the renaming of elements as needed to have a new app with a different name.
+
+The usage of the script is as follows:
+```bash
+./configureProject.sh project_name
+```
+
 # Profiling
 
 A convenience script is provided in order to profile the app. This comes from [this](https://stackoverflow.com/questions/375913/how-can-i-profile-c-code-running-on-linux) topic. This requires a few things to be installed on the system:

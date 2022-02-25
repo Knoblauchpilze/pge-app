@@ -50,4 +50,7 @@ echo "Reset git versions..."
 rm -rf .git
 git init
 
+echo "Remove configuration script..."
+rm configureProject.sh
+
 echo "Success !"

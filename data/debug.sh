@@ -2,4 +2,4 @@
 
 CURR_DIR=$(dirname $0)
 
-gdb --args ./bin/pge-app
+gdb --args ./bin/main-app

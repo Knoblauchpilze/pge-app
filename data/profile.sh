@@ -4,7 +4,7 @@
 rm callgrind.out.*
 
 CURR_DIR=$(dirname $0)
-valgrind --tool=callgrind --log-file="analysis" ./bin/pge-app
+valgrind --tool=callgrind --log-file="analysis" ./bin/main-app
 
 gprof2dot -f callgrind callgrind.out.* | dot -Tpng -o output.png
 gimp output.png

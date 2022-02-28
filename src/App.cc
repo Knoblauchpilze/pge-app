@@ -71,8 +71,6 @@ namespace pge {
 
   void
   App::loadData() {
-    log("Load app data as needed", utils::Level::Info);
-
     // Create the game and its state.
     m_game = std::make_shared<Game>();
   }
@@ -91,6 +89,8 @@ namespace pge {
     // transparent but that's the only way
     // for now to achieve it.
     setLayerTint(Layer::Draw, olc::Pixel(255, 255, 255, alpha::SemiOpaque));
+
+    log("Load app resources in the 'm_packs' attribute", utils::Level::Info);
   }
 
   void
@@ -101,12 +101,14 @@ namespace pge {
       Screen::Home
     );
 
-    log("Generate menus and register them in the 'm_menus' attribute", utils::Level::Info);
+    m_menus = m_game->generateMenus(ScreenWidth(), ScreenHeight());
   }
 
   void
   App::cleanResources() {
-    log("Clean app data as needed", utils::Level::Info);
+    if (m_packs != nullptr) {
+      m_packs.reset();
+    }
   }
 
   void

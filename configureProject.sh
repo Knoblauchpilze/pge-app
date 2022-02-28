@@ -34,10 +34,10 @@ echo "Updating CMakeLists files..."
 sed -i "s/main-app\b/${PROJECT_NAME}/g" CMakeLists.txt
 
 echo "Updating srcipts..."
-sed -i "s/pge-app/${PROJECT_NAME}/g" data/debug.sh
-sed -i "s/pge-app/${PROJECT_NAME}/g" data/profile.sh
-sed -i "s/pge-app/${PROJECT_NAME}/g" data/run.sh
-sed -i "s/pge-app/${PROJECT_NAME}/g" data/valgrind.sh
+sed -i "s/main-app/${PROJECT_NAME}/g" data/debug.sh
+sed -i "s/main-app/${PROJECT_NAME}/g" data/profile.sh
+sed -i "s/main-app/${PROJECT_NAME}/g" data/run.sh
+sed -i "s/main-app/${PROJECT_NAME}/g" data/valgrind.sh
 
 echo "Cleaning data..."
 make clean

@@ -73,6 +73,19 @@ namespace pge {
        *          window along each axis.
        */
       olc::vf2d m_dims;
+
+      /**
+       * @brief - Whether the cached version of the min
+       *          and max bounds for the viewport need
+       *          to be recomputed.
+       */
+      mutable bool m_dirty;
+
+      /**
+       * @brief - Cached version of the maximum point of
+       *          the viewport.
+       */
+      mutable olc::vf2d m_max;
   };
 
 }

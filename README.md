@@ -12,9 +12,9 @@ It is meant as a simple way to build an application without having to reinvent t
     * [core_utils](https://github.com/Knoblauchpilze/core_utils)
     * [maths_utils](https://github.com/Knoblauchpilze/maths_utils)
 - Go to the project's directory `cd ~/path/to/the/repo`.
-- Compile: `make r`.
+- Compile: `make run`.
 
-Don't forget to add `/usr/local/lib` to your `LD_LIBRARY_PATH` to be able to load shared libraries at runtime. This is handled automatically when using the `make r` target (which internally uses the [run.sh](https://github.com/Knoblauchpilze/pge-app/blob/master/data/run.sh) script).
+Don't forget to add `/usr/local/lib` to your `LD_LIBRARY_PATH` to be able to load shared libraries at runtime. This is handled automatically when using the `make run` target (which internally uses the [run.sh](https://github.com/Knoblauchpilze/pge-app/blob/master/data/run.sh) script).
 
 If the user wants to update the project to another name and start with a more complex app, a convenience script is [provided](configureProject.sh) which allows to perform the renaming of elements as needed to have a new app with a different name.
 

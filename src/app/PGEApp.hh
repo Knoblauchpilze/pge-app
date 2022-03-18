@@ -79,7 +79,7 @@ namespace pge {
          *           visible.
          */
         bool
-        visible(const utils::Point2i& p, float r) const noexcept;
+        visible(const utils::Point2i& p, float r = 1.0f) const noexcept;
 
         /**
          * @brief - Similar method to the above but for floating
@@ -91,7 +91,7 @@ namespace pge {
          *           visible.
          */
         bool
-        visible(const olc::vf2d& p, const olc::vf2d sz) const noexcept;
+        visible(const olc::vf2d& p, const olc::vf2d sz = olc::vf2d(1.0f, 1.0f)) const noexcept;
       };
 
       /**

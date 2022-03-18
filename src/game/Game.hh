@@ -158,15 +158,15 @@ namespace pge {
       };
 
       /**
+       * @brief - The definition of the game state.
+       */
+      State m_state;
+
+      /**
        * @brief - The menus displaying information about the
        *          current state of the simulation.
        */
       Menus m_menus;
-
-      /**
-       * @brief - The definition of the game state.
-       */
-      State m_state;
   };
 
   using GameShPtr = std::shared_ptr<Game>;

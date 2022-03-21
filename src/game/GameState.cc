@@ -143,7 +143,7 @@ namespace pge {
 
   void
   GameState::onSavedGamePicked(const std::string& game) {
-    log("Picked saved game " + game);
+    log("Picked saved game \"" + game + "\"", utils::Level::Info);
     setScreen(Screen::Game);
   }
 
@@ -199,6 +199,7 @@ namespace pge {
     m_loadGame->addMenu(m);
 
     m_savedGames.generate(m_loadGame);
+    m_savedGames.refresh();
   }
 
   void

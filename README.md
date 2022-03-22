@@ -39,7 +39,7 @@ make profile
 
 # Usage
 
-The application is structured around a base [DefaultApp](https://github.com/KnoblauchPilze/pge-app/blob/master/src/App.hh) which can be customized to include more complex behaviors.
+The application is structured around a base [App](https://github.com/KnoblauchPilze/pge-app/blob/master/src/App.hh) which can be customized to include more complex behaviors.
 
 ## Layers
 
@@ -85,7 +85,7 @@ The `loadResources` method can be used to load the graphic resources needed by t
 
 ```cpp
 void
-App::loadData() {
+App::loadResources() {
   // Create the texture pack.
   pge::sprites::Pack pack;
   pack.file = "data/img/pieces.png";
@@ -207,7 +207,7 @@ App::drawPieces(const RenderDesc& res) noexcept {
   }
 }
 ```
-The code above performs the rendering of a 8x8 square of sprites taken from the pack loaded in the example above. The part to determine the index of the sprite based on the element to display is left to the user: it could come from fetching the particular element at this coordinate in the world or determined or random or anything else.
+The code above performs the rendering of a 8x8 square of sprites taken from the pack loaded in the example above. The part to determine the index of the sprite based on the element to display is left to the user: it could come from fetching the particular element at this coordinate in the world or determined at random or anything else.
 
 The `drawSprite` method expects the coordinates to be expressed in world coordinates and will automatically convert them in pixels coordinates based on the current position of the viewport in the world.
 
@@ -420,9 +420,9 @@ App::loadMenuResources() {
 
 ## Convenience options
 
-By default, the application allows the user to pan and zoom in the main game view. While very handy in most situations it can also be that the user wants to create a static application where the mechanism of cells is mostly use to reference cells in a game.
+By default, the application allows the user to pan and zoom in the main game view. While very handy in most situations it can also be that the user wants to create a static application where the mechanism of cells is mostly use to reference cells in a game (similarly to what would happen for a Sudoku game for example).
 
-The [AppDesc](https://github.com/Knoblauchpilze/pge-app/blob/master/src/app/AppDesc.hh) structure allows that through the `fixedFrame` boolean which prevents any panning and zooming to be considered. The application will be blocked on the cells define in the main viewport provided when creating the application.
+The [AppDesc](https://github.com/Knoblauchpilze/pge-app/blob/master/src/app/AppDesc.hh) structure allows that through the `fixedFrame` boolean which prevents any panning and zooming to be considered. The application will be blocked on the cells defined in the main viewport provided when creating the application.
 
 The user can also select the initial viewport of the app in the `main` file as presented below:
 
@@ -437,7 +437,7 @@ main(int /*argc*/, char** /*argv*/) {
 
   logger.logMessage(utils::Level::Notice, "Starting application");
 
-  /// Definition of the viewports: the tiles viewport and the pixel viewport.
+  /// FIXME: Definition of the viewports: the tiles viewport and the pixel viewport.
   pge::Viewport tViewport = pge::Viewport(olc::vf2d(-6.0f, -5.0f), olc::vf2d(20.0f, 15.0f));
   pge::Viewport pViewport = pge::Viewport(olc::vf2d(10.0f, 50.0f), olc::vf2d(800.0f, 600.0f));
 
@@ -455,6 +455,6 @@ main(int /*argc*/, char** /*argv*/) {
 }
 ```
 
-Both the tiles and pixels viewport are important and define respectively how much of the world will be visible and how zoomed-in the initial setup will be.
+Both the tiles and pixels viewports are important and define respectively how much of the world will be visible and how zoomed-in the initial setup will be.
 
 In case the user wants to access more log messages or reduce the severity of logs produced by the app, it is easy to adjust the `raw.setLevel` call to not use `Debug` but another level.

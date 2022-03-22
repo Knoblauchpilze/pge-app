@@ -39,7 +39,7 @@ make profile
 
 # Usage
 
-The application is structured around a base [DefaultApp](https://github.com/KnoblauchPilze/pge-app/blob/master/src/DefaultApp.hh) which can be customized to include more complex behaviors.
+The application is structured around a base [DefaultApp](https://github.com/KnoblauchPilze/pge-app/blob/master/src/App.hh) which can be customized to include more complex behaviors.
 
 ## Layers
 

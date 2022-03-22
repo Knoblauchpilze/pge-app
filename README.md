@@ -81,7 +81,21 @@ App::loadResources() {
 }
 ```
 
-The `loadResources` method can be used to load the graphic resources needed by the `App`. This includes textures, sprites or any sort of graphic elements.
+The `loadResources` method can be used to load the graphic resources needed by the `App`. This includes textures, sprites or any sort of graphic elements. A typical example could look like this:
+
+```cpp
+void
+App::loadData() {
+  // Create the texture pack.
+  pge::sprites::Pack pack;
+  pack.file = "data/img/pieces.png";
+  pack.sSize = olc::vi2d(TILE_SIZE, TILE_SIZE);
+  pack.layout = olc::vi2d(6, 2);
+
+  m_piecesPackID = m_packs->registerPack(pack);
+}
+```
+The `m_piecesPackID` defines an identifier which can then be used to reference a textures pack during the rendering phase (see the `drawDecal`) section.
 
 ```cpp
 void
@@ -111,7 +125,7 @@ App::drawDecal(const RenderDesc& /*res*/) {
     return;
   }
 
-  /// TODO: Add rendering code here.
+  /// FIXME: Add rendering code here.
 
   SetPixelMode(olc::Pixel::NORMAL);
 }
@@ -119,7 +133,83 @@ App::drawDecal(const RenderDesc& /*res*/) {
 
 The `drawDecal` method should be the preferred way to render complex elements. Using the `Decal` mechanism provided by the `Pixel Game Engine` we are able to render very quickly a lot of elements without impacting the framerate too much.
 
-The method is already set up so that the user can just insert code in the `TODO` statement (which doesn't exist in the code). It is recommended to use a new method like `drawBoard`, `drawElements` etc. and perform the rendering there.
+The method is already set up so that the user can just insert code in the `FIXME` statement (which doesn't exist in the code). It is recommended to use a new method like `drawBoard`, `drawElements` etc. and perform the rendering there.
+
+Whenever the user needs to perform the rendering of sprites, we define a convenience structure to help with drawing that:
+
+```cpp
+namespace sprites {
+  struct Sprite {
+    // The `pack` defines the identifier of the pack from
+    // which the sprite should be picked.
+    unsigned pack;
+
+    // The `sprite` defines an identifier for the sprite. The
+    // position of the sprite in the resource pack will be
+    // computed from this identifier.
+    olc::vi2d sprite;
+
+    // The `id` allows to select a variant for the sprite. By
+    // default this value is `0` meaning the principal display
+    // for the sprite.
+    int id;
+
+    // The `tint` defines a color to apply to tint the sprite
+    // as a whole. Can also be used to provide some alpha.
+    olc::Pixel tint;
+  };
+}
+
+struct SpriteDesc {
+  // The x coordinate of the sprite.
+  float x;
+
+  // The y coordinate of the sprite.
+  float y;
+
+  // The radius of the sprite: applied both along the x and y
+  // coordinates.
+  float radius;
+
+  // The relative position of the sprite compared to its
+  // position.
+  RelativePosition loc;
+
+  // A description of the sprite.
+  sprites::Sprite sprite;
+};
+```
+
+These structures help encapsulate the logic to find and draw a sprite at a specific location on screen. An example code is provided below:
+
+```cpp
+void
+App::drawPieces(const RenderDesc& res) noexcept {
+  SpriteDesc sd = {};
+  sd.loc = pge::RelativePosition::Center;
+  sd.radius = 0.9f;
+
+  for (unsigned y = 0u ; y < 8u ; ++y) {
+    for (unsigned x = 0u ; x < 8u ; ++x) {
+      sd.x = x;
+      sd.y = y;
+
+      sd.sprite.pack = m_piecesPackID;
+      sd.sprite.id = 0;
+      sd.sprite.tint = olc::WHITE;
+      sd.sprite.sprite = olc::vi2d(
+        /** FIXME: determine the sprite index **/,
+        /** FIXME: determine the sprite variation **/
+      );
+
+      drawSprite(sd, res.cf);
+    }
+  }
+}
+```
+The code above performs the rendering of a 8x8 square of sprites taken from the pack loaded in the example above. The part to determine the index of the sprite based on the element to display is left to the user: it could come from fetching the particular element at this coordinate in the world or determined or random or anything else.
+
+The `drawSprite` method expects the coordinates to be expressed in world coordinates and will automatically convert them in pixels coordinates based on the current position of the viewport in the world.
 
 ```cpp
 bool
@@ -204,7 +294,7 @@ The `Game` class also defines an internal convenience structure to regroup all t
 /// @brief - Convenience structure allowing to regroup
 /// all info about the menu in a single struct.
 struct Menus {
-  /// TODO: Add menus here.
+  /// FIXME: Add menus here.
 };
 ```
 The user can add all the menus that are needed here to keep the number of attributes to a minimum.
@@ -219,7 +309,7 @@ bool clickable = true;
 pge::MenuShPtr m = std::make_shared<pge::Menu>(/* arguments */, clickable, /* arguments */);
 m->setSimpleAction(
   [/* optional captue of variables */](Game& g) {
-    /// TODO: Call any method of the game.
+    /// FIXME: Call any method of the game.
   }
 );
 ```

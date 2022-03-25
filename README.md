@@ -317,6 +317,34 @@ The action receives a reference to the game and can trigger an action on it. A t
 
 Actions can be reset and can also include variables from the context creating it, such as a certain value or a compile time parameter. This mechanism proved quite reliable and easy-to-use to trigger processes on the `Game` from the UI.
 
+Furthermore, the `Game` class defines a convenience internal structure called a `TimedMenu` which allows to display a menu for a certain period of time based on a certain condition.
+
+The user needs to configure the menu and then update its status in the `updateUI` function like so:
+
+```cpp
+std::vector<MenuShPtr>
+Game::generateMenus(float width, float height) {
+  m_menus.timed.date = utils::TimeStamp();
+  m_menus.timed.wasActive = false;
+  /// NOTE: The duration is expressed in milliseconds.
+  m_menus.timed.duration = 3000;
+  m_menus.timed.menu = /** FIXME: Generate menu **/
+
+  /* ... */
+}
+
+void
+Game::updateUI() {
+  /* ... */
+
+  m_menus.timed.update(/* Your condition */);
+
+  /* ... */
+}
+```
+
+This allows to easily display alerts for example, or any information that needs to be presented to the user for a short period of time. Note that it is usually recommended to set the `clickable` and `selectable` flags of the menu attached to the component.
+
 ```cpp
 void
 Game::performAction(float /*x*/, float /*y*/) {

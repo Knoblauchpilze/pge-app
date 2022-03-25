@@ -4,6 +4,7 @@
 # include <vector>
 # include <memory>
 # include <core_utils/CoreObject.hh>
+# include <core_utils/TimeUtils.hh>
 
 namespace pge {
 
@@ -126,6 +127,35 @@ namespace pge {
        */
       virtual void
       updateUI();
+
+    protected:
+
+      /// @brief - Convenience structure allowing to group information
+      /// about a timed menu.
+      struct TimedMenu {
+        // Information about when the menu started appearing.
+        utils::TimeStamp date;
+
+        // Keep track of whether the menu was already active.
+        bool wasActive;
+
+        // The alert menu indicating controlled by this object.
+        MenuShPtr menu;
+
+        // The duration of the alert.
+        int duration;
+
+        /**
+         * @brief - Used to update the internal attribute with
+         *          the current value of whether the menu should
+         *          be active or not.
+         * @param active - `true` if the menu should still be
+         *                 active.
+         * @return - `true` if the menu is still visible.
+         */
+        bool
+        update(bool active) noexcept;
+      };
 
     private:
 

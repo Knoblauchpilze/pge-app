@@ -83,4 +83,43 @@ namespace pge {
     log("Perform update of UI menus", utils::Level::Info);
   }
 
+  bool
+  Game::TimedMenu::update(bool active) noexcept {
+    // In case the menu should be active.
+    if (active) {
+      if (!wasActive) {
+        // Make it active if it's the first time that
+        // we detect that it should be active.
+        date = utils::now();
+        wasActive = true;
+        menu->setVisible(true);
+      }
+      else if (utils::now() > date + utils::toMilliseconds(duration)) {
+        // Deactivate the menu in case it's been active
+        // for too long.
+        menu->setVisible(false);
+      }
+      else {
+        // Update the alpha value in case it's active
+        // for not long enough.
+        olc::Pixel c = menu->getBackgroundColor();
+
+        float d = utils::diffInMs(date, utils::now()) / duration;
+        c.a = static_cast<uint8_t>(
+          std::clamp((1.0f - d) * pge::alpha::Opaque, 0.0f, 255.0f)
+        );
+        menu->setBackground(pge::menu::newColoredBackground(c));
+      }
+    }
+    // Or if the menu shouldn't be active anymore and
+    // it's the first time we detect that.
+    else if (wasActive) {
+      // Deactivate the menu.
+      menu->setVisible(false);
+      wasActive = false;
+    }
+
+    return menu->visible();
+  }
+
 }

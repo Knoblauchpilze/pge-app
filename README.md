@@ -329,6 +329,8 @@ Game::generateMenus(float width, float height) {
   /// NOTE: The duration is expressed in milliseconds.
   m_menus.timed.duration = 3000;
   m_menus.timed.menu = /** FIXME: Generate menu **/
+  /// NOTE: Disable the visibility at first if needed.
+  m_menus.timed.menu->setVisible(false);
 
   /* ... */
 }

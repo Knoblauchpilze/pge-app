@@ -33,11 +33,14 @@ sed -i "s/pge-app/${PROJECT_NAME}/g" main.cpp
 echo "Updating CMakeLists files..."
 sed -i "s/main-app\b/${PROJECT_NAME}/g" CMakeLists.txt
 
-echo "Updating srcipts..."
+echo "Updating scripts..."
 sed -i "s/main-app/${PROJECT_NAME}/g" data/debug.sh
 sed -i "s/main-app/${PROJECT_NAME}/g" data/profile.sh
 sed -i "s/main-app/${PROJECT_NAME}/g" data/run.sh
 sed -i "s/main-app/${PROJECT_NAME}/g" data/valgrind.sh
+
+echo "Updating code..."
+sed -i "s/pge-app/${PROJECT_NAME}/g" src/app/olcPixelGameEngine.h
 
 echo "Cleaning data..."
 make clean

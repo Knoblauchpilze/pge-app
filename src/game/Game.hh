@@ -128,7 +128,7 @@ namespace pge {
       virtual void
       updateUI();
 
-    protected:
+    private:
 
       /// @brief - Convenience structure allowing to group information
       /// about a timed menu.
@@ -156,8 +156,6 @@ namespace pge {
         bool
         update(bool active) noexcept;
       };
-
-    private:
 
       /// @brief - Convenience information defining the state of the
       /// game. It includes information about whether the menus should

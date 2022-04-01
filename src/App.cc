@@ -1,6 +1,5 @@
 
 # include "App.hh"
-# include <maths_utils/ComparisonUtils.hh>
 
 namespace pge {
 

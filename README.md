@@ -14,7 +14,7 @@ It is meant as a simple way to build an application without having to reinvent t
 - Go to the project's directory `cd ~/path/to/the/repo`.
 - Compile: `make run`.
 
-Don't forget to add `/usr/local/lib` to your `LD_LIBRARY_PATH` to be able to load shared libraries at runtime. This is handled automatically when using the `make run` target (which internally uses the [run.sh](https://github.com/Knoblauchpilze/pge-app/blob/master/data/run.sh) script).
+Don't forget to add `/usr/local/lib` to your `LD_LIBRARY_PATH` to be able to load shared libraries at runtime. This is handled automatically when using the `make run` target (which internally uses the [run.sh](data/run.sh) script).
 
 If the user wants to update the project to another name and start with a more complex app, a convenience script is [provided](configureProject.sh) which allows to perform the renaming of elements as needed to have a new app with a different name.
 
@@ -39,7 +39,7 @@ make profile
 
 # Usage
 
-The application is structured around a base [App](https://github.com/KnoblauchPilze/pge-app/blob/master/src/App.hh) which can be customized to include more complex behaviors.
+The application is structured around a base [App](src/App.hh) which can be customized to include more complex behaviors.
 
 ## Layers
 
@@ -57,7 +57,7 @@ The ordering of the layer matters as it will describe how elements are overlaid.
 
 ## Game
 
-The application provides a base [Game](https://github.com/KnoblauchPilze/pge-app/blob/master/src/game/Game.hh) class which can be used to wrap the application's data into a structure that can communicate easily with the application. Some general methods have been extracted to provide hooks that are used by the default application to make the game evolve.
+The application provides a base [Game](src/game/Game.hh) class which can be used to wrap the application's data into a structure that can communicate easily with the application. Some general methods have been extracted to provide hooks that are used by the default application to make the game evolve.
 
 While this class is called `Game` it can also receive some other type of data.
 
@@ -66,9 +66,9 @@ While this class is called `Game` it can also receive some other type of data.
 The application and the class within it are designed to easily be reused and extended with various behaviors.
 
 The classes which should be changed by the user are mainly:
-* [App](https://github.com/KnoblauchPilze/pge-app/blob/master/src/game/App.hh) class
-* [Game](https://github.com/KnoblauchPilze/pge-app/blob/master/src/game/Game.hh) class
-* [GameState](https://github.com/KnoblauchPilze/pge-app/blob/master/src/game/GameState.hh) class
+* [App](src/game/App.hh) class
+* [Game](src/game/Game.hh) class
+* [GameState](src/game/GameState.hh) class
 
 ### The App class
 

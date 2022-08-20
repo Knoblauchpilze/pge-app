@@ -27,7 +27,7 @@ namespace pge {
   Game::generateMenus(float /*width*/,
                       float /*height*/)
   {
-    log("Generate UI menus here", utils::Level::Info);
+    info("Generate UI menus here");
     return std::vector<MenuShPtr>();
   }
 
@@ -47,7 +47,7 @@ namespace pge {
       return true;
     }
 
-    log("Perform step method of the game", utils::Level::Info);
+    info("Perform step method of the game");
 
     updateUI();
 
@@ -80,7 +80,7 @@ namespace pge {
 
   void
   Game::updateUI() {
-    log("Perform update of UI menus", utils::Level::Info);
+    info("Perform update of UI menus");
   }
 
   bool

@@ -77,7 +77,7 @@ The `App` class provides various methods which can be enriched with behaviors.
 ```cpp
 void
 App::loadResources() {
-  log("Load app resources in the 'm_packs' attribute", utils::Level::Info);
+  info("Load app resources in the 'm_packs' attribute");
 }
 ```
 
@@ -220,7 +220,7 @@ App::onFrame(float fElapsed) {
   }
 
   if (!m_game->step(fElapsed)) {
-    log("This is game over", utils::Level::Info);
+    info("This is game over");
   }
 
   return m_game->terminated();
@@ -254,7 +254,7 @@ Game::step(float /*tDelta*/) {
     return true;
   }
 
-  log("Perform step method of the game", utils::Level::Info);
+  info("Perform step method of the game");
 
   updateUI();
 
@@ -269,7 +269,7 @@ It is usually recommended to convert that to an internal `frame ID` which repres
 ```cpp
 void
 Game::updateUI() {
-  log("Perform update of UI menus", utils::Level::Info);
+  info("Perform update of UI menus");
 }
 ```
 
@@ -280,7 +280,7 @@ std::vector<MenuShPtr>
 Game::generateMenus(float /*width*/,
                     float /*height*/)
 {
-  log("Generate UI menus here", utils::Level::Info);
+  info("Generate UI menus here");
   return std::vector<MenuShPtr>();
 }
 ```
@@ -428,7 +428,7 @@ Once the user picks a saved games, a signal is emitted by this object and transm
 ```cpp
 void
 GameState::onSavedGamePicked(const std::string& game) {
-  log("Picked saved game \"" + game + "\"", utils::Level::Info);
+  info("Picked saved game \"" + game + "\"");
   setScreen(Screen::Game);
 }
 ```

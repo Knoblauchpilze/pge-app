@@ -308,7 +308,7 @@ Such an action is defined as follows:
 bool clickable = true;
 pge::MenuShPtr m = std::make_shared<pge::Menu>(/* arguments */, clickable, /* arguments */);
 m->setSimpleAction(
-  [/* optional captue of variables */](Game& g) {
+  [/* optional capture of variables */](Game& g) {
     /// FIXME: Call any method of the game.
   }
 );

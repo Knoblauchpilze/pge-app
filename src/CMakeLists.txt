@@ -29,7 +29,7 @@ target_sources (main-app_lib PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}/App.cc
 	)
 
-set (TDEF_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}" PARENT_SCOPE)
+set (PGE_APP_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}" PARENT_SCOPE)
 
 target_link_libraries (main-app_lib
 	png

@@ -13,7 +13,7 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
 
 set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules")
 
-project(example-app LANGUAGES CXX)
+project(example-project LANGUAGES CXX)
 
 add_subdirectory (
 	${CMAKE_CURRENT_SOURCE_DIR}/src

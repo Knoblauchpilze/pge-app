@@ -31,7 +31,8 @@ echo "Updating source files..."
 sed -i "s/pge-app/${PROJECT_NAME}/g" src/main.cpp
 
 echo "Updating CMakeLists files..."
-sed -i "s/example-app\b/${PROJECT_NAME}/g" CMakeLists.txt
+sed -i "s/example-project\b/${PROJECT_NAME}/g" CMakeLists.txt
+sed -i "s/example-app\b/${PROJECT_NAME}/g" src/CMakeLists.txt
 
 echo "Updating scripts..."
 sed -i "s/example-app/${PROJECT_NAME}/g" data/debug.sh

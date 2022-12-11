@@ -3,7 +3,9 @@
 
 Simple implementation of an application relying on the [PixelGameEngine](https://github.com/OneLoneCoder/olcPixelGameEngine) to perform the rendering. This project comes with a basic event handling system, some basic menu which can register actions and a default `game` structure which can be extended to handle various processes.
 
-It is meant as a simple way to build an application without having to reinvent the weel for every project. Most of the behaviors can be customized in order to handle more complex behaviors (resources loading, step function, pause system, etc.)
+It is meant as a simple way to build an application without having to reinvent the weel for every project. Most of the behaviors can be customized in order to handle more complex behaviors (resources loading, step function, pause system, etc.).
+
+The general architecture of the repository has been inspired by the one described [here](https://raymii.org/s/tutorials/Cpp_project_setup_with_cmake_and_unit_tests.html): this covers how to put organize the sources, the headers and the tests.
 
 # Installation
 
@@ -11,6 +13,8 @@ It is meant as a simple way to build an application without having to reinvent t
 - Clone dependencies:
     * [core_utils](https://github.com/Knoblauchpilze/core_utils)
     * [maths_utils](https://github.com/Knoblauchpilze/maths_utils)
+- Install required libraries:
+    * [gtest](https://www.eriksmistad.no/getting-started-with-google-test-on-ubuntu/)
 - Go to the project's directory `cd ~/path/to/the/repo`.
 - Compile: `make run`.
 
@@ -23,23 +27,9 @@ The usage of the script is as follows:
 ./configureProject.sh project_name
 ```
 
-# Profiling
-
-A convenience script is provided in order to profile the app. This comes from [this](https://stackoverflow.com/questions/375913/how-can-i-profile-c-code-running-on-linux) topic. This requires a few things to be installed on the system:
-* GIMP
-* valgrind
-* [gprof2dot](https://github.com/jrfonseca/gprof2dot)
-
-The output image is a png that is opened with GIMP and can give ideas about what is slowing down the application.
-
-The profiling can be triggered with the following command:
-```bash
-make profile
-```
-
 # Usage
 
-The application is structured around a base [App](src/App.hh) which can be customized to include more complex behaviors.
+The application is structured around a base [App](src/lib/App.hh) which can be customized to include more complex behaviors.
 
 ## Layers
 
@@ -57,7 +47,7 @@ The ordering of the layer matters as it will describe how elements are overlaid.
 
 ## Game
 
-The application provides a base [Game](src/game/Game.hh) class which can be used to wrap the application's data into a structure that can communicate easily with the application. Some general methods have been extracted to provide hooks that are used by the default application to make the game evolve.
+The application provides a base [Game](src/lib/game/Game.hh) class which can be used to wrap the application's data into a structure that can communicate easily with the application. Some general methods have been extracted to provide hooks that are used by the default application to make the game evolve.
 
 While this class is called `Game` it can also receive some other type of data.
 
@@ -66,9 +56,9 @@ While this class is called `Game` it can also receive some other type of data.
 The application and the class within it are designed to easily be reused and extended with various behaviors.
 
 The classes which should be changed by the user are mainly:
-* [App](src/game/App.hh) class
-* [Game](src/game/Game.hh) class
-* [GameState](src/game/GameState.hh) class
+* [App](src/lib/game/App.hh) class
+* [Game](src/lib/game/Game.hh) class
+* [GameState](src/lib/game/GameState.hh) class
 
 ### The App class
 
@@ -240,7 +230,7 @@ The scheduling of the `App` include a main loop which is called by the parent `P
 
 Both these methods are supposed to handle respectively the rendering processes and the input processing code.
 
-The user can easily add hot keys through the [Keys](https://github.com/Knoblauchpilze/pge-app/blob/master/src/app/Controls.hh) enumeration: specific processes can then be triggered when the key is pressed. Note that the code in the [PGEApp::handleInputs](https://github.com/Knoblauchpilze/pge-app/blob/master/src/app/PGEApp.cc) method should also be updated to detect the key being hit or released.
+The user can easily add hot keys through the [Keys](https://github.com/Knoblauchpilze/pge-app/blob/master/src/lib/app/Controls.hh) enumeration: specific processes can then be triggered when the key is pressed. Note that the code in the [PGEApp::handleInputs](https://github.com/Knoblauchpilze/pge-app/blob/master/src/lib/app/PGEApp.cc) method should also be updated to detect the key being hit or released.
 
 #### The Game class
 
@@ -299,9 +289,9 @@ struct Menus {
 ```
 The user can add all the menus that are needed here to keep the number of attributes to a minimum.
 
-**NOTE:** all menus do not need to be registered. It is mainly interesting to keep them in case their content needs to be updated (typically a label). Otherwise, the menus will automatically handle the release of their children menus when being destroyed. The concept of actions should also be sufficient to trigger processes on the `Game` (and ultimately on any element of the `Game`) when the user clicks on a [Menu](https://github.com/Knoblauchpilze/pge-app/blob/master/src/ui/Menu.hh).
+**NOTE:** all menus do not need to be registered. It is mainly interesting to keep them in case their content needs to be updated (typically a label). Otherwise, the menus will automatically handle the release of their children menus when being destroyed. The concept of actions should also be sufficient to trigger processes on the `Game` (and ultimately on any element of the `Game`) when the user clicks on a [Menu](https://github.com/Knoblauchpilze/pge-app/blob/master/src/lib/ui/Menu.hh).
 
-Each menu created with the [Menu](https://github.com/Knoblauchpilze/pge-app/blob/master/src/ui/Menu.hh) class can be attached an [Action](https://github.com/Knoblauchpilze/pge-app/blob/master/src/ui/Action.hh) which is triggered by the menu whenever it is clicked upon (provided that the menu is `clickable`).
+Each menu created with the [Menu](https://github.com/Knoblauchpilze/pge-app/blob/master/src/lib/ui/Menu.hh) class can be attached an [Action](https://github.com/Knoblauchpilze/pge-app/blob/master/src/lib/ui/Action.hh) which is triggered by the menu whenever it is clicked upon (provided that the menu is `clickable`).
 
 Such an action is defined as follows:
 ```cpp
@@ -398,7 +388,7 @@ GameState::GameState(const olc::vi2d& dims,
   m_savedGames.onSavedGameSelected.connect_member<GameState>(this, &GameState::onSavedGamePicked);
 }
 ```
-The user is encouraged to create a separate attribute for the new screen, then add a generation function and the corresponding enumeration value in the [Screen](https://github.com/Knoblauchpilze/pge-app/blob/master/src/game/GameState.hh) enumeration.
+The user is encouraged to create a separate attribute for the new screen, then add a generation function and the corresponding enumeration value in the [Screen](https://github.com/Knoblauchpilze/pge-app/blob/master/src/lib/game/GameState.hh) enumeration.
 
 The rest of the application should behave correctly with the new state, it is up to the user to add the handling of the new state where needed.
 
@@ -452,7 +442,7 @@ App::loadMenuResources() {
 
 By default, the application allows the user to pan and zoom in the main game view. While very handy in most situations it can also be that the user wants to create a static application where the mechanism of cells is mostly use to reference cells in a game (similarly to what would happen for a Sudoku game for example).
 
-The [AppDesc](https://github.com/Knoblauchpilze/pge-app/blob/master/src/app/AppDesc.hh) structure allows that through the `fixedFrame` boolean which prevents any panning and zooming to be considered. The application will be blocked on the cells defined in the main viewport provided when creating the application.
+The [AppDesc](https://github.com/Knoblauchpilze/pge-app/blob/master/src/lib/app/AppDesc.hh) structure allows that through the `fixedFrame` boolean which prevents any panning and zooming to be considered. The application will be blocked on the cells defined in the main viewport provided when creating the application.
 
 The user can also select the initial viewport of the app in the `main` file as presented below:
 
@@ -488,3 +478,56 @@ main(int /*argc*/, char** /*argv*/) {
 Both the tiles and pixels viewports are important and define respectively how much of the world will be visible and how zoomed-in the initial setup will be.
 
 In case the user wants to access more log messages or reduce the severity of logs produced by the app, it is easy to adjust the `raw.setLevel` call to not use `Debug` but another level.
+
+# Testing
+
+## Generalities
+
+The default application comes with a functional testing framework. The tests are meant to be located in the [tests](tests/) folder and can be further specialized into unit tests (existing [here](tests/unit) already) but also integration tests, functional tests, etc.
+
+The framework uses the `gtest` library to perform the testing.
+
+## Adding tests
+
+In order to add a new test, one can create a new file under the relevant test section (say `tests/unit/lib/MyClassTest.cpp`). The structure of the file should look something like so:
+```cpp
+
+# include "MyClass.hh"
+# include <gtest/gtest.h>
+
+using namespace ::testing;
+
+namespace the::namespace::of::the::class {
+
+TEST(Unit_MyClass, Test_MyFeature)
+{
+  /* FIXME: Some testing. */
+  EXPECT_EQ(/* Some condition */);
+}
+
+}
+```
+
+## Run the tests
+
+Once the tests are written, the root `Makefile` defines a target to execute all the tests under:
+```bash
+make tests
+```
+
+In case the test suite is growing one can add some targets to run only the unit or integration tests but it is not provided yet.
+
+# Profiling
+
+A convenience script is provided in order to profile the app. This comes from [this](https://stackoverflow.com/questions/375913/how-can-i-profile-c-code-running-on-linux) topic. This requires a few things to be installed on the system:
+* GIMP
+* valgrind
+* [gprof2dot](https://github.com/jrfonseca/gprof2dot)
+
+The output image is a png that is opened with GIMP and can give ideas about what is slowing down the application.
+
+The profiling can be triggered with the following command:
+```bash
+make profile
+```
+

@@ -36,3 +36,11 @@ v: sandboxDebug
 
 profile: sandboxDebug
 	cd sandbox && ./profile.sh local
+
+tests: sandboxDebug
+	cd sandbox && ./tests.sh local
+# See here: https://stackoverflow.com/questions/3931741/why-does-make-think-the-target-is-up-to-date
+PHONY: .tests
+
+dtests: sandboxDebug
+	cd sandbox && ./debug-tests.sh local

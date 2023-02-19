@@ -9,7 +9,7 @@
 int
 main(int argc, char** argv) {
   testing::InitGoogleTest(&argc, argv);
-  
+
   // Create the logger.
   utils::StdLogger raw;
   raw.setLevel(utils::Level::Debug);

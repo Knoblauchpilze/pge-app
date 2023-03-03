@@ -3,7 +3,7 @@
 
 Simple implementation of an application relying on the [PixelGameEngine](https://github.com/OneLoneCoder/olcPixelGameEngine) to perform the rendering. This project comes with a basic event handling system, some basic menu which can register actions and a default `game` structure which can be extended to handle various processes.
 
-It is meant as a simple way to build an application without having to reinvent the weel for every project. Most of the behaviors can be customized in order to handle more complex behaviors (resources loading, step function, pause system, etc.).
+It is meant as a simple way to build an application without having to reinvent the wheel for every project. Most of the behaviors can be customized in order to handle more complex behaviors (resources loading, step function, pause system, etc.).
 
 The general architecture of the repository has been inspired by the one described [here](https://raymii.org/s/tutorials/Cpp_project_setup_with_cmake_and_unit_tests.html): this covers how to put organize the sources, the headers and the tests.
 

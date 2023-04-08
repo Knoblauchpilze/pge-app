@@ -1,6 +1,5 @@
 
 # include "CoordinateFrame.hh"
-# include "utils.hh"
 
 namespace pge {
 
@@ -31,7 +30,7 @@ namespace pge {
     m_scale = m_tScaled / m_ts;
 
     log(
-      "Tile size is " + toString(m_ts) + ", scale is " + toString(m_scale),
+      "Tile size is " + m_ts.str() + ", scale is " + m_scale.str(),
       utils::Level::Verbose
     );
   }

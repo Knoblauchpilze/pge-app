@@ -1,5 +1,5 @@
-#ifndef    TEXTURE_PACK_HH
-# define   TEXTURE_PACK_HH
+#ifndef    PGE_APP_TEXTURE_PACK_HH
+# define   PGE_APP_TEXTURE_PACK_HH
 
 # include <memory>
 # include <core_utils/CoreObject.hh>
@@ -176,4 +176,4 @@ namespace pge {
 
 # include "TexturePack.hxx"
 
-#endif    /* TEXTURE_PACK_HH */
+#endif    /* PGE_APP_TEXTURE_PACK_HH */

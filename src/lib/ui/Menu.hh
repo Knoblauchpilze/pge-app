@@ -1,5 +1,5 @@
-#ifndef    MENU_HH
-# define   MENU_HH
+#ifndef    PGE_APP_MENU_HH
+# define   PGE_APP_MENU_HH
 
 # include <memory>
 # include <vector>
@@ -419,4 +419,4 @@ namespace pge {
 
 # include "Menu.hxx"
 
-#endif    /* MENU_HH */
+#endif    /* PGE_APP_MENU_HH */

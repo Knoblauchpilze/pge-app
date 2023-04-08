@@ -1,5 +1,5 @@
-#ifndef    SAVED_GAMES_HH
-# define   SAVED_GAMES_HH
+#ifndef    PGE_APP_SAVED_GAMES_HH
+# define   PGE_APP_SAVED_GAMES_HH
 
 # include <string>
 # include <vector>
@@ -137,4 +137,4 @@ namespace pge {
   using SavedGamesShPtr = std::shared_ptr<SavedGames>;
 }
 
-#endif    /* SAVED_GAMES_HH */
+#endif    /* PGE_APP_SAVED_GAMES_HH */

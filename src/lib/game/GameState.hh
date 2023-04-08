@@ -1,5 +1,5 @@
-#ifndef    GAME_STATE_HH
-# define   GAME_STATE_HH
+#ifndef    PGE_APP_GAME_STATE_HH
+# define   PGE_APP_GAME_STATE_HH
 
 # include <memory>
 # include <core_utils/CoreObject.hh>
@@ -134,4 +134,4 @@ namespace pge {
   using GameStateShPtr = std::shared_ptr<GameState>;
 }
 
-#endif    /* GAME_STATE_HH */
+#endif    /* PGE_APP_GAME_STATE_HH */

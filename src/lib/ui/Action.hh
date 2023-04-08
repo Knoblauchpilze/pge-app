@@ -1,5 +1,5 @@
-#ifndef    ACTION_HH
-# define   ACTION_HH
+#ifndef    PGE_APP_ACTION_HH
+# define   PGE_APP_ACTION_HH
 
 # include <memory>
 # include <core_utils/CoreObject.hh>
@@ -75,4 +75,4 @@ namespace pge {
   using ActionShPtr = std::shared_ptr<Action>;
 }
 
-#endif    /* ACTION_HH */
+#endif    /* PGE_APP_ACTION_HH */

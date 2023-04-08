@@ -1,5 +1,5 @@
-#ifndef    COORDINATE_FRAME_HH
-# define   COORDINATE_FRAME_HH
+#ifndef    PGE_APP_COORDINATE_FRAME_HH
+# define   PGE_APP_COORDINATE_FRAME_HH
 
 # include <memory>
 # include <core_utils/CoreObject.hh>
@@ -259,4 +259,4 @@ namespace pge {
 
 # include "CoordinateFrame.hxx"
 
-#endif    /* COORDINATE_FRAME_HH */
+#endif    /* PGE_APP_COORDINATE_FRAME_HH */

@@ -1,5 +1,5 @@
-#ifndef    BACKGROUND_DESC_HH
-# define   BACKGROUND_DESC_HH
+#ifndef    PGE_APP_BACKGROUND_DESC_HH
+# define   PGE_APP_BACKGROUND_DESC_HH
 
 # include "olcEngine.hh"
 
@@ -44,4 +44,4 @@ namespace pge {
   }
 }
 
-#endif    /* BACKGROUND_DESC_HH */
+#endif    /* PGE_APP_BACKGROUND_DESC_HH */

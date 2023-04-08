@@ -1,5 +1,5 @@
-#ifndef    MENU_HXX
-# define   MENU_HXX
+#ifndef    PGE_APP_MENU_HXX
+# define   PGE_APP_MENU_HXX
 
 # include "Menu.hh"
 
@@ -151,4 +151,4 @@ namespace pge {
 
 }
 
-#endif    /* MENU_HXX */
+#endif    /* PGE_APP_MENU_HXX */

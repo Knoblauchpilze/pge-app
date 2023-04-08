@@ -1,5 +1,5 @@
-#ifndef    VIEWPORT_HH
-# define   VIEWPORT_HH
+#ifndef    PGE_APP_VIEWPORT_HH
+# define   PGE_APP_VIEWPORT_HH
 
 # include <maths_utils/Point2.hh>
 # include "olcEngine.hh"
@@ -103,4 +103,4 @@ namespace pge {
 
 }
 
-#endif    /* VIEWPORT_HH */
+#endif    /* PGE_APP_VIEWPORT_HH */

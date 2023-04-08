@@ -4,7 +4,6 @@
 # include "olcPixelGameEngine.h"
 # include "olcPGEX_AdditionalColours.hh"
 
-# include "utils.hh"
 # include "ColorUtils.hh"
 
 #endif    /* OLC_ENGINE_HH */

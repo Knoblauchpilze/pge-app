@@ -1,8 +1,7 @@
-#ifndef    TEXTURE_PACK_HXX
-# define   TEXTURE_PACK_HXX
+#ifndef    PGE_APP_TEXTURE_PACK_HXX
+# define   PGE_APP_TEXTURE_PACK_HXX
 
 # include "TexturePack.hh"
-# include "utils.hh"
 
 namespace pge {
 
@@ -35,4 +34,4 @@ namespace pge {
 
 }
 
-#endif    /* TEXTURE_PACK_HXX */
+#endif    /* PGE_APP_TEXTURE_PACK_HXX */

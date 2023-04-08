@@ -1,5 +1,5 @@
-#ifndef    COLOR_UTILS_HH
-# define   COLOR_UTILS_HH
+#ifndef    PGE_APP_COLOR_UTILS_HH
+# define   PGE_APP_COLOR_UTILS_HH
 
 # include "olcEngine.hh"
 
@@ -82,4 +82,4 @@ toString(const olc::Pixel& p) noexcept;
 
 # include "ColorUtils.hxx"
 
-#endif    /* COLOR_UTILS_HH */
+#endif    /* PGE_APP_COLOR_UTILS_HH */

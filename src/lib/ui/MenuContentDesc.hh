@@ -1,5 +1,5 @@
-#ifndef    MENU_CONTENT_DESC_HH
-# define   MENU_CONTENT_DESC_HH
+#ifndef    PGE_APP_MENU_CONTENT_DESC_HH
+# define   PGE_APP_MENU_CONTENT_DESC_HH
 
 # include "olcEngine.hh"
 
@@ -85,4 +85,4 @@ namespace pge {
   }
 }
 
-#endif    /* MENU_CONTENT_DESC_HH */
+#endif    /* PGE_APP_MENU_CONTENT_DESC_HH */

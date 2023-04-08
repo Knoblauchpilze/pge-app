@@ -1,5 +1,5 @@
-#ifndef    CONTROLS_HXX
-# define   CONTROLS_HXX
+#ifndef    PGE_APP_CONTROLS_HXX
+# define   PGE_APP_CONTROLS_HXX
 
 # include "Controls.hh"
 
@@ -25,4 +25,4 @@ namespace pge {
   }
 }
 
-#endif    /* CONTROLS_HXX */
+#endif    /* PGE_APP_CONTROLS_HXX */

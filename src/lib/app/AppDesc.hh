@@ -1,5 +1,5 @@
-#ifndef    APP_DESC_HH
-# define   APP_DESC_HH
+#ifndef    PGE_APP_APP_DESC_HH
+# define   PGE_APP_APP_DESC_HH
 
 # include <string>
 # include "olcEngine.hh"
@@ -50,4 +50,4 @@ namespace pge {
 
 # include "AppDesc.hxx"
 
-#endif    /* APP_DESC_HH */
+#endif    /* PGE_APP_APP_DESC_HH */

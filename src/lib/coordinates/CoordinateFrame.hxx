@@ -1,5 +1,5 @@
-#ifndef    COORDINATE_FRAME_HXX
-# define   COORDINATE_FRAME_HXX
+#ifndef    PGE_APP_COORDINATE_FRAME_HXX
+# define   PGE_APP_COORDINATE_FRAME_HXX
 
 # include "CoordinateFrame.hh"
 # include <cmath>
@@ -73,4 +73,4 @@ namespace pge {
 
 }
 
-#endif    /* COORDINATE_FRAME_HXX */
+#endif    /* PGE_APP_COORDINATE_FRAME_HXX */

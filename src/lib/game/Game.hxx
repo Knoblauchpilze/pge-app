@@ -1,5 +1,5 @@
-#ifndef    GAME_HXX
-# define   GAME_HXX
+#ifndef    PGE_APP_GAME_HXX
+# define   PGE_APP_GAME_HXX
 
 # include "Game.hh"
 
@@ -44,4 +44,4 @@ namespace pge {
 
 }
 
-#endif    /* GAME_HXX */
+#endif    /* PGE_APP_GAME_HXX */

@@ -1,5 +1,5 @@
-#ifndef    TOPVIEW_FRAME_HH
-# define   TOPVIEW_FRAME_HH
+#ifndef    PGE_APP_TOP_VIEW_FRAME_HH
+# define   PGE_APP_TOP_VIEW_FRAME_HH
 
 # include "CoordinateFrame.hh"
 
@@ -71,4 +71,4 @@ namespace pge {
 
 }
 
-#endif    /* TOPVIEW_FRAME_HH */
+#endif    /* PGE_APP_TOP_VIEW_FRAME_HH */

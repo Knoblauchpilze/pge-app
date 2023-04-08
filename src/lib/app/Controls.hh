@@ -1,5 +1,5 @@
-#ifndef    CONTROLS_HH
-# define   CONTROLS_HH
+#ifndef    PGE_APP_CONTROLS_HH
+# define   PGE_APP_CONTROLS_HH
 
 # include <vector>
 
@@ -83,4 +83,4 @@ namespace pge {
 
 # include "Controls.hxx"
 
-#endif    /* CONTROLS_HH */
+#endif    /* PGE_APP_CONTROLS_HH */

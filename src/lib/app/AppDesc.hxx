@@ -1,5 +1,5 @@
-#ifndef    APP_DESC_HXX
-# define   APP_DESC_HXX
+#ifndef    PGE_APP_APP_DESC_HXX
+# define   PGE_APP_APP_DESC_HXX
 
 # include "AppDesc.hh"
 
@@ -27,4 +27,4 @@ namespace pge {
 
 }
 
-#endif    /* APP_DESC_HXX */
+#endif    /* PGE_APP_APP_DESC_HXX */

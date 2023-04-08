@@ -1,5 +1,5 @@
-#ifndef    GAME_HH
-# define   GAME_HH
+#ifndef    PGE_APP_GAME_HH
+# define   PGE_APP_GAME_HH
 
 # include <vector>
 # include <memory>
@@ -202,4 +202,4 @@ namespace pge {
 
 # include "Game.hxx"
 
-#endif    /* GAME_HH */
+#endif    /* PGE_APP_GAME_HH */

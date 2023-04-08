@@ -1,5 +1,5 @@
-#ifndef    COLOR_UTILS_HXX
-# define   COLOR_UTILS_HXX
+#ifndef    PGE_APP_COLOR_UTILS_HXX
+# define   PGE_APP_COLOR_UTILS_HXX
 
 # include "ColorUtils.hh"
 # include <maths_utils/ComparisonUtils.hh>
@@ -154,4 +154,4 @@ toString(const olc::Pixel& p) noexcept {
 }
 
 
-#endif    /* COLOR_UTILS_HXX */
+#endif    /* PGE_APP_COLOR_UTILS_HXX */

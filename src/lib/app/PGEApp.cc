@@ -28,8 +28,8 @@ namespace pge {
     // Make sure that a coordinate frame is provided.
     if (m_frame == nullptr) {
       error(
-        std::string("Unable to create PGE application"),
-        std::string("Invalid null coordinate frame provided")
+        "Unable to create PGE application",
+        "Invalid null coordinate frame provided"
       );
     }
 

@@ -76,10 +76,6 @@ namespace pge {
         // coordinates.
         float radius;
 
-        // The relative position of the sprite compared to its
-        // position.
-        RelativePosition loc;
-
         // A description of the sprite.
         sprites::Sprite sprite;
       };

@@ -24,14 +24,10 @@ main(int /*argc*/, char** /*argv*/) {
   try {
     logger.logMessage(utils::Level::Notice, "Starting application");
 
-    pge::Viewport tViewport = pge::Viewport(olc::vf2d(-6.0f, -5.0f), olc::vf2d(20.0f, 15.0f));
-    pge::Viewport pViewport = pge::Viewport(olc::vf2d(10.0f, 50.0f), olc::vf2d(800.0f, 600.0f));
+    auto tiles = pge::CenteredViewportF({0.0f, 0.0f}, {4.0f, 3.0f});
+    auto pixels = pge::TopLeftViewportF({0.0f, 0.0f}, {800.0f, 600.0f});
 
-    pge::CoordinateFrameShPtr cf = std::make_shared<pge::TopViewFrame>(
-      tViewport,
-      pViewport,
-      olc::vi2d(64, 64)
-    );
+    auto cf = std::make_shared<pge::TopViewFrame>(tiles, pixels);
     pge::AppDesc ad = pge::newDesc(olc::vi2d(800, 600), cf, "pge-app");
     pge::App demo(ad);
 

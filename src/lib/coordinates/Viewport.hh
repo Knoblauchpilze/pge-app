@@ -1,106 +1,122 @@
 #ifndef    PGE_APP_VIEWPORT_HH
 # define   PGE_APP_VIEWPORT_HH
 
-# include <maths_utils/Point2.hh>
+# include <maths_utils/Vector2.hh>
 # include "olcEngine.hh"
 
 namespace pge {
 
-  /// @brief - Defines a viewport from its top left
-  /// corner and the associated dimensions.
+  template <typename Coordinate>
   class Viewport {
+    private:
+      using Vector = olc::v2d_generic<Coordinate>;
+
     public:
 
-      /**
-       * @brief - Create a new viewport with the specified
-       *          position and dimensions.
-       * @param tl - the top left corner of the viewport.
-       * @param dims - the dimensions of the viewport.
-       */
-      Viewport(const olc::vf2d& tl,
-               const olc::vf2d& dims) noexcept;
+      /// @brief - Returns the center of this viewport.
+      /// @return - the center of the viewport.
+      virtual Vector
+      center() const noexcept = 0;
 
-      /**
-       * @brief - Return the top left corner of the viewport.
-       * @return - the top left corner.
-       */
-      olc::vf2d&
-      topLeft() noexcept;
+      /// @brief - Returns the top left corner of this viewport.
+      /// @return - the top left corner of the viewport.
+      virtual Vector
+      topLeft() const noexcept = 0;
 
-      /**
-       * @brief - Return the top left corner of the viewport.
-       * @return - the top left corner.
-       */
-      const olc::vf2d&
-      topLeft() const noexcept;
+      /// @brief - Returns the dimensions of the viewport.
+      /// @return - the dimensions of the viewport.
+      virtual Vector
+      dims() const noexcept = 0;
 
-      /**
-       * @brief - Return the dimensions of the viewport.
-       * @return - the dimensions of the viewport.
-       */
-      olc::vf2d&
-      dims() noexcept;
+      olc::vf2d
+      relativeCoords(const Vector& pos) const noexcept;
 
-      /**
-       * @brief - Return the dimensions of the viewport.
-       * @return - the dimensions of the viewport.
-       */
-      const olc::vf2d&
-      dims() const noexcept;
+      /// @brief - Returns the relative coordinates of the input position
+      /// compared to this viewport. In this mode, the output coordinates
+      /// range from `[0; 1]` when one axis is within the viewport.
+      /// @param pos - the position to convert.
+      /// @return - the relative coords for this position.
+      virtual olc::vf2d
+      relativeCoords(const Coordinate& x, const Coordinate& y) const noexcept = 0;
 
-      /**
-       * @brief - Whether or not a position with the specified
-       *          radius is at least partially visible based on
-       *          the viewport dimensions.
-       * @param p - the position to check.
-       * @param radius - the radius of the element.
-       * @return - `true` if the element is at least partially
-       *            visible.
-       */
+      olc::vf2d
+      absoluteCoords(const Vector& pos) const noexcept;
+
+      /// @brief - Returns the absolute coordinates of the input position
+      /// compared to this viewport. In this mode, the input coordinates
+      /// range from `[0; 1]` when one axis is within the viewport.
+      /// @param pos - the position to convert.
+      /// @return - the absolute coords for this position.
+      virtual olc::vf2d
+      absoluteCoords(const Coordinate& x, const Coordinate& y) const noexcept = 0;
+
+      /// @brief - Moves the center of this viewport to the new position.
+      /// @param center - the new position of the center of this viewport.
+      virtual void
+      moveTo(const Vector& position) noexcept = 0;
+
+      /// @brief - Translates this viewport by the specified amount.
+      /// @param delta - the delta to apply to the position of this
+      /// viewport.
+      virtual void
+      translate(const Vector& delta) noexcept = 0;
+
+      /// @brief - Scales the dimensions of the viewport by the corresponding
+      /// factor.
+      /// @param sx - the factor to be applied on the `x` axis.
+      /// @param sy - the factor to be applied on the `y` axis.
+      virtual void
+      scale(const Coordinate sx, const Coordinate sy) noexcept = 0;
+
+      /// @brief - Whether an element having the specified coordinates and
+      /// radius is visible in the viewport.
+      /// Note: the radius is centered around the coordinates. The element
+      /// extends from `[x - radius; x + radius]` and same for `y`.
+      /// @param x - x coordinate of the point.
+      /// @param y - y coordinate of the point.
+      /// @param radius - the radius in both axis.
+      /// @return - `true` if such an element is at least partially visible
+      /// in the viewport.
       bool
-      visible(const utils::Point2i& p, float radius = 1.0f) const noexcept;
+      visible(const Coordinate x,
+              const Coordinate y,
+              const Coordinate radius = Coordinate(1)) const noexcept;
 
-      /**
-       * @brief - Similar method to the above but handles position
-       *          as a floating point position and the radius as a
-       *          rectangular-ish shape.
-       * @param p - the position to check.
-       * @param sz - the dimensions of the element.
-       * @return - `true` if the element is at least partially
-       *            visible.
-       */
+      /// @brief - Whether an element having the specified coordinates and
+      /// radius is visible in the viewport.
+      /// Note: the size is centered around the coordinates. The element
+      /// extends from `[x - sz.x; x + sz.x]` and same for `y`.
+      /// @param p - the position of the element.
+      /// @param sz - the size of the element.
+      /// @return - `true` if such an element is at least partially visible
+      /// in the viewport.
       bool
-      visible(const olc::vf2d& p, const olc::vf2d& sz = olc::vf2d(1.0f, 1.0f)) const noexcept;
+      visible(const Vector& p,
+              const Vector& sz = Vector(Coordinate(1), Coordinate(1))) const noexcept;
 
     private:
 
-      /**
-       * @brief - Defines the origin of the viewport: it
-       *          represents the top left corner of the
-       *          view window.
-       */
-      olc::vf2d m_tl;
-
-      /**
-       * @brief - Represents the dimensions of the view
-       *          window along each axis.
-       */
-      olc::vf2d m_dims;
-
-      /**
-       * @brief - Whether the cached version of the min
-       *          and max bounds for the viewport need
-       *          to be recomputed.
-       */
-      mutable bool m_dirty;
-
-      /**
-       * @brief - Cached version of the maximum point of
-       *          the viewport.
-       */
-      mutable olc::vf2d m_max;
+      /// @brief - Whether an element having the specified coordinates and
+      /// size is visible in the viewport.
+      /// Note: the size is centered around the coordinates. The element
+      /// extends from `[x - sz.x; x + sz.x]` and same for `y`.
+      /// @param x - the x cooridinate of the element.
+      /// @param y - the y cooridinate of the element.
+      /// @param sx - the radius of the element for the `x` axis.
+      /// @param sy - the radius of the element for the `y` axis.
+      /// @return - `true` if such an element is at least partially visible
+      /// in the viewport.
+      bool
+      visible(const Coordinate& x,
+              const Coordinate& y,
+              const Coordinate& sx,
+              const Coordinate& sy) const noexcept;
   };
 
+  using ViewportI = Viewport<int>;
+  using ViewportF = Viewport<float>;
 }
+
+# include "Viewport.hxx"
 
 #endif    /* PGE_APP_VIEWPORT_HH */

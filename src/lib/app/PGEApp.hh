@@ -2,6 +2,7 @@
 # define   PGE_APP_HH
 
 # include <core_utils/CoreObject.hh>
+# include <maths_utils/Point2.hh>
 # include "olcEngine.hh"
 # include "AppDesc.hh"
 # include "CoordinateFrame.hh"

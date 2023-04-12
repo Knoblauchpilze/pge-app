@@ -58,7 +58,7 @@ namespace pge {
     bool lClick = (c.buttons[controls::mouse::Left] == controls::ButtonState::Released);
     if (lClick && !relevant) {
       olc::vf2d it;
-      olc::vi2d tp = cf.pixelCoordsToTiles(olc::vi2d(c.mPosX, c.mPosY), &it);
+      olc::vi2d tp = cf.pixelsToTiles(olc::vi2d(c.mPosX, c.mPosY), &it);
 
       m_game->performAction(tp.x + it.x, tp.y + it.y);
     }
@@ -116,7 +116,7 @@ namespace pge {
   }
 
   void
-  App::drawDecal(const RenderDesc& /*res*/) {
+  App::drawDecal(const RenderDesc& res) {
     // Clear rendering target.
     SetPixelMode(olc::Pixel::ALPHA);
     Clear(olc::VERY_DARK_GREY);
@@ -125,6 +125,31 @@ namespace pge {
     if (m_state->getScreen() != Screen::Game) {
       SetPixelMode(olc::Pixel::NORMAL);
       return;
+    }
+
+    auto tl = olc::RED;
+    auto tr = olc::GREEN;
+
+    auto bl = olc::BLUE;
+    auto br = olc::WHITE;
+
+    auto yMax = 2;
+    auto xMax = 2;
+
+    for (int y = 0 ; y <= yMax ; ++y) {
+      auto interpL = colorGradient(tl, bl, 1.0f * y / yMax, alpha::Opaque);
+      auto interpR = colorGradient(tr, br, 1.0f * y / yMax, alpha::Opaque);
+
+      for (int x = 0 ; x <= xMax ; ++x) {
+        SpriteDesc t;
+        t.x = x;
+        t.y = y;
+        t.radius = 1.0f;
+
+        t.sprite.tint = colorGradient(interpL, interpR, 1.0f * x / xMax, alpha::Opaque);
+
+        drawRect(t, res.cf);
+      }
     }
 
     SetPixelMode(olc::Pixel::NORMAL);
@@ -186,7 +211,7 @@ namespace pge {
     // Draw cursor's position.
     olc::vi2d mp = GetMousePos();
     olc::vf2d it;
-    olc::vi2d mtp = res.cf.pixelCoordsToTiles(mp, &it);
+    olc::vi2d mtp = res.cf.pixelsToTiles(mp, &it);
 
     int h = GetDrawTargetHeight();
     int dOffset = 15;

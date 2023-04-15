@@ -67,6 +67,33 @@ INSTANTIATE_TEST_CASE_P(
          generateTopLeftTestCaseAbsolute("y_too_large", {0.5f, 1.4f}, {-10, 26})),
   generateTestNameAbsolute);
 
+TEST(Unit_TopLeftViewport, MoveTo)
+{
+  const auto viewport = generateTopLeftViewportI();
+
+  const auto origin = olc::vi2d(2, 3);
+  viewport->moveTo(origin);
+
+  EXPECT_EQ(viewport->topLeft(), origin);
+  const auto center = origin + DIMS / 2;
+  EXPECT_EQ(viewport->center(), center);
+  EXPECT_EQ(viewport->dims(), DIMS);
+}
+
+TEST(Unit_TopLeftViewport, Translate)
+{
+  const auto viewport = generateTopLeftViewportI();
+
+  const auto delta = olc::vi2d(2, 3);
+  viewport->translate(delta);
+
+  const auto topLeft = TOP_LEFT + delta;
+  EXPECT_EQ(viewport->topLeft(), topLeft);
+  const auto center = topLeft + DIMS / 2;
+  EXPECT_EQ(viewport->center(), center);
+  EXPECT_EQ(viewport->dims(), DIMS);
+}
+
 TEST(Unit_TopLeftViewport, Scale)
 {
   const auto viewport = generateTopLeftViewportI();

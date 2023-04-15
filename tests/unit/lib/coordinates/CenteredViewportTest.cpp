@@ -66,6 +66,33 @@ INSTANTIATE_TEST_CASE_P(
          generateCenteredTestCaseAbsolute("y_too_large", {0.5f, 1.4f}, {-10, 26})),
   generateTestNameAbsolute);
 
+TEST(Unit_CenteredViewport, MoveTo)
+{
+  const auto viewport = generateCenteredViewportI();
+
+  const auto origin = olc::vi2d(2, 3);
+  viewport->moveTo(origin);
+
+  const auto topLeft = olc::vi2d(origin.x - DIMS.x / 2, origin.y + DIMS.y / 2);
+  EXPECT_EQ(viewport->topLeft(), topLeft);
+  EXPECT_EQ(viewport->center(), origin);
+  EXPECT_EQ(viewport->dims(), DIMS);
+}
+
+TEST(Unit_CenteredViewport, Translate)
+{
+  const auto viewport = generateCenteredViewportI();
+
+  const auto delta = olc::vi2d(2, 3);
+  viewport->translate(delta);
+
+  const auto topLeft = olc::vi2d(CENTER.x + delta.x - DIMS.x / 2, CENTER.y + delta.y + DIMS.y / 2);
+  EXPECT_EQ(viewport->topLeft(), topLeft);
+  const auto center = CENTER + delta;
+  EXPECT_EQ(viewport->center(), center);
+  EXPECT_EQ(viewport->dims(), DIMS);
+}
+
 TEST(Unit_CenteredViewport, Scale)
 {
   const auto viewport = generateCenteredViewportI();

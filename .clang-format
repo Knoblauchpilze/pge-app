@@ -11,6 +11,7 @@
 # [1] https://doc-snapshots.qt.io/qtcreator-extending/coding-style.html
 # [2] https://clang.llvm.org/docs/ClangFormatStyleOptions.html
 #
+# See also: https://eellaup.medium.com/how-to-set-up-clang-format-in-visual-studio-code-in-a-vagrant-environment-georgiatech-gios-1935ed73efd1
 ---
 Language:        Cpp
 AccessModifierOffset: -4

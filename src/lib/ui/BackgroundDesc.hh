@@ -1,34 +1,34 @@
-#ifndef    PGE_APP_BACKGROUND_DESC_HH
-# define   PGE_APP_BACKGROUND_DESC_HH
+#ifndef PGE_APP_BACKGROUND_DESC_HH
+#define PGE_APP_BACKGROUND_DESC_HH
 
-# include "olcEngine.hh"
+#include "olcEngine.hh"
 
 namespace pge {
-  namespace menu {
+namespace menu {
 
-    /**
+/**
      * @brief - Convenience structure defining the background that
      *          can be applied to a menu. We either define a color
      *          that is applied on all the menu or a sprite that
      *          is repeated a certain number of times.
      */
-    struct BackgroundDesc {
-      olc::Pixel color;
-      olc::Pixel hColor;
+struct BackgroundDesc
+{
+  olc::Pixel color;
+  olc::Pixel hColor;
 
-      bool scale;
-    };
+  bool scale;
+};
 
-    /**
+/**
      * @brief - Initializes a background structure defining a color
      *          for the background.
      * @param c - the color to assign to the background.
      * @return - the created background object.
      */
-    BackgroundDesc
-    newColoredBackground(const olc::Pixel& c) noexcept;
+BackgroundDesc newColoredBackground(const olc::Pixel &c) noexcept;
 
-    /**
+/**
      * @brief - Used to update the color and highlight color of the
      *          input background description from the provided new
      *          one. Allows to keep the scale intact and not expose
@@ -37,11 +37,9 @@ namespace pge {
      * @param c - the new base color to use for this bg desc. The
      *            highlight color will be computed from it.
      */
-    void
-    updateFromColor(BackgroundDesc& bg,
-                    const olc::Pixel& c) noexcept;
+void updateFromColor(BackgroundDesc &bg, const olc::Pixel &c) noexcept;
 
-  }
-}
+} // namespace menu
+} // namespace pge
 
-#endif    /* PGE_APP_BACKGROUND_DESC_HH */
+#endif /* PGE_APP_BACKGROUND_DESC_HH */

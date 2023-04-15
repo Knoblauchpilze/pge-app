@@ -1,49 +1,52 @@
-#ifndef    PGE_APP_MENU_CONTENT_DESC_HH
-# define   PGE_APP_MENU_CONTENT_DESC_HH
+#ifndef PGE_APP_MENU_CONTENT_DESC_HH
+#define PGE_APP_MENU_CONTENT_DESC_HH
 
-# include "olcEngine.hh"
+#include "olcEngine.hh"
 
 namespace pge {
-  namespace menu {
+namespace menu {
 
-    /**
+/**
      * @brief - Define the alignment of elements within a menu.
      */
-    enum class Alignment {
-      Left,
-      Center,
-      Right
-    };
+enum class Alignment
+{
+  Left,
+  Center,
+  Right
+};
 
-    /**
+/**
      * @brief - Define the order of elements within a menu.
      */
-    enum class Ordering {
-      ImageFirst,
-      TextFirst
-    };
+enum class Ordering
+{
+  ImageFirst,
+  TextFirst
+};
 
-    /**
+/**
      * @brief - Convenience structure defining the background that
      *          can be applied to a menu. We either define a color
      *          that is applied on all the menu or a sprite that
      *          is repeated a certain number of times.
      */
-    struct MenuContentDesc {
-      std::string text;
-      olc::Pixel color;
-      olc::Pixel hColor;
+struct MenuContentDesc
+{
+  std::string text;
+  olc::Pixel color;
+  olc::Pixel hColor;
 
-      std::string icon;
-      olc::vi2d size;
+  std::string icon;
+  olc::vi2d size;
 
-      Alignment align;
-      Ordering order;
+  Alignment align;
+  Ordering order;
 
-      bool expand;
-    };
+  bool expand;
+};
 
-    /**
+/**
      * @brief - Initializes a menu content structure defining only
      *          a text for the menu.
      * @param text - the text for this menu.
@@ -51,23 +54,20 @@ namespace pge {
      * @param align - the alignment for the text.
      * @return - the created menu object.
      */
-    MenuContentDesc
-    newTextContent(const std::string& text,
-                   const olc::Pixel& color = olc::MAGENTA,
-                   const Alignment& align = Alignment::Left) noexcept;
+MenuContentDesc newTextContent(const std::string &text,
+                               const olc::Pixel &color = olc::MAGENTA,
+                               const Alignment &align  = Alignment::Left) noexcept;
 
-    /**
+/**
      * @brief - Create a new menu content with a single size. We
      *          also need to provide the size of the sprite.
      * @param sprite - the name of the file representing the sprite.
      * @param wrap - the dimensions of the sprite on screen.
      * @return - the created menu object.
      */
-    MenuContentDesc
-    newImageContent(const std::string& sprite,
-                    const olc::vi2d& size) noexcept;
+MenuContentDesc newImageContent(const std::string &sprite, const olc::vi2d &size) noexcept;
 
-    /**
+/**
      * @brief - Create a new background structure defining an image
      *          that is repeated only once.
      * @param text - the text for this menu.
@@ -76,13 +76,12 @@ namespace pge {
      * @param align - the alignment for the text.
      * @return - the created menu object.
      */
-    MenuContentDesc
-    newMenuContent(const std::string& text,
-                   const std::string& sprite,
-                   const olc::vi2d& size,
-                   const Alignment& align = Alignment::Left) noexcept;
+MenuContentDesc newMenuContent(const std::string &text,
+                               const std::string &sprite,
+                               const olc::vi2d &size,
+                               const Alignment &align = Alignment::Left) noexcept;
 
-  }
-}
+} // namespace menu
+} // namespace pge
 
-#endif    /* PGE_APP_MENU_CONTENT_DESC_HH */
+#endif /* PGE_APP_MENU_CONTENT_DESC_HH */

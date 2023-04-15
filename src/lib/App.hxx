@@ -1,28 +1,24 @@
-#ifndef    APP_HXX
-# define   APP_HXX
+#ifndef APP_HXX
+#define APP_HXX
 
-# include "App.hh"
-# include "Action.hh"
+#include "Action.hh"
+#include "App.hh"
 
 namespace pge {
 
-  inline
-  void
-  App::drawSprite(const SpriteDesc& t, const CoordinateFrame& cf) {
-    olc::vf2d p = cf.tilesToPixels(t.x, t.y);
+inline void App::drawSprite(const SpriteDesc &t, const CoordinateFrame &cf)
+{
+  olc::vf2d p = cf.tilesToPixels(t.x, t.y);
 
-    m_packs->draw(this, t.sprite, p, t.radius * cf.tileSize());
-  }
-
-  inline
-  void
-  App::drawRect(const SpriteDesc& t,
-                const CoordinateFrame& cf)
-  {
-    olc::vf2d p = cf.tilesToPixels(t.x, t.y);
-    FillRectDecal(p, t.radius * cf.tileSize(), t.sprite.tint);
-  }
-
+  m_packs->draw(this, t.sprite, p, t.radius * cf.tileSize());
 }
 
-#endif    /* APP_HXX */
+inline void App::drawRect(const SpriteDesc &t, const CoordinateFrame &cf)
+{
+  olc::vf2d p = cf.tilesToPixels(t.x, t.y);
+  FillRectDecal(p, t.radius * cf.tileSize(), t.sprite.tint);
+}
+
+} // namespace pge
+
+#endif /* APP_HXX */

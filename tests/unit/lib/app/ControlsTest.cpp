@@ -1,12 +1,12 @@
 
-# include "Controls.hh"
-# include <gtest/gtest.h>
+#include "Controls.hh"
+#include <gtest/gtest.h>
 
 using namespace ::testing;
 
 namespace pge::controls {
 
-TEST(Unit_Controls, Test_ControlsState)
+TEST(Controls, Test_Constructor)
 {
   auto state = newState();
 
@@ -18,16 +18,16 @@ TEST(Unit_Controls, Test_ControlsState)
   EXPECT_EQ(state.keys.size(), keys::KeysCount);
   EXPECT_EQ(state.buttons.size(), mouse::ButtonsCount);
 
-  for (const auto& key : state.keys)
+  for (const auto &key : state.keys)
   {
     EXPECT_FALSE(key);
     EXPECT_FALSE(key);
   }
 
-  for (const auto& button : state.buttons)
+  for (const auto &button : state.buttons)
   {
     EXPECT_EQ(ButtonState::Free, button);
   }
 }
 
-}
+} // namespace pge::controls

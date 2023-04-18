@@ -16,7 +16,7 @@ class CoordinateFrame : public utils::CoreObject
   /// @param cells - the visible area expressed in cells covered by
   /// this viewport.
   /// @param pixels - the pixels area representing the cells area.
-  CoordinateFrame(const CenteredViewportF &cells, const TopLeftViewportF &pixels);
+  CoordinateFrame(const CenteredViewport &cells, const TopLeftViewport &pixels);
 
   /// @brief - Returns the current tile size for this viewport. It
   /// is computed from the ratio between the cells viewport and the
@@ -26,7 +26,7 @@ class CoordinateFrame : public utils::CoreObject
 
   /// @brief - Returns the current viewport in cells.
   /// @return - the viewport of this coordinate frame in cells.
-  virtual CenteredViewportF cellsViewport() const noexcept = 0;
+  virtual CenteredViewport cellsViewport() const noexcept = 0;
 
   /// @brief - Convert the input tile coordinates to the corresponding
   /// pixel position.
@@ -89,7 +89,7 @@ class CoordinateFrame : public utils::CoreObject
        *          The viewport is expressed in cells and defined
        *          through its top left corner and dimensions.
        */
-  CenteredViewportF m_cellsViewport;
+  CenteredViewport m_cellsViewport;
 
   /**
        * @brief - Define a similar element but for the pixels on
@@ -100,7 +100,7 @@ class CoordinateFrame : public utils::CoreObject
        *          a scaling factor from the initial size of a
        *          tile.
        */
-  TopLeftViewportF m_pixelsViewport;
+  TopLeftViewport m_pixelsViewport;
 
   /**
        * @brief - The origin of the translation (i.e. the pixels

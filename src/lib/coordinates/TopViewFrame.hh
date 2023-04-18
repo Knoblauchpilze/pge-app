@@ -8,9 +8,9 @@ namespace pge {
 class TopViewFrame : public CoordinateFrame
 {
   public:
-  TopViewFrame(const CenteredViewportF &cells, const TopLeftViewportF &pixels);
+  TopViewFrame(const CenteredViewport &cells, const TopLeftViewport &pixels);
 
-  CenteredViewportF cellsViewport() const noexcept override;
+  CenteredViewport cellsViewport() const noexcept override;
 
   olc::vf2d tilesToPixels(float x, float y) const noexcept override;
 

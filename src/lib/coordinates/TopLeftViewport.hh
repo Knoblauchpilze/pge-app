@@ -8,59 +8,53 @@
 namespace pge {
 
 /// @brief - Defines a viewport from its top left corner and size.
-template<typename Coordinate>
-class TopLeftViewport : public Viewport<Coordinate>
+class TopLeftViewport : public Viewport
 {
-  private:
-  using Vector = olc::v2d_generic<Coordinate>;
-
   public:
   /// @brief - Create a viewport with the specified size and top
   /// left corner.
-  TopLeftViewport(const Vector &tl, const Vector &dims) noexcept;
+  TopLeftViewport(const Vectorf &tl, const Vectorf &dims) noexcept;
 
-  Vector center() const noexcept override;
+  Vectorf center() const noexcept override;
 
-  Vector topLeft() const noexcept override;
+  Vectorf topLeft() const noexcept override;
 
-  Vector dims() const noexcept override;
+  Vectorf dims() const noexcept override;
 
-  olc::vf2d relativeCoords(const Coordinate &x, const Coordinate &y) const noexcept override;
+  Vectorf relativeCoords(const float x, const float y) const noexcept override;
 
-  olc::vf2d absoluteCoords(const float x, const float y) const noexcept override;
+  Vectorf absoluteCoords(const float x, const float y) const noexcept override;
 
   /// @brief - Moves the reference corner of this viewport to
   /// the new position.
   /// @param topLeft - the new position of the reference corner
   /// for this viewport.
-  void moveTo(const Vector &topLeft) noexcept override;
+  void moveTo(const Vectorf &topLeft) noexcept override;
 
   /// @brief - Translates this viewport by the specified amount.
   /// @param delta - the delta to apply to the position of this
   /// viewport.
-  void translate(const Vector &delta) noexcept override;
+  void translate(const Vectorf &delta) noexcept override;
 
   /// @brief  - Keeps the reference corner constant but scales
   /// the dimensions by the specified factor.
   /// @param sx - the scale on the `x` axis.
   /// @param sy - the scale on the `y` axis.
-  void scale(const Coordinate sx, const Coordinate sy) noexcept override;
+  void scale(const float sx, const float sy) noexcept override;
 
-  virtual bool visible(const Coordinate &x,
-                       const Coordinate &y,
-                       const Coordinate &sx,
-                       const Coordinate &sy) const noexcept override;
+  virtual bool visible(const float x,
+                       const float y,
+                       const float sx,
+                       const float sy) const noexcept override;
 
   private:
   /// @brief - The top left corner of this viewport.
-  Vector m_topLeft;
+  Vectorf m_topLeft;
 
   /// @brief - The dimensions of the view along each axis.
-  Vector m_dims;
+  Vectorf m_dims;
 };
 
-using TopLeftViewportI = TopLeftViewport<int>;
-using TopLeftViewportF = TopLeftViewport<float>;
 } // namespace pge
 
 #include "TopLeftViewport.hxx"

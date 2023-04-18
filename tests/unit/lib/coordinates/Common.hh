@@ -7,14 +7,14 @@
 
 namespace pge {
 
-using ViewportIGenerator = std::function<ViewportIPtr()>;
+using ViewportGenerator = std::function<ViewportPtr()>;
 
 struct TestCaseRelative
 {
   std::string name;
-  ViewportIGenerator generator;
+  ViewportGenerator generator;
 
-  olc::vi2d coords;
+  olc::vf2d coords;
   olc::vf2d expected;
 };
 
@@ -26,10 +26,10 @@ auto generateTestNameRelative(const ::testing::TestParamInfo<TestCaseRelative> &
 struct TestCaseAbsolute
 {
   std::string name;
-  ViewportIGenerator generator;
+  ViewportGenerator generator;
 
   olc::vf2d coords;
-  olc::vi2d expected;
+  olc::vf2d expected;
 };
 
 using AbsoluteCoordinates = ::testing::TestWithParam<TestCaseAbsolute>;
@@ -40,9 +40,9 @@ auto generateTestNameAbsolute(const ::testing::TestParamInfo<TestCaseAbsolute> &
 struct TestCaseVisibility
 {
   std::string name;
-  ViewportIGenerator generator;
+  ViewportGenerator generator;
 
-  olc::vi2d coords;
+  olc::vf2d coords;
   bool expectedVisibility;
 };
 

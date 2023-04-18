@@ -5,40 +5,31 @@
 
 namespace pge {
 
-template<typename Coordinate>
-inline CenteredViewport<Coordinate>::CenteredViewport(const Vector &center,
-                                                      const Vector &dims) noexcept
-  : Viewport<Coordinate>()
+inline CenteredViewport::CenteredViewport(const Vectorf &center, const Vectorf &dims) noexcept
+  : Viewport()
   , m_center(center)
   , m_dims(dims)
 {}
 
-template<typename Coordinate>
-inline typename CenteredViewport<Coordinate>::Vector CenteredViewport<Coordinate>::center()
-  const noexcept
+inline CenteredViewport::Vectorf CenteredViewport::center() const noexcept
 {
   return m_center;
 }
 
-template<typename Coordinate>
-inline typename CenteredViewport<Coordinate>::Vector CenteredViewport<Coordinate>::topLeft()
-  const noexcept
+inline CenteredViewport::Vectorf CenteredViewport::topLeft() const noexcept
 {
-  return Vector(m_center.x - m_dims.x / Coordinate(2), m_center.y + m_dims.y / Coordinate(2));
+  return Vectorf(m_center.x - m_dims.x / 2.0f, m_center.y + m_dims.y / 2.0f);
 }
 
-template<typename Coordinate>
-inline typename CenteredViewport<Coordinate>::Vector CenteredViewport<Coordinate>::dims()
-  const noexcept
+inline CenteredViewport::Vectorf CenteredViewport::dims() const noexcept
 {
   return m_dims;
 }
 
-template<typename Coordinate>
-inline olc::vf2d CenteredViewport<Coordinate>::relativeCoords(const Coordinate &x,
-                                                              const Coordinate &y) const noexcept
+inline CenteredViewport::Vectorf CenteredViewport::relativeCoords(const float x,
+                                                                  const float y) const noexcept
 {
-  olc::vf2d out(x, y);
+  Vectorf out(x, y);
 
   out.x -= m_center.x;
   out.y -= m_center.y;
@@ -49,11 +40,10 @@ inline olc::vf2d CenteredViewport<Coordinate>::relativeCoords(const Coordinate &
   return out;
 }
 
-template<typename Coordinate>
-inline olc::vf2d CenteredViewport<Coordinate>::absoluteCoords(const float x,
-                                                              const float y) const noexcept
+inline CenteredViewport::Vectorf CenteredViewport::absoluteCoords(const float x,
+                                                                  const float y) const noexcept
 {
-  olc::vf2d out(x, y);
+  Vectorf out(x, y);
 
   out.x *= (m_dims.x / 2.0f);
   out.y *= (m_dims.y / 2.0f);
@@ -64,39 +54,33 @@ inline olc::vf2d CenteredViewport<Coordinate>::absoluteCoords(const float x,
   return out;
 }
 
-template<typename Coordinate>
-inline void CenteredViewport<Coordinate>::moveTo(const Vector &center) noexcept
+inline void CenteredViewport::moveTo(const Vectorf &center) noexcept
 {
   m_center = center;
 }
 
-template<typename Coordinate>
-inline void CenteredViewport<Coordinate>::translate(const Vector &delta) noexcept
+inline void CenteredViewport::translate(const Vectorf &delta) noexcept
 {
   m_center += delta;
 }
 
-template<typename Coordinate>
-inline void CenteredViewport<Coordinate>::scale(const Coordinate sx, const Coordinate sy) noexcept
+inline void CenteredViewport::scale(const float sx, const float sy) noexcept
 {
   m_dims.x *= sx;
   m_dims.y *= sy;
 }
 
-template<typename Coordinate>
-inline bool CenteredViewport<Coordinate>::visible(const Coordinate &x,
-                                                  const Coordinate &y,
-                                                  const Coordinate &sx,
-                                                  const Coordinate &sy) const noexcept
+inline bool CenteredViewport::visible(const float x,
+                                      const float y,
+                                      const float sx,
+                                      const float sy) const noexcept
 {
-  if (x + sx < m_center.x - m_dims.x / Coordinate(2)
-      || x - sx > m_center.x + m_dims.x / Coordinate(2))
+  if (x + sx < m_center.x - m_dims.x / 2.0f || x - sx > m_center.x + m_dims.x / 2.0f)
   {
     return false;
   }
 
-  if (y + sy < m_center.y - m_dims.y / Coordinate(2)
-      || y - sy > m_center.y + m_dims.y / Coordinate(2))
+  if (y + sy < m_center.y - m_dims.y / 2.0f || y - sy > m_center.y + m_dims.y / 2.0f)
   {
     return false;
   }

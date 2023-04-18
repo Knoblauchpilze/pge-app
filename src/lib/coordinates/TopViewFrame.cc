@@ -3,11 +3,11 @@
 
 namespace pge {
 
-TopViewFrame::TopViewFrame(const CenteredViewportF &cells, const TopLeftViewportF &pixels)
+TopViewFrame::TopViewFrame(const CenteredViewport &cells, const TopLeftViewport &pixels)
   : CoordinateFrame(cells, pixels)
 {}
 
-CenteredViewportF TopViewFrame::cellsViewport() const noexcept
+CenteredViewport TopViewFrame::cellsViewport() const noexcept
 {
   return m_cellsViewport;
 }

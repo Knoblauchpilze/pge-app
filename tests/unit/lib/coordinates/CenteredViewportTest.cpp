@@ -6,40 +6,43 @@
 using namespace ::testing;
 
 namespace pge {
-const olc::vi2d CENTER{-12, 5};
-const olc::vi2d DIMS{4, 10};
+const olc::vf2d CENTER{-12.0f, 5.0f};
+const olc::vf2d DIMS{4.0f, 10.0f};
 
-auto generateCenteredViewportI() -> ViewportIPtr
+auto generateCenteredViewport() -> ViewportPtr
 {
-  return std::make_shared<CenteredViewportI>(CENTER, DIMS);
+  return std::make_shared<CenteredViewport>(CENTER, DIMS);
 }
 
 auto generateCenteredTestCaseRelative(const std::string &name,
-                                      const olc::vi2d &coords,
+                                      const olc::vf2d &coords,
                                       const olc::vf2d &expected) -> TestCaseRelative
 {
-  return TestCaseRelative{name, generateCenteredViewportI, coords, expected};
+  return TestCaseRelative{name, generateCenteredViewport, coords, expected};
 }
 
 auto generateCenteredTestCaseAbsolute(const std::string &name,
                                       const olc::vf2d &coords,
-                                      const olc::vi2d &expected) -> TestCaseAbsolute
+                                      const olc::vf2d &expected) -> TestCaseAbsolute
 {
-  return TestCaseAbsolute{name, generateCenteredViewportI, coords, expected};
+  return TestCaseAbsolute{name, generateCenteredViewport, coords, expected};
 }
 
 auto generateCenteredTestCaseVisibility(const std::string &name,
                                         const olc::vf2d &coords,
                                         const bool expectedVisibility) -> TestCaseVisibility
 {
-  return TestCaseVisibility{name, generateCenteredViewportI, coords, expectedVisibility};
+  return TestCaseVisibility{name, generateCenteredViewport, coords, expectedVisibility};
 }
 
 TEST(Unit_CenteredViewport, Constructor)
 {
-  const auto viewport = generateCenteredViewportI();
+  auto viewport = generateCenteredViewport();
 
-  const auto topLeft = olc::vi2d(CENTER.x - DIMS.x / 2, CENTER.y + DIMS.y / 2);
+  olc::vf2d topLeft;
+  topLeft.x = CENTER.x - DIMS.x / 2.0f;
+  topLeft.y = CENTER.y + DIMS.y / 2.0f;
+
   EXPECT_EQ(viewport->topLeft(), topLeft);
   EXPECT_EQ(viewport->center(), CENTER);
   EXPECT_EQ(viewport->dims(), DIMS);
@@ -75,12 +78,15 @@ INSTANTIATE_TEST_CASE_P(
 
 TEST(Unit_CenteredViewport, MoveTo)
 {
-  const auto viewport = generateCenteredViewportI();
+  auto viewport = generateCenteredViewport();
 
-  const auto origin = olc::vi2d(2, 3);
+  olc::vf2d origin(2.0f, 3.0f);
   viewport->moveTo(origin);
 
-  const auto topLeft = olc::vi2d(origin.x - DIMS.x / 2, origin.y + DIMS.y / 2);
+  olc::vf2d topLeft;
+  topLeft.x = origin.x - DIMS.x / 2.0f;
+  topLeft.y = origin.y + DIMS.y / 2.0f;
+
   EXPECT_EQ(viewport->topLeft(), topLeft);
   EXPECT_EQ(viewport->center(), origin);
   EXPECT_EQ(viewport->dims(), DIMS);
@@ -88,26 +94,32 @@ TEST(Unit_CenteredViewport, MoveTo)
 
 TEST(Unit_CenteredViewport, Translate)
 {
-  const auto viewport = generateCenteredViewportI();
+  auto viewport = generateCenteredViewport();
 
-  const auto delta = olc::vi2d(2, 3);
+  olc::vf2d delta(2.0f, 3.0f);
   viewport->translate(delta);
 
-  const auto topLeft = olc::vi2d(CENTER.x + delta.x - DIMS.x / 2, CENTER.y + delta.y + DIMS.y / 2);
+  olc::vf2d topLeft;
+  topLeft.x = CENTER.x + delta.x - DIMS.x / 2.0f;
+  topLeft.y = CENTER.y + delta.y + DIMS.y / 2.0f;
+
   EXPECT_EQ(viewport->topLeft(), topLeft);
-  const auto center = CENTER + delta;
+  auto center = CENTER + delta;
   EXPECT_EQ(viewport->center(), center);
   EXPECT_EQ(viewport->dims(), DIMS);
 }
 
 TEST(Unit_CenteredViewport, Scale)
 {
-  const auto viewport = generateCenteredViewportI();
+  auto viewport = generateCenteredViewport();
 
-  const auto factor = 2;
+  auto factor = 2.0f;
   viewport->scale(factor, factor);
 
-  const auto topLeft = olc::vi2d(CENTER.x - factor * DIMS.x / 2, CENTER.y + factor * DIMS.y / 2);
+  olc::vf2d topLeft;
+  topLeft.x = CENTER.x - factor * DIMS.x / 2.0f;
+  topLeft.y = CENTER.y + factor * DIMS.y / 2.0f;
+
   EXPECT_EQ(viewport->topLeft(), topLeft);
   EXPECT_EQ(viewport->center(), CENTER);
   EXPECT_EQ(viewport->dims(), DIMS * factor);
@@ -125,6 +137,4 @@ INSTANTIATE_TEST_CASE_P(Unit_CenteredViewport,
                                generateCenteredTestCaseVisibility("y_too_small", {-13, -7}, false),
                                generateCenteredTestCaseVisibility("y_too_large", {-13, 36}, false)),
                         generateTestNameVisibility);
-// const olc::vi2d CENTER{-12, 5};
-// const olc::vi2d DIMS{4, 10};
 } // namespace pge

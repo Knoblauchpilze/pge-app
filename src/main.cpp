@@ -13,7 +13,6 @@
 #include <core_utils/PrefixedLogger.hh>
 #include <core_utils/StdLogger.hh>
 
-
 int main(int /*argc*/, char ** /*argv*/)
 {
   // Create the logger.
@@ -26,8 +25,8 @@ int main(int /*argc*/, char ** /*argv*/)
   {
     logger.logMessage(utils::Level::Notice, "Starting application");
 
-    auto tiles  = pge::CenteredViewportF({0.0f, 0.0f}, {4.0f, 3.0f});
-    auto pixels = pge::TopLeftViewportF({0.0f, 0.0f}, {800.0f, 600.0f});
+    auto tiles  = pge::CenteredViewport({0.0f, 0.0f}, {4.0f, 3.0f});
+    auto pixels = pge::TopLeftViewport({0.0f, 0.0f}, {800.0f, 600.0f});
 
     auto cf         = std::make_shared<pge::TopViewFrame>(tiles, pixels);
     pge::AppDesc ad = pge::newDesc(olc::vi2d(800, 600), cf, "pge-app");

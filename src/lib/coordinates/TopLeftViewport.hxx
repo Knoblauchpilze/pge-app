@@ -5,37 +5,30 @@
 
 namespace pge {
 
-template<typename Coordinate>
-inline TopLeftViewport<Coordinate>::TopLeftViewport(const Vector &tl, const Vector &dims) noexcept
+inline TopLeftViewport::TopLeftViewport(const Vectorf &tl, const Vectorf &dims) noexcept
   : m_topLeft(tl)
   , m_dims(dims)
 {}
 
-template<typename Coordinate>
-inline typename TopLeftViewport<Coordinate>::Vector TopLeftViewport<Coordinate>::center()
-  const noexcept
+inline TopLeftViewport::Vectorf TopLeftViewport::center() const noexcept
 {
-  return Vector(m_topLeft.x + m_dims.x / Coordinate(2), m_topLeft.y + m_dims.y / Coordinate(2));
+  return Vectorf(m_topLeft.x + m_dims.x / 2.0f, m_topLeft.y + m_dims.y / 2.0f);
 }
 
-template<typename Coordinate>
-inline typename TopLeftViewport<Coordinate>::Vector TopLeftViewport<Coordinate>::topLeft()
-  const noexcept
+inline TopLeftViewport::Vectorf TopLeftViewport::topLeft() const noexcept
 {
   return m_topLeft;
 }
 
-template<typename Coordinate>
-inline typename TopLeftViewport<Coordinate>::Vector TopLeftViewport<Coordinate>::dims() const noexcept
+inline TopLeftViewport::Vectorf TopLeftViewport::dims() const noexcept
 {
   return m_dims;
 }
 
-template<typename Coordinate>
-inline olc::vf2d TopLeftViewport<Coordinate>::relativeCoords(const Coordinate &x,
-                                                             const Coordinate &y) const noexcept
+inline TopLeftViewport::Vectorf TopLeftViewport::relativeCoords(const float x,
+                                                                const float y) const noexcept
 {
-  olc::vf2d out(x, y);
+  Vectorf out(x, y);
 
   out.x -= m_topLeft.x;
   out.y -= m_topLeft.y;
@@ -46,11 +39,10 @@ inline olc::vf2d TopLeftViewport<Coordinate>::relativeCoords(const Coordinate &x
   return out;
 }
 
-template<typename Coordinate>
-inline olc::vf2d TopLeftViewport<Coordinate>::absoluteCoords(const float x,
-                                                             const float y) const noexcept
+inline TopLeftViewport::Vectorf TopLeftViewport::absoluteCoords(const float x,
+                                                                const float y) const noexcept
 {
-  olc::vf2d out(x, y);
+  Vectorf out(x, y);
 
   out.x *= m_dims.x;
   out.y *= m_dims.y;
@@ -61,30 +53,26 @@ inline olc::vf2d TopLeftViewport<Coordinate>::absoluteCoords(const float x,
   return out;
 }
 
-template<typename Coordinate>
-inline void TopLeftViewport<Coordinate>::moveTo(const Vector &topLeft) noexcept
+inline void TopLeftViewport::moveTo(const Vectorf &topLeft) noexcept
 {
   m_topLeft = topLeft;
 }
 
-template<typename Coordinate>
-inline void TopLeftViewport<Coordinate>::translate(const Vector &delta) noexcept
+inline void TopLeftViewport::translate(const Vectorf &delta) noexcept
 {
   m_topLeft += delta;
 }
 
-template<typename Coordinate>
-inline void TopLeftViewport<Coordinate>::scale(const Coordinate sx, const Coordinate sy) noexcept
+inline void TopLeftViewport::scale(const float sx, const float sy) noexcept
 {
   m_dims.x *= sx;
   m_dims.y *= sy;
 }
 
-template<typename Coordinate>
-inline bool TopLeftViewport<Coordinate>::visible(const Coordinate &x,
-                                                 const Coordinate &y,
-                                                 const Coordinate &sx,
-                                                 const Coordinate &sy) const noexcept
+inline bool TopLeftViewport::visible(const float x,
+                                     const float y,
+                                     const float sx,
+                                     const float sy) const noexcept
 {
   if (x + sx < m_topLeft.x || x - sx > m_topLeft.x + m_dims.x)
   {

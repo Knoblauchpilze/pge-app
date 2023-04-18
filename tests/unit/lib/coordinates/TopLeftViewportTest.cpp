@@ -7,38 +7,38 @@
 using namespace ::testing;
 
 namespace pge {
-const olc::vi2d TOP_LEFT{-12, 5};
-const olc::vi2d DIMS{4, 15};
+const olc::vf2d TOP_LEFT{-12.0f, 5.0f};
+const olc::vf2d DIMS{4.0f, 15.0f};
 
-auto generateTopLeftViewportI() -> ViewportIPtr
+auto generateTopLeftViewport() -> ViewportPtr
 {
-  return std::make_shared<TopLeftViewportI>(TOP_LEFT, DIMS);
+  return std::make_shared<TopLeftViewport>(TOP_LEFT, DIMS);
 }
 
 auto generateTopLeftTestCaseRelative(const std::string &name,
-                                     const olc::vi2d &coords,
+                                     const olc::vf2d &coords,
                                      const olc::vf2d &expected) -> TestCaseRelative
 {
-  return TestCaseRelative{name, generateTopLeftViewportI, coords, expected};
+  return TestCaseRelative{name, generateTopLeftViewport, coords, expected};
 }
 
 auto generateTopLeftTestCaseAbsolute(const std::string &name,
                                      const olc::vf2d &coords,
-                                     const olc::vi2d &expected) -> TestCaseAbsolute
+                                     const olc::vf2d &expected) -> TestCaseAbsolute
 {
-  return TestCaseAbsolute{name, generateTopLeftViewportI, coords, expected};
+  return TestCaseAbsolute{name, generateTopLeftViewport, coords, expected};
 }
 
 auto generateTopLeftTestCaseVisibility(const std::string &name,
                                        const olc::vf2d &coords,
                                        const bool expectedVisibility) -> TestCaseVisibility
 {
-  return TestCaseVisibility{name, generateTopLeftViewportI, coords, expectedVisibility};
+  return TestCaseVisibility{name, generateTopLeftViewport, coords, expectedVisibility};
 }
 
 TEST(Unit_TopLeftViewport, Constructor)
 {
-  const auto viewport = generateTopLeftViewportI();
+  auto viewport = generateTopLeftViewport();
 
   EXPECT_EQ(viewport->topLeft(), TOP_LEFT);
   const auto center = TOP_LEFT + DIMS / 2;
@@ -49,82 +49,83 @@ TEST(Unit_TopLeftViewport, Constructor)
 INSTANTIATE_TEST_CASE_P(
   Unit_TopLeftViewport,
   RelativeCoordinates,
-  Values(generateTopLeftTestCaseRelative("top_left", {-12, 5}, {0.0f, 0.0f}),
-         generateTopLeftTestCaseRelative("top_right", {-8, 5}, {1.0f, 0.0f}),
-         generateTopLeftTestCaseRelative("bottom_right", {-8, 20}, {1.0f, 1.0f}),
-         generateTopLeftTestCaseRelative("bottom_left", {-12, 20}, {0.0f, 1.0f}),
-         generateTopLeftTestCaseRelative("inside", {-10, 14}, {0.5f, 0.6f}),
-         generateTopLeftTestCaseRelative("x_too_small", {-14, 14}, {-0.5f, 0.6f}),
-         generateTopLeftTestCaseRelative("x_too_large", {-6, 14}, {1.5f, 0.6f}),
-         generateTopLeftTestCaseRelative("y_too_small", {-10, -4}, {0.5f, -0.6f}),
-         generateTopLeftTestCaseRelative("y_too_large", {-10, 26}, {0.5f, 1.4f})),
+  Values(generateTopLeftTestCaseRelative("top_left", {-12.0f, 5.0f}, {0.0f, 0.0f}),
+         generateTopLeftTestCaseRelative("top_right", {-8.0f, 5.0f}, {1.0f, 0.0f}),
+         generateTopLeftTestCaseRelative("bottom_right", {-8.0f, 20.0f}, {1.0f, 1.0f}),
+         generateTopLeftTestCaseRelative("bottom_left", {-12.0f, 20.0f}, {0.0f, 1.0f}),
+         generateTopLeftTestCaseRelative("inside", {-10.0f, 14.0f}, {0.5f, 0.6f}),
+         generateTopLeftTestCaseRelative("x_too_small", {-14.0f, 14.0f}, {-0.5f, 0.6f}),
+         generateTopLeftTestCaseRelative("x_too_large", {-6.0f, 14.0f}, {1.5f, 0.6f}),
+         generateTopLeftTestCaseRelative("y_too_small", {-10.0f, -4.0f}, {0.5f, -0.6f}),
+         generateTopLeftTestCaseRelative("y_too_large", {-10.0f, 26.0f}, {0.5f, 1.4f})),
   generateTestNameRelative);
 
 INSTANTIATE_TEST_CASE_P(
   Unit_TopLeftViewport,
   AbsoluteCoordinates,
-  Values(generateTopLeftTestCaseAbsolute("top_left", {0.0f, 0.0f}, {-12, 5}),
-         generateTopLeftTestCaseAbsolute("top_right", {1.0f, 0.0f}, {-8, 5}),
-         generateTopLeftTestCaseAbsolute("bottom_right", {1.0f, 1.0f}, {-8, 20}),
-         generateTopLeftTestCaseAbsolute("bottom_left", {0.0f, 1.0f}, {-12, 20}),
-         generateTopLeftTestCaseAbsolute("inside", {0.5f, 0.6f}, {-10, 14}),
-         generateTopLeftTestCaseAbsolute("x_too_small", {-0.5f, 0.6f}, {-14, 14}),
-         generateTopLeftTestCaseAbsolute("x_too_large", {1.5f, 0.6f}, {-6, 14}),
-         generateTopLeftTestCaseAbsolute("y_too_small", {0.5f, -0.6f}, {-10, -4}),
-         generateTopLeftTestCaseAbsolute("y_too_large", {0.5f, 1.4f}, {-10, 26})),
+  Values(generateTopLeftTestCaseAbsolute("top_left", {0.0f, 0.0f}, {-12.0f, 5.0f}),
+         generateTopLeftTestCaseAbsolute("top_right", {1.0f, 0.0f}, {-8.0f, 5.0f}),
+         generateTopLeftTestCaseAbsolute("bottom_right", {1.0f, 1.0f}, {-8.0f, 20.0f}),
+         generateTopLeftTestCaseAbsolute("bottom_left", {0.0f, 1.0f}, {-12.0f, 20.0f}),
+         generateTopLeftTestCaseAbsolute("inside", {0.5f, 0.6f}, {-10.0f, 14.0f}),
+         generateTopLeftTestCaseAbsolute("x_too_small", {-0.5f, 0.6f}, {-14.0f, 14.0f}),
+         generateTopLeftTestCaseAbsolute("x_too_large", {1.5f, 0.6f}, {-6.0f, 14.0f}),
+         generateTopLeftTestCaseAbsolute("y_too_small", {0.5f, -0.6f}, {-10.0f, -4.0f}),
+         generateTopLeftTestCaseAbsolute("y_too_large", {0.5f, 1.4f}, {-10.0f, 26.0f})),
   generateTestNameAbsolute);
 
 TEST(Unit_TopLeftViewport, MoveTo)
 {
-  const auto viewport = generateTopLeftViewportI();
+  auto viewport = generateTopLeftViewport();
 
-  const auto origin = olc::vi2d(2, 3);
+  olc::vf2d origin(2.0f, 3.0f);
   viewport->moveTo(origin);
 
   EXPECT_EQ(viewport->topLeft(), origin);
-  const auto center = origin + DIMS / 2;
+  auto center = origin + DIMS / 2.0f;
   EXPECT_EQ(viewport->center(), center);
   EXPECT_EQ(viewport->dims(), DIMS);
 }
 
 TEST(Unit_TopLeftViewport, Translate)
 {
-  const auto viewport = generateTopLeftViewportI();
+  auto viewport = generateTopLeftViewport();
 
-  const auto delta = olc::vi2d(2, 3);
+  olc::vf2d delta(2.0f, 3.0f);
   viewport->translate(delta);
 
-  const auto topLeft = TOP_LEFT + delta;
+  auto topLeft = TOP_LEFT + delta;
   EXPECT_EQ(viewport->topLeft(), topLeft);
-  const auto center = topLeft + DIMS / 2;
+  auto center = topLeft + DIMS / 2.0f;
   EXPECT_EQ(viewport->center(), center);
   EXPECT_EQ(viewport->dims(), DIMS);
 }
 
 TEST(Unit_TopLeftViewport, Scale)
 {
-  const auto viewport = generateTopLeftViewportI();
+  auto viewport = generateTopLeftViewport();
 
-  const auto factor = 2;
+  auto factor = 2.0f;
   viewport->scale(factor, factor);
 
   EXPECT_EQ(viewport->topLeft(), TOP_LEFT);
-  const auto center = TOP_LEFT + factor * DIMS / 2;
+  auto center = TOP_LEFT + factor * DIMS / 2.0f;
   EXPECT_EQ(viewport->center(), center);
   EXPECT_EQ(viewport->dims(), DIMS * factor);
 }
 
-INSTANTIATE_TEST_CASE_P(Unit_TopLeftViewport,
-                        Visibility,
-                        Values(generateTopLeftTestCaseVisibility("top_left", {-12, 5}, true),
-                               generateTopLeftTestCaseVisibility("top_right", {-8, 5}, true),
-                               generateTopLeftTestCaseVisibility("bottom_right", {-8, 20}, true),
-                               generateTopLeftTestCaseVisibility("bottom_left", {-12, 20}, true),
-                               generateTopLeftTestCaseVisibility("inside", {-9, 6}, true),
-                               generateTopLeftTestCaseVisibility("x_too_small", {-15, 6}, false),
-                               generateTopLeftTestCaseVisibility("x_too_large", {3, 6}, false),
-                               generateTopLeftTestCaseVisibility("y_too_small", {-11, 3}, false),
-                               generateTopLeftTestCaseVisibility("y_too_large", {-11, 37}, false)),
-                        generateTestNameVisibility);
+INSTANTIATE_TEST_CASE_P(
+  Unit_TopLeftViewport,
+  Visibility,
+  Values(generateTopLeftTestCaseVisibility("top_left", {-12.0f, 5.0f}, true),
+         generateTopLeftTestCaseVisibility("top_right", {-8.0f, 5.0f}, true),
+         generateTopLeftTestCaseVisibility("bottom_right", {-8.0f, 20.0f}, true),
+         generateTopLeftTestCaseVisibility("bottom_left", {-12.0f, 20.0f}, true),
+         generateTopLeftTestCaseVisibility("inside", {-9.0f, 6.0f}, true),
+         generateTopLeftTestCaseVisibility("x_too_small", {-15.0f, 6.0f}, false),
+         generateTopLeftTestCaseVisibility("x_too_large", {3.0f, 6.0f}, false),
+         generateTopLeftTestCaseVisibility("y_too_small", {-11.0f, 3.0f}, false),
+         generateTopLeftTestCaseVisibility("y_too_large", {-11.0f, 37.0f}, false)),
+  generateTestNameVisibility);
 
 } // namespace pge

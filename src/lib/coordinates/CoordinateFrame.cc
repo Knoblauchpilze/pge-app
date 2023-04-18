@@ -3,7 +3,7 @@
 
 namespace pge {
 
-CoordinateFrame::CoordinateFrame(const CenteredViewportF &cells, const TopLeftViewportF &pixels)
+CoordinateFrame::CoordinateFrame(const CenteredViewport &cells, const TopLeftViewport &pixels)
   : utils::CoreObject("frame")
   ,
 

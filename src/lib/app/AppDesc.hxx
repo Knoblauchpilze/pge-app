@@ -6,7 +6,7 @@
 namespace pge {
 
 inline AppDesc newDesc(const olc::vi2d &dims,
-                       CoordinateFrameShPtr cf,
+                       CoordinateFramePtr cf,
                        const std::string &name) noexcept
 {
   AppDesc ad;

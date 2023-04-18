@@ -343,7 +343,7 @@ class PGEApp : public utils::CoreObject, public olc::PixelGameEngine
        *          handles conversion between cells coordinate and
        *          screen coordinates and conversely.
        */
-  CoordinateFrameShPtr m_frame;
+  CoordinateFramePtr m_frame;
 };
 
 } // namespace pge

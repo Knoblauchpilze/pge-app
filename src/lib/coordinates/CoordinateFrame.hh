@@ -119,7 +119,7 @@ class CoordinateFrame : public utils::CoreObject
   olc::vi2d m_cachedPOrigin;
 };
 
-using CoordinateFrameShPtr = std::shared_ptr<CoordinateFrame>;
+using CoordinateFramePtr = std::shared_ptr<CoordinateFrame>;
 } // namespace pge
 
 #endif /* PGE_APP_COORDINATE_FRAME_HH */

@@ -26,7 +26,7 @@ struct AppDesc
 
   // The coordinate frame to use to convert dimensions in
   // tiles to screen and pixels coordinates.
-  CoordinateFrameShPtr frame;
+  CoordinateFramePtr frame;
 
   // Whether or not the coordinate frame is fixed (meaning
   // that panning and zooming is disabled) or not.
@@ -43,7 +43,7 @@ struct AppDesc
    * @return - the default description of an app.
    */
 AppDesc newDesc(const olc::vi2d &dims,
-                CoordinateFrameShPtr cf,
+                CoordinateFramePtr cf,
                 const std::string &name = "pge_app") noexcept;
 
 } // namespace pge

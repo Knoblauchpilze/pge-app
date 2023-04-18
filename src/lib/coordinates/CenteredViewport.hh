@@ -33,25 +33,26 @@ class CenteredViewport : public Viewport<Coordinate>
 
   olc::vf2d absoluteCoords(const float x, const float y) const noexcept override;
 
-  void moveTo(const Vector &center) noexcept;
+  /// @brief - Moves the center of this viewport to the new position.
+  /// @param topLeft - the new position of the center for this viewport.
+  void moveTo(const Vector &center) noexcept override;
 
   /// @brief - Translates this viewport by the specified amount.
   /// @param delta - the delta to apply to the position of this
   /// viewport.
-  void translate(const Vector &delta) noexcept;
-
-  /// @brief  - Keeps the center constant but scales the dimensions
-  /// by the specified factor.
-  /// @param factor - the scale to apply on both axes.
-  void scale(const Coordinate factor) noexcept;
+  void translate(const Vector &delta) noexcept override;
 
   /// @brief  - Keeps the center constant but scales the dimensions
   /// by the specified factor.
   /// @param sx - the scale on the `x` axis.
   /// @param sy - the scale on the `y` axis.
-  void scale(const Coordinate sx, const Coordinate sy) noexcept;
+  void scale(const Coordinate sx, const Coordinate sy) noexcept override;
 
-  private:
+  virtual bool visible(const Coordinate &x,
+                       const Coordinate &y,
+                       const Coordinate &sx,
+                       const Coordinate &sy) const noexcept override;
+
   private:
   /// @brief - The center of this viewport.
   Vector m_center;

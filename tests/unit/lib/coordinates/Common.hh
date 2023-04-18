@@ -37,6 +37,20 @@ using AbsoluteCoordinates = ::testing::TestWithParam<TestCaseAbsolute>;
 auto generateTestNameAbsolute(const ::testing::TestParamInfo<TestCaseAbsolute> &info)
   -> std::string;
 
+struct TestCaseVisibility
+{
+  std::string name;
+  ViewportIGenerator generator;
+
+  olc::vi2d coords;
+  bool expectedVisibility;
+};
+
+using Visibility = ::testing::TestWithParam<TestCaseVisibility>;
+
+auto generateTestNameVisibility(const ::testing::TestParamInfo<TestCaseVisibility> &info)
+  -> std::string;
+
 } // namespace pge
 
 #endif /* COMMON_HH */

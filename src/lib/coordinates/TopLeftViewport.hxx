@@ -74,16 +74,29 @@ inline void TopLeftViewport<Coordinate>::translate(const Vector &delta) noexcept
 }
 
 template<typename Coordinate>
-inline void TopLeftViewport<Coordinate>::scale(const Coordinate factor) noexcept
-{
-  scale(factor, factor);
-}
-
-template<typename Coordinate>
 inline void TopLeftViewport<Coordinate>::scale(const Coordinate sx, const Coordinate sy) noexcept
 {
   m_dims.x *= sx;
   m_dims.y *= sy;
+}
+
+template<typename Coordinate>
+inline bool TopLeftViewport<Coordinate>::visible(const Coordinate &x,
+                                                 const Coordinate &y,
+                                                 const Coordinate &sx,
+                                                 const Coordinate &sy) const noexcept
+{
+  if (x + sx < m_topLeft.x || x - sx > m_topLeft.x + m_dims.x)
+  {
+    return false;
+  }
+
+  if (y + sy < m_topLeft.y || y - sy > m_topLeft.y + m_dims.y)
+  {
+    return false;
+  }
+
+  return true;
 }
 
 } // namespace pge

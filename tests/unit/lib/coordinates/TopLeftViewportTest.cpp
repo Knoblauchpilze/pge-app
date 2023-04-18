@@ -29,6 +29,13 @@ auto generateTopLeftTestCaseAbsolute(const std::string &name,
   return TestCaseAbsolute{name, generateTopLeftViewportI, coords, expected};
 }
 
+auto generateTopLeftTestCaseVisibility(const std::string &name,
+                                       const olc::vf2d &coords,
+                                       const bool expectedVisibility) -> TestCaseVisibility
+{
+  return TestCaseVisibility{name, generateTopLeftViewportI, coords, expectedVisibility};
+}
+
 TEST(Unit_TopLeftViewport, Constructor)
 {
   const auto viewport = generateTopLeftViewportI();
@@ -106,5 +113,18 @@ TEST(Unit_TopLeftViewport, Scale)
   EXPECT_EQ(viewport->center(), center);
   EXPECT_EQ(viewport->dims(), DIMS * factor);
 }
+
+INSTANTIATE_TEST_CASE_P(Unit_TopLeftViewport,
+                        Visibility,
+                        Values(generateTopLeftTestCaseVisibility("top_left", {-12, 5}, true),
+                               generateTopLeftTestCaseVisibility("top_right", {-8, 5}, true),
+                               generateTopLeftTestCaseVisibility("bottom_right", {-8, 20}, true),
+                               generateTopLeftTestCaseVisibility("bottom_left", {-12, 20}, true),
+                               generateTopLeftTestCaseVisibility("inside", {-9, 6}, true),
+                               generateTopLeftTestCaseVisibility("x_too_small", {-15, 6}, false),
+                               generateTopLeftTestCaseVisibility("x_too_large", {3, 6}, false),
+                               generateTopLeftTestCaseVisibility("y_too_small", {-11, 3}, false),
+                               generateTopLeftTestCaseVisibility("y_too_large", {-11, 37}, false)),
+                        generateTestNameVisibility);
 
 } // namespace pge

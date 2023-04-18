@@ -56,6 +56,8 @@ class Viewport
   /// viewport.
   virtual void translate(const Vector &delta) noexcept = 0;
 
+  void scale(const Coordinate factor) noexcept;
+
   /// @brief - Scales the dimensions of the viewport by the corresponding
   /// factor.
   /// @param sx - the factor to be applied on the `x` axis.
@@ -86,7 +88,6 @@ class Viewport
   bool visible(const Vector &p,
                const Vector &sz = Vector(Coordinate(1), Coordinate(1))) const noexcept;
 
-  private:
   /// @brief - Whether an element having the specified coordinates and
   /// size is visible in the viewport.
   /// Note: the size is centered around the coordinates. The element
@@ -97,10 +98,11 @@ class Viewport
   /// @param sy - the radius of the element for the `y` axis.
   /// @return - `true` if such an element is at least partially visible
   /// in the viewport.
-  bool visible(const Coordinate &x,
-               const Coordinate &y,
-               const Coordinate &sx,
-               const Coordinate &sy) const noexcept;
+  virtual bool visible(const Coordinate &x,
+                       const Coordinate &y,
+                       const Coordinate &sx,
+                       const Coordinate &sy) const noexcept
+    = 0;
 };
 
 using ViewportI = Viewport<int>;

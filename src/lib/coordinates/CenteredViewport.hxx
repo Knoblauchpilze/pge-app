@@ -43,8 +43,8 @@ inline olc::vf2d CenteredViewport<Coordinate>::relativeCoords(const Coordinate &
   out.x -= m_center.x;
   out.y -= m_center.y;
 
-  out.x /= m_dims.x;
-  out.y /= m_dims.y;
+  out.x /= (m_dims.x / 2.0f);
+  out.y /= (m_dims.y / 2.0f);
 
   return out;
 }
@@ -55,8 +55,8 @@ inline olc::vf2d CenteredViewport<Coordinate>::absoluteCoords(const float x,
 {
   olc::vf2d out(x, y);
 
-  out.x *= m_dims.x;
-  out.y *= m_dims.y;
+  out.x *= (m_dims.x / 2.0f);
+  out.y *= (m_dims.y / 2.0f);
 
   out.x += m_center.x;
   out.y += m_center.y;
@@ -77,16 +77,31 @@ inline void CenteredViewport<Coordinate>::translate(const Vector &delta) noexcep
 }
 
 template<typename Coordinate>
-inline void CenteredViewport<Coordinate>::scale(const Coordinate factor) noexcept
-{
-  scale(factor, factor);
-}
-
-template<typename Coordinate>
 inline void CenteredViewport<Coordinate>::scale(const Coordinate sx, const Coordinate sy) noexcept
 {
   m_dims.x *= sx;
   m_dims.y *= sy;
+}
+
+template<typename Coordinate>
+inline bool CenteredViewport<Coordinate>::visible(const Coordinate &x,
+                                                  const Coordinate &y,
+                                                  const Coordinate &sx,
+                                                  const Coordinate &sy) const noexcept
+{
+  if (x + sx < m_center.x - m_dims.x / Coordinate(2)
+      || x - sx > m_center.x + m_dims.x / Coordinate(2))
+  {
+    return false;
+  }
+
+  if (y + sy < m_center.y - m_dims.y / Coordinate(2)
+      || y - sy > m_center.y + m_dims.y / Coordinate(2))
+  {
+    return false;
+  }
+
+  return true;
 }
 
 } // namespace pge

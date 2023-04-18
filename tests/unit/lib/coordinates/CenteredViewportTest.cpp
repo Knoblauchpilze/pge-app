@@ -7,7 +7,7 @@ using namespace ::testing;
 
 namespace pge {
 const olc::vi2d CENTER{-12, 5};
-const olc::vi2d DIMS{4, 15};
+const olc::vi2d DIMS{4, 10};
 
 auto generateCenteredViewportI() -> ViewportIPtr
 {
@@ -28,6 +28,13 @@ auto generateCenteredTestCaseAbsolute(const std::string &name,
   return TestCaseAbsolute{name, generateCenteredViewportI, coords, expected};
 }
 
+auto generateCenteredTestCaseVisibility(const std::string &name,
+                                        const olc::vf2d &coords,
+                                        const bool expectedVisibility) -> TestCaseVisibility
+{
+  return TestCaseVisibility{name, generateCenteredViewportI, coords, expectedVisibility};
+}
+
 TEST(Unit_CenteredViewport, Constructor)
 {
   const auto viewport = generateCenteredViewportI();
@@ -41,29 +48,29 @@ TEST(Unit_CenteredViewport, Constructor)
 INSTANTIATE_TEST_CASE_P(
   Unit_CenteredViewport,
   RelativeCoordinates,
-  Values(generateCenteredTestCaseRelative("top_left", {-12, 5}, {0.0f, 0.0f}),
-         generateCenteredTestCaseRelative("top_right", {-8, 5}, {1.0f, 0.0f}),
-         generateCenteredTestCaseRelative("bottom_right", {-8, 20}, {1.0f, 1.0f}),
-         generateCenteredTestCaseRelative("bottom_left", {-12, 20}, {0.0f, 1.0f}),
-         generateCenteredTestCaseRelative("inside", {-10, 14}, {0.5f, 0.6f}),
-         generateCenteredTestCaseRelative("x_too_small", {-14, 14}, {-0.5f, 0.6f}),
-         generateCenteredTestCaseRelative("x_too_large", {-6, 14}, {1.5f, 0.6f}),
-         generateCenteredTestCaseRelative("y_too_small", {-10, -4}, {0.5f, -0.6f}),
-         generateCenteredTestCaseRelative("y_too_large", {-10, 26}, {0.5f, 1.4f})),
+  Values(generateCenteredTestCaseRelative("top_left", {-14, 10}, {-1.0f, 1.0f}),
+         generateCenteredTestCaseRelative("top_right", {-10, 10}, {1.0f, 1.0f}),
+         generateCenteredTestCaseRelative("bottom_right", {-10, 0}, {1.0f, -1.0f}),
+         generateCenteredTestCaseRelative("bottom_left", {-14, 0}, {-1.0f, -1.0f}),
+         generateCenteredTestCaseRelative("inside", {-11, 7}, {0.5f, 0.4f}),
+         generateCenteredTestCaseRelative("x_too_small", {-16, 7}, {-2.0f, 0.4f}),
+         generateCenteredTestCaseRelative("x_too_large", {-7, 7}, {2.5f, 0.4f}),
+         generateCenteredTestCaseRelative("y_too_small", {-13, -7}, {-0.5f, -2.4f}),
+         generateCenteredTestCaseRelative("y_too_large", {-13, 36}, {-0.5f, 6.2f})),
   generateTestNameRelative);
 
 INSTANTIATE_TEST_CASE_P(
   Unit_CenteredViewport,
   AbsoluteCoordinates,
-  Values(generateCenteredTestCaseAbsolute("top_left", {0.0f, 0.0f}, {-12, 5}),
-         generateCenteredTestCaseAbsolute("top_right", {1.0f, 0.0f}, {-8, 5}),
-         generateCenteredTestCaseAbsolute("bottom_right", {1.0f, 1.0f}, {-8, 20}),
-         generateCenteredTestCaseAbsolute("bottom_left", {0.0f, 1.0f}, {-12, 20}),
-         generateCenteredTestCaseAbsolute("inside", {0.5f, 0.6f}, {-10, 14}),
-         generateCenteredTestCaseAbsolute("x_too_small", {-0.5f, 0.6f}, {-14, 14}),
-         generateCenteredTestCaseAbsolute("x_too_large", {1.5f, 0.6f}, {-6, 14}),
-         generateCenteredTestCaseAbsolute("y_too_small", {0.5f, -0.6f}, {-10, -4}),
-         generateCenteredTestCaseAbsolute("y_too_large", {0.5f, 1.4f}, {-10, 26})),
+  Values(generateCenteredTestCaseAbsolute("top_left", {-1.0f, 1.0f}, {-14, 10}),
+         generateCenteredTestCaseAbsolute("top_right", {1.0f, 1.0f}, {-10, 10}),
+         generateCenteredTestCaseAbsolute("bottom_right", {1.0f, -1.0f}, {-10, 0}),
+         generateCenteredTestCaseAbsolute("bottom_left", {-1.0f, -1.0f}, {-14, 0}),
+         generateCenteredTestCaseAbsolute("inside", {0.5f, 0.4f}, {-11, 7}),
+         generateCenteredTestCaseAbsolute("x_too_small", {-2.0f, 0.4f}, {-16, 7}),
+         generateCenteredTestCaseAbsolute("x_too_large", {2.5f, 0.4f}, {-7, 7}),
+         generateCenteredTestCaseAbsolute("y_too_small", {-0.5f, -2.4f}, {-13, -7}),
+         generateCenteredTestCaseAbsolute("y_too_large", {-0.5f, 6.2f}, {-13, 36})),
   generateTestNameAbsolute);
 
 TEST(Unit_CenteredViewport, MoveTo)
@@ -106,4 +113,18 @@ TEST(Unit_CenteredViewport, Scale)
   EXPECT_EQ(viewport->dims(), DIMS * factor);
 }
 
+INSTANTIATE_TEST_CASE_P(Unit_CenteredViewport,
+                        Visibility,
+                        Values(generateCenteredTestCaseVisibility("top_left", {-14, 10}, true),
+                               generateCenteredTestCaseVisibility("top_right", {-10, 10}, true),
+                               generateCenteredTestCaseVisibility("bottom_right", {-10, 0}, true),
+                               generateCenteredTestCaseVisibility("bottom_left", {-14, 0}, true),
+                               generateCenteredTestCaseVisibility("inside", {-11, 7}, true),
+                               generateCenteredTestCaseVisibility("x_too_small", {-16, 7}, false),
+                               generateCenteredTestCaseVisibility("x_too_large", {-7, 7}, false),
+                               generateCenteredTestCaseVisibility("y_too_small", {-13, -7}, false),
+                               generateCenteredTestCaseVisibility("y_too_large", {-13, 36}, false)),
+                        generateTestNameVisibility);
+// const olc::vi2d CENTER{-12, 5};
+// const olc::vi2d DIMS{4, 10};
 } // namespace pge

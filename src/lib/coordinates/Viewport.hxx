@@ -18,6 +18,12 @@ inline olc::vf2d Viewport<Coordinate>::absoluteCoords(const olc::vf2d &pos) cons
 }
 
 template<typename Coordinate>
+inline void Viewport<Coordinate>::scale(const Coordinate factor) noexcept
+{
+  scale(factor, factor);
+}
+
+template<typename Coordinate>
 inline bool Viewport<Coordinate>::visible(const Coordinate x,
                                           const Coordinate y,
                                           const Coordinate radius) const noexcept
@@ -29,28 +35,6 @@ template<typename Coordinate>
 inline bool Viewport<Coordinate>::visible(const Vector &p, const Vector &sz) const noexcept
 {
   return visible(p.x, p.y, sz.x, sz.y);
-}
-
-template<typename Coordinate>
-inline bool Viewport<Coordinate>::visible(const Coordinate &x,
-                                          const Coordinate &y,
-                                          const Coordinate &sx,
-                                          const Coordinate &sy) const noexcept
-{
-  const auto origin = topLeft();
-  const auto size   = dims();
-
-  if (x + sx < origin.x || x - sx > origin.x + size.x)
-  {
-    return false;
-  }
-
-  if (y + sy < origin.y || y - sy > origin.y + size.y)
-  {
-    return false;
-  }
-
-  return true;
 }
 
 } // namespace pge

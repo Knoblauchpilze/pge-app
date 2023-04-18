@@ -94,7 +94,7 @@ void CoordinateFrame::zoom(float factor, const olc::vf2d &pos)
 
   // Only the dimensions of the cells viewport need to be
   // updated.
-  m_cellsViewport.scale(factor);
+  m_cellsViewport.scale(factor, factor);
 }
 
 } // namespace pge

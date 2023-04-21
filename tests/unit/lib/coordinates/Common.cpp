@@ -60,4 +60,32 @@ auto generateTestNameVisibility(const ::testing::TestParamInfo<TestCaseVisibilit
   return info.param.name;
 }
 
+TEST_P(TilesToPixels, Test)
+{
+  const auto param = GetParam();
+
+  olc::vf2d pixels = param.frame->tilesToPixels(param.tiles.x, param.tiles.y);
+  EXPECT_EQ(param.expected, pixels);
+}
+
+auto generateTestNameTilesToPixels(const ::testing::TestParamInfo<TestCaseTilesToPixels> &info)
+  -> std::string
+{
+  return info.param.name;
+}
+
+TEST_P(PixelsToTiles, Test)
+{
+  const auto param = GetParam();
+
+  olc::vf2d tiles = param.frame->pixelsToTiles(param.pixels.x, param.pixels.y);
+  EXPECT_EQ(param.expected, tiles);
+}
+
+auto generateTestNamePixelsToTiles(const ::testing::TestParamInfo<TestCasePixelsToTiles> &info)
+  -> std::string
+{
+  return info.param.name;
+}
+
 } // namespace pge

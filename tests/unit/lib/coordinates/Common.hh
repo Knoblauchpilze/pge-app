@@ -1,6 +1,7 @@
 #ifndef COMMON_HH
 #define COMMON_HH
 
+#include <CoordinateFrame.hh>
 #include <Viewport.hh>
 #include <gtest/gtest.h>
 #include <olcEngine.hh>
@@ -49,6 +50,34 @@ struct TestCaseVisibility
 using Visibility = ::testing::TestWithParam<TestCaseVisibility>;
 
 auto generateTestNameVisibility(const ::testing::TestParamInfo<TestCaseVisibility> &info)
+  -> std::string;
+
+struct TestCaseTilesToPixels
+{
+  std::string name;
+  CoordinateFramePtr frame;
+
+  olc::vf2d tiles;
+  olc::vf2d expected;
+};
+
+using TilesToPixels = ::testing::TestWithParam<TestCaseTilesToPixels>;
+
+auto generateTestNameTilesToPixels(const ::testing::TestParamInfo<TestCaseTilesToPixels> &info)
+  -> std::string;
+
+struct TestCasePixelsToTiles
+{
+  std::string name;
+  CoordinateFramePtr frame;
+
+  olc::vf2d pixels;
+  olc::vf2d expected;
+};
+
+using PixelsToTiles = ::testing::TestWithParam<TestCasePixelsToTiles>;
+
+auto generateTestNamePixelsToTiles(const ::testing::TestParamInfo<TestCasePixelsToTiles> &info)
   -> std::string;
 
 } // namespace pge

@@ -61,13 +61,13 @@ class CoordinateFrame : public utils::CoreObject
   /// @param origin - the origin represents where the translation
   /// started. This position will be kept constant during the
   /// translation process.
-  void beginTranslation(const olc::vi2d &origin);
+  void beginTranslation(const olc::vf2d &origin);
 
   /// @brief - Translate the coordinate frame. The input parameter
   /// represents the new position of the origin passed when calling
   /// the `beginTranslation` method.
   /// @param trackedOrigin - the new position of the origin.
-  void translate(const olc::vi2d &trackedOrigin);
+  void translate(const olc::vf2d &trackedOrigin);
 
   private:
   /// @brief - Perform the zoom operation to fix the position

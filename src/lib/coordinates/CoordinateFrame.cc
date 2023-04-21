@@ -51,13 +51,13 @@ void CoordinateFrame::zoomOut(const olc::vf2d &pos)
   zoom(2.0f, pos);
 }
 
-void CoordinateFrame::beginTranslation(const olc::vi2d &origin)
+void CoordinateFrame::beginTranslation(const olc::vf2d &origin)
 {
   m_translationOrigin = origin;
   m_cachedPOrigin     = m_pixelsViewport.topLeft();
 }
 
-void CoordinateFrame::translate(const olc::vi2d &pos)
+void CoordinateFrame::translate(const olc::vf2d &pos)
 {
   // We need to deduce the translation added by the input
   // `pos` assuming that this will be the final position

@@ -16,7 +16,7 @@ olc::vf2d TopViewFrame::tilesToPixels(float x, float y) const noexcept
 {
   auto rel = m_cellsViewport.relativeCoords(x, y);
   // cells viewport is centered, pixels viewport is top left based.
-  // rel.x = (rel.x + 1.0f) / 2.0f;
+  rel.x = (rel.x + 1.0f) / 2.0f;
   // cells viewport is with y up, pixels viewport is with y down.
   rel.y = (1.0f - rel.y) / 2.0f;
   return m_pixelsViewport.absoluteCoords(rel.x, rel.y);

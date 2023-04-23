@@ -46,11 +46,11 @@ INSTANTIATE_TEST_CASE_P(
          generateTestCaseTilesToPixels("top_right", {3.0f, 5.0f}, {110.0f, 32.0f}),
          generateTestCaseTilesToPixels("bottom_right", {3.0f, -1.0f}, {110.0f, 89.0f}),
          generateTestCaseTilesToPixels("bottom_left", {-1.0f, -1.0f}, {10.0f, 89.0f}),
-         generateTestCaseTilesToPixels("inside", {2.7f, -0.8f}, {102.5f, 33.9f}),
-         generateTestCaseTilesToPixels("x_too_small", {-2.9f, 3.2f}, {-37.5f, 71.9f}),
-         generateTestCaseTilesToPixels("x_too_large", {12.5f, 3.2f}, {347.5f, 71.9f}),
-         generateTestCaseTilesToPixels("y_too_small", {-0.8f, -17.2f}, {15.0f, -185.9f}),
-         generateTestCaseTilesToPixels("y_too_large", {-0.8f, 13.2f}, {15.0f, 102.9f})),
+         generateTestCaseTilesToPixels("inside", {2.7f, -0.8f}, {102.5f, 87.1f}),
+         generateTestCaseTilesToPixels("x_too_small", {-2.9f, 3.2f}, {-37.5f, 49.1f}),
+         generateTestCaseTilesToPixels("x_too_large", {12.5f, 3.2f}, {347.5f, 49.1f}),
+         generateTestCaseTilesToPixels("y_too_small", {-0.8f, -17.2f}, {15.0f, 242.9f}),
+         generateTestCaseTilesToPixels("y_too_large", {-0.8f, 13.2f}, {15.0f, -67.9f})),
   generateTestNameTilesToPixels);
 
 auto generateTestCasePixelsToTiles(const std::string &name,
@@ -67,11 +67,11 @@ INSTANTIATE_TEST_CASE_P(
          generateTestCasePixelsToTiles("top_right", {110.0f, 32.0f}, {3.0f, 5.0f}),
          generateTestCasePixelsToTiles("bottom_right", {110.0f, 89.0f}, {3.0f, -1.0f}),
          generateTestCasePixelsToTiles("bottom_left", {10.0f, 89.0f}, {-1.0f, -1.0f}),
-         generateTestCasePixelsToTiles("inside", {102.5f, 33.9f}, {2.7f, -0.8f}),
-         generateTestCasePixelsToTiles("x_too_small", {-37.5f, 71.9f}, {-2.9f, 3.2f}),
-         generateTestCasePixelsToTiles("x_too_large", {347.5f, 71.9f}, {12.5f, 3.2f}),
-         generateTestCasePixelsToTiles("y_too_small", {15.0f, -185.9f}, {-0.8f, -17.2f}),
-         generateTestCasePixelsToTiles("y_too_large", {15.0f, 102.9f}, {-0.8f, 13.2f})),
+         generateTestCasePixelsToTiles("inside", {102.5f, 87.1f}, {2.7f, -0.8f}),
+         generateTestCasePixelsToTiles("x_too_small", {-37.5f, 49.1f}, {-2.9f, 3.2f}),
+         generateTestCasePixelsToTiles("x_too_large", {347.5f, 49.1f}, {12.5f, 3.2f}),
+         generateTestCasePixelsToTiles("y_too_small", {15.0f, 242.9}, {-0.8f, -17.2f}),
+         generateTestCasePixelsToTiles("y_too_large", {15.0f, -67.9f}, {-0.8f, 13.2f})),
   generateTestNamePixelsToTiles);
 
 TEST(Unit_TopViewFrame, Translate_DoesNotChangeTileSize)

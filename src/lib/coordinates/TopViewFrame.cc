@@ -32,6 +32,9 @@ olc::vf2d TopViewFrame::tilesToPixels(float x, float y) const noexcept
 olc::vf2d TopViewFrame::pixelsToTiles(float x, float y) const noexcept
 {
   olc::vf2d rel = m_pixelsViewport.relativeCoords(x, y);
+  // Reverse operation of the `tilesToPixels`.
+  rel.x = 2.0f * rel.x - 1.0f;
+  rel.y = 1.0f - 2.0f * rel.y;
   return m_cellsViewport.absoluteCoords(rel.x, rel.y);
 }
 

@@ -8,10 +8,10 @@ using namespace ::testing;
 
 namespace pge {
 const olc::vf2d CELLS_CENTER = {1.0f, 2.0f};
-const olc::vf2d CELLS_DIMS   = {4.0f, 6.0f};
+const olc::vf2d CELLS_DIMS   = {4.0f, 10.0f};
 
 const olc::vf2d PIXELS_TOP_LEFT = {10.0f, 32.0f};
-const olc::vf2d PIXELS_DIMS     = {100.0f, 57.0f};
+const olc::vf2d PIXELS_DIMS     = {128.0f, 58.0f};
 
 auto generateTopViewFrame() -> CoordinateFramePtr
 {
@@ -29,7 +29,7 @@ TEST(Unit_TopViewFrame, Constructor)
   EXPECT_EQ(cells.dims(), CELLS_DIMS);
 
   auto tile = frame->tileSize();
-  EXPECT_EQ(tile, olc::vf2d(25.0f, 9.5f));
+  EXPECT_EQ(tile, PIXELS_DIMS / CELLS_DIMS);
 }
 
 auto generateTestCaseTilesToPixels(const std::string &name,
@@ -39,18 +39,21 @@ auto generateTestCaseTilesToPixels(const std::string &name,
   return TestCaseTilesToPixels{name, generateTopViewFrame(), tiles, expected};
 }
 
+// Useful IEEE calculators:
+// http://weitz.de/ieee/
+// https://www.h-schmidt.net/FloatConverter/IEEE754.html
 INSTANTIATE_TEST_CASE_P(
   Unit_TopViewFrame,
   TilesToPixels,
-  Values(generateTestCaseTilesToPixels("top_left", {-1.0f, 5.0f}, {10.0f, 32.0f}),
-         generateTestCaseTilesToPixels("top_right", {3.0f, 5.0f}, {110.0f, 32.0f}),
-         generateTestCaseTilesToPixels("bottom_right", {3.0f, -1.0f}, {110.0f, 89.0f}),
-         generateTestCaseTilesToPixels("bottom_left", {-1.0f, -1.0f}, {10.0f, 89.0f}),
-         generateTestCaseTilesToPixels("inside", {2.7f, -0.7f}, {102.5f, 86.15f}),
-         generateTestCaseTilesToPixels("x_too_small", {-2.95f, 3.2f}, {-38.75f, 49.1f}),
-         generateTestCaseTilesToPixels("x_too_large", {12.5f, 3.2f}, {347.5f, 49.1f}),
-         generateTestCaseTilesToPixels("y_too_small", {-0.75f, -17.4f}, {16.25f, 244.8f}),
-         generateTestCaseTilesToPixels("y_too_large", {-0.75f, 13.2f}, {16.25f, -45.9f})),
+  Values(generateTestCaseTilesToPixels("top_left", {-1.0f, 7.0f}, {10.0f, 32.0f}),
+         generateTestCaseTilesToPixels("top_right", {3.0f, 7.0f}, {138.0f, 32.0f}),
+         generateTestCaseTilesToPixels("bottom_right", {3.0f, -3.0f}, {138.0f, 90.0f}),
+         generateTestCaseTilesToPixels("bottom_left", {-1.0f, -3.0f}, {10.0f, 90.0f}),
+         generateTestCaseTilesToPixels("inside", {2.5f, -1.0f}, {122.0f, 78.4f}),
+         generateTestCaseTilesToPixels("x_too_small", {-2.95f, 3.25f}, {-52.4f, 53.75f}),
+         generateTestCaseTilesToPixels("x_too_large", {12.5f, 3.25f}, {442.0f, 53.75f}),
+         generateTestCaseTilesToPixels("y_too_small", {-0.75f, -17.2f}, {18.0f, 172.36f}),
+         generateTestCaseTilesToPixels("y_too_large", {-0.75f, 14.1f}, {18.0f, -9.18f})),
   generateTestNameTilesToPixels);
 
 auto generateTestCasePixelsToTiles(const std::string &name,
@@ -63,15 +66,15 @@ auto generateTestCasePixelsToTiles(const std::string &name,
 INSTANTIATE_TEST_CASE_P(
   Unit_TopViewFrame,
   PixelsToTiles,
-  Values(generateTestCasePixelsToTiles("top_left", {10.0f, 32.0f}, {-1.0f, 5.0f}),
-         generateTestCasePixelsToTiles("top_right", {110.0f, 32.0f}, {3.0f, 5.0f}),
-         generateTestCasePixelsToTiles("bottom_right", {110.0f, 89.0f}, {3.0f, -1.0f}),
-         generateTestCasePixelsToTiles("bottom_left", {10.0f, 89.0f}, {-1.0f, -1.0f}),
-         generateTestCasePixelsToTiles("inside", {102.5f, 86.15f}, {2.7f, -0.7f}),
-         generateTestCasePixelsToTiles("x_too_small", {-38.75f, 49.1f}, {-2.95f, 3.2f}),
-         generateTestCasePixelsToTiles("x_too_large", {347.5f, 49.1f}, {12.5f, 3.2f}),
-         generateTestCasePixelsToTiles("y_too_small", {16.25f, 244.8f}, {-0.75f, -17.4f}),
-         generateTestCasePixelsToTiles("y_too_large", {15.0f, -45.9f}, {-0.8f, 13.2f})),
+  Values(generateTestCasePixelsToTiles("top_left", {10.0f, 32.0f}, {-1.0f, 7.0f}),
+         generateTestCasePixelsToTiles("top_right", {138.0f, 32.0f}, {3.0f, 7.0f}),
+         generateTestCasePixelsToTiles("bottom_right", {138.0f, 90.0f}, {3.0f, -3.0f}),
+         generateTestCasePixelsToTiles("bottom_left", {10.0f, 90.0f}, {-1.0f, -3.0f}),
+         generateTestCasePixelsToTiles("inside", {122.0f, 78.4f}, {2.5f, -1.0f}),
+         generateTestCasePixelsToTiles("x_too_small", {-52.4f, 53.75f}, {-2.95f, 3.25f}),
+         generateTestCasePixelsToTiles("x_too_large", {442.0f, 53.75f}, {12.5f, 3.25f}),
+         generateTestCasePixelsToTiles("y_too_small", {18.0f, 172.36f}, {-0.75f, -17.2f}),
+         generateTestCasePixelsToTiles("y_too_large", {18.0f, -9.18f}, {-0.75f, 14.1f})),
   generateTestNamePixelsToTiles);
 
 TEST(Unit_TopViewFrame, Translate_DoesNotChangeTileSize)
@@ -79,7 +82,7 @@ TEST(Unit_TopViewFrame, Translate_DoesNotChangeTileSize)
   auto frame = generateTopViewFrame();
 
   auto tile = frame->tileSize();
-  EXPECT_EQ(tile, olc::vf2d(25.0f, 9.5f));
+  EXPECT_EQ(tile, PIXELS_DIMS / CELLS_DIMS);
 
   olc::vf2d origin{20.0f, 51.0f};
   frame->beginTranslation(origin);
@@ -88,7 +91,7 @@ TEST(Unit_TopViewFrame, Translate_DoesNotChangeTileSize)
   frame->translate(final);
 
   tile = frame->tileSize();
-  EXPECT_EQ(tile, olc::vf2d(25.0f, 9.5f));
+  EXPECT_EQ(tile, PIXELS_DIMS / CELLS_DIMS);
 }
 
 } // namespace pge

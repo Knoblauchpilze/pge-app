@@ -112,4 +112,53 @@ TEST(Unit_TopViewFrame, Translate_DoesNotChangeTileSize)
   EXPECT_EQ(tile, PIXELS_DIMS / CELLS_DIMS);
 }
 
+TEST(Unit_TopViewFrame, ZoomIn_DoubleTileDimensions)
+{
+  auto frame = generateTopViewFrame();
+
+  olc::vf2d zoomCenter{35.0f, 56.0f};
+  frame->zoomIn(zoomCenter);
+
+  auto tile = frame->tileSize();
+  EXPECT_EQ(tile, (PIXELS_DIMS / CELLS_DIMS) * 2.0f);
+
+  // CELLS_CENTER = {1.0f, 2.0f};
+  // CELLS_DIMS   = {4.0f, 10.0f};
+  // PIXELS_TOP_LEFT = {10.0f, 32.0f};
+  // PIXELS_DIMS     = {128.0f, 58.0f};
+}
+
+TEST(Unit_TopViewFrame, ZoomIn_HalveCellsViewport)
+{
+  auto frame = generateTopViewFrame();
+
+  olc::vf2d zoomCenter{35.0f, 56.0f};
+  frame->zoomIn(zoomCenter);
+
+  auto dims = frame->cellsViewport().dims();
+  EXPECT_EQ(dims, CELLS_DIMS / 2.0f);
+}
+
+TEST(Unit_TopViewFrame, ZoomOut_HalveTileDimensions)
+{
+  auto frame = generateTopViewFrame();
+
+  olc::vf2d zoomCenter{35.0f, 56.0f};
+  frame->zoomOut(zoomCenter);
+
+  auto tile = frame->tileSize();
+  EXPECT_EQ(tile, (PIXELS_DIMS / CELLS_DIMS) / 2.0f);
+}
+
+TEST(Unit_TopViewFrame, ZoomOut_DoubleCellsViewport)
+{
+  auto frame = generateTopViewFrame();
+
+  olc::vf2d zoomCenter{35.0f, 56.0f};
+  frame->zoomOut(zoomCenter);
+
+  auto dims = frame->cellsViewport().dims();
+  EXPECT_EQ(dims, CELLS_DIMS * 2.0f);
+}
+
 } // namespace pge

@@ -95,7 +95,7 @@ TEST(Unit_TopViewFrame, Translate)
   EXPECT_EQ(cells.center(), finalCells);
 }
 
-TEST(Unit_TopViewFrame, Translate_DoesNotChangeTileSize)
+TEST(Unit_TopViewFrame, Translate_PreserveTileSize)
 {
   auto frame = generateTopViewFrame();
 

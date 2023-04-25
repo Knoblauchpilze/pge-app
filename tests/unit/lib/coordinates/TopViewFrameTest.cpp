@@ -121,11 +121,6 @@ TEST(Unit_TopViewFrame, ZoomIn_DoubleTileDimensions)
 
   auto tile = frame->tileSize();
   EXPECT_EQ(tile, (PIXELS_DIMS / CELLS_DIMS) * 2.0f);
-
-  // CELLS_CENTER = {1.0f, 2.0f};
-  // CELLS_DIMS   = {4.0f, 10.0f};
-  // PIXELS_TOP_LEFT = {10.0f, 32.0f};
-  // PIXELS_DIMS     = {128.0f, 58.0f};
 }
 
 TEST(Unit_TopViewFrame, ZoomIn_HalveCellsViewport)

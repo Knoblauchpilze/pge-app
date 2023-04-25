@@ -82,40 +82,25 @@ class CoordinateFrame : public utils::CoreObject
   void zoom(float factor, const olc::vf2d &pos);
 
   protected:
-  /**
-       * @brief - Define the viewport for this coordinate frame.
-       *          It represent the area that is visible for now
-       *          given the position of the camera.
-       *          The viewport is expressed in cells and defined
-       *          through its top left corner and dimensions.
-       */
+  /// @brief - Define the viewport for this coordinate frame. It represent the
+  /// area that is visible for now given the position of the camera. The viewport
+  /// is expressed in cells and defined through its top left corner and dimensions.
   CenteredViewport m_cellsViewport;
 
-  /**
-       * @brief - Define a similar element but for the pixels on
-       *          screen. It is used to represent the pixels that
-       *          can be displayed on the device.
-       *          Computing the ratio between both viewport gives
-       *          the size of a tile in pixels and we can deduce
-       *          a scaling factor from the initial size of a
-       *          tile.
-       */
+  /// @brief - Define a similar element but for the pixels on screen. It is used
+  /// to represent the pixels that can be displayed on the device. Computing the
+  /// ratio between both viewport gives the size of a tile in pixels and we can
+  /// deduce a scaling factor from the initial size of a tile.
   TopLeftViewport m_pixelsViewport;
 
-  /**
-       * @brief - The origin of the translation (i.e. the pixels
-       *          position when it started). Allows to compute
-       *          the accumulated transform to apply to the world
-       *          origin.
-       */
+  /// @brief - The origin of the translation (i.e. the pixels position when it
+  /// started). Allows to compute the accumulated transform to apply to the world
+  /// origin.
   olc::vf2d m_translationOrigin;
 
-  /**
-       * @brief - Cached position of the top left corner of the
-       *          pixels viewport when starting the translation.
-       *          Once the translation is performed we are able
-       *          to update the viewport accordingly.
-       */
+  /// @brief - Cached position of the top left corner of the pixels viewport
+  /// when starting the translation. Once the translation is performed we are
+  /// able to update the viewport accordingly.
   olc::vi2d m_cachedPOrigin;
 };
 

@@ -54,7 +54,7 @@ void CoordinateFrame::zoomOut(const olc::vf2d &pos)
 void CoordinateFrame::beginTranslation(const olc::vf2d &origin)
 {
   m_translationOrigin = origin;
-  m_cachedPOrigin     = m_pixelsViewport.topLeft();
+  m_cachedPOrigin     = m_cellsViewport.center();
 }
 
 void CoordinateFrame::translate(const olc::vf2d &pos)
@@ -63,7 +63,10 @@ void CoordinateFrame::translate(const olc::vf2d &pos)
   // `pos` assuming that this will be the final position
   // of the viewport.
   olc::vf2d translation = pos - m_translationOrigin;
-  m_pixelsViewport.moveTo(m_cachedPOrigin + translation);
+
+  auto dCells = pixelsDistToCellsDist(translation);
+
+  m_cellsViewport.moveTo(m_cachedPOrigin + dCells);
 }
 
 void CoordinateFrame::zoom(float factor, const olc::vf2d &pos)
@@ -95,6 +98,28 @@ void CoordinateFrame::zoom(float factor, const olc::vf2d &pos)
   // Only the dimensions of the cells viewport need to be
   // updated.
   m_cellsViewport.scale(factor, factor);
+}
+
+olc::vf2d CoordinateFrame::pixelsDistToCellsDist(const olc::vf2d &pixelsDist)
+{
+  return pixelsDistToCellsDist(pixelsDist.x, pixelsDist.y);
+}
+
+olc::vf2d CoordinateFrame::pixelsDistToCellsDist(float dx, float dy)
+{
+  auto ratio = m_pixelsViewport.dims() / m_cellsViewport.dims();
+  return olc::vf2d{dx / ratio.x, dy / ratio.y};
+}
+
+olc::vf2d CoordinateFrame::cellsDistToPixelsDist(const olc::vf2d &cellsDist)
+{
+  return cellsDistToPixelsDist(cellsDist.x, cellsDist.y);
+}
+
+olc::vf2d CoordinateFrame::cellsDistToPixelsDist(float dx, float dy)
+{
+  auto ratio = m_cellsViewport.dims() / m_pixelsViewport.dims();
+  return olc::vf2d{dx / ratio.x, dy / ratio.y};
 }
 
 } // namespace pge

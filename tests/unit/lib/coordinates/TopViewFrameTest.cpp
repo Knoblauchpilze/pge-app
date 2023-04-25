@@ -77,6 +77,24 @@ INSTANTIATE_TEST_CASE_P(
          generateTestCasePixelsToTiles("y_too_large", {18.0f, -9.18f}, {-0.75f, 14.1f})),
   generateTestNamePixelsToTiles);
 
+TEST(Unit_TopViewFrame, Translate)
+{
+  auto frame = generateTopViewFrame();
+
+  olc::vf2d origin{20.0f, 51.0f};
+  frame->beginTranslation(origin);
+
+  olc::vf2d translationCells{2.6f, -1.7f};
+  olc::vf2d scale = PIXELS_DIMS / CELLS_DIMS;
+
+  auto final = origin + translationCells * scale;
+  frame->translate(final);
+
+  auto cells      = frame->cellsViewport();
+  auto finalCells = CELLS_CENTER + translationCells;
+  EXPECT_EQ(cells.center(), finalCells);
+}
+
 TEST(Unit_TopViewFrame, Translate_DoesNotChangeTileSize)
 {
   auto frame = generateTopViewFrame();

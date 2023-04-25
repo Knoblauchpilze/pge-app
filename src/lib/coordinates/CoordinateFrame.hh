@@ -70,16 +70,32 @@ class CoordinateFrame : public utils::CoreObject
   void translate(const olc::vf2d &trackedOrigin);
 
   private:
-  /// @brief - Perform the zoom operation to fix the position
-  /// in input (in pixels space) and changing the dimensions
-  /// of the specified factor.
-  /// @param factor - factor by which the dimensions of the
-  /// viewports of this coordinate frame will be modified. If
-  /// this value is smaller than `1` then the zoom is a dezoom.
-  /// @param pos - the position to fixe during the zoom process.
-  /// Before and after the zoom operation this position will
-  /// stay fixed.
+  /// @brief - Perform the zoom operation to fix the position in input (in
+  /// pixels space) and changing the dimensions of the specified factor.
+  /// @param factor - factor by which the dimensions of the viewports of
+  /// this coordinate frame will be modified. If this value is smaller tha
+  /// `1` then the zoom is a dezoom.
+  /// @param pos - the position to fixe during the zoom process. Before and
+  /// after the zoom operation this position will stay fixed.
   void zoom(float factor, const olc::vf2d &pos);
+
+  olc::vf2d pixelsDistToCellsDist(const olc::vf2d &pixelsDist);
+
+  /// @brief - Converts the distance in pixels to a distance in cells usinng the
+  /// ratio between the size of a unit in pixels and cells space.
+  /// @param dx - the delta along the x axis in pixels.
+  /// @param dy - the delta along the y axis in pixels.
+  /// @return - the distance expressed in cells.
+  olc::vf2d pixelsDistToCellsDist(float dx, float dy);
+
+  olc::vf2d cellsDistToPixelsDist(const olc::vf2d &cellsDist);
+
+  /// @brief - Converts the distance in cells to a distance in pixels usinng the
+  /// ratio between the size of a unit in cells and pixels space.
+  /// @param dx - the delta along the x axis in cells.
+  /// @param dy - the delta along the y axis in cells.
+  /// @return - the distance expressed in pixels.
+  olc::vf2d cellsDistToPixelsDist(float dx, float dy);
 
   protected:
   /// @brief - Define the viewport for this coordinate frame. It represent the
@@ -101,7 +117,7 @@ class CoordinateFrame : public utils::CoreObject
   /// @brief - Cached position of the top left corner of the pixels viewport
   /// when starting the translation. Once the translation is performed we are
   /// able to update the viewport accordingly.
-  olc::vi2d m_cachedPOrigin;
+  olc::vf2d m_cachedPOrigin;
 };
 
 using CoordinateFramePtr = std::shared_ptr<CoordinateFrame>;

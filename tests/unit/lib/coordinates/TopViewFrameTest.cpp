@@ -112,6 +112,19 @@ TEST(Unit_TopViewFrame, Translate_PreserveTileSize)
   EXPECT_EQ(tile, PIXELS_DIMS / CELLS_DIMS);
 }
 
+TEST(Unit_TopViewFrame, ZoomIn)
+{
+  auto frame = generateTopViewFrame();
+
+  olc::vf2d zoomCenter{35.0f, 56.0f};
+  auto cellsPos = frame->pixelsToTiles(zoomCenter.x, zoomCenter.y);
+
+  frame->zoomIn(zoomCenter);
+
+  auto newCellsPos = frame->pixelsToTiles(zoomCenter.x, zoomCenter.y);
+  EXPECT_EQ(newCellsPos, cellsPos);
+}
+
 TEST(Unit_TopViewFrame, ZoomIn_DoubleTileDimensions)
 {
   auto frame = generateTopViewFrame();
@@ -132,6 +145,19 @@ TEST(Unit_TopViewFrame, ZoomIn_HalveCellsViewport)
 
   auto dims = frame->cellsViewport().dims();
   EXPECT_EQ(dims, CELLS_DIMS / 2.0f);
+}
+
+TEST(Unit_TopViewFrame, ZoomOut)
+{
+  auto frame = generateTopViewFrame();
+
+  olc::vf2d zoomCenter{118.0f, 72.0f};
+  auto cellsPos = frame->pixelsToTiles(zoomCenter.x, zoomCenter.y);
+
+  frame->zoomOut(zoomCenter);
+
+  auto newCellsPos = frame->pixelsToTiles(zoomCenter.x, zoomCenter.y);
+  EXPECT_EQ(newCellsPos, cellsPos);
 }
 
 TEST(Unit_TopViewFrame, ZoomOut_HalveTileDimensions)

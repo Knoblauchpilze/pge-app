@@ -43,12 +43,12 @@ olc::vi2d CoordinateFrame::pixelsToTiles(const olc::vi2d &pixels,
 
 void CoordinateFrame::zoomIn(const olc::vf2d &pos)
 {
-  zoom(0.5f, pos);
+  zoom(2.0f, pos);
 }
 
 void CoordinateFrame::zoomOut(const olc::vf2d &pos)
 {
-  zoom(2.0f, pos);
+  zoom(0.5f, pos);
 }
 
 void CoordinateFrame::beginTranslation(const olc::vf2d &origin)
@@ -77,10 +77,10 @@ void CoordinateFrame::zoom(float factor, const olc::vf2d &pos)
   //    the factor.
   //  - the center of the cells viewport to be divided by
   //    the factor.
-  olc::vf2d dPixels = m_pixelsViewport.topLeft() - pos;
+  olc::vf2d dPixels = pos - m_pixelsViewport.topLeft();
 
-  olc::vf2d pCells = pixelsToTiles(pos);
-  olc::vf2d dCells = m_cellsViewport.center() - pCells;
+  olc::vf2d pCells = pixelsToTiles(pos.x, pos.y);
+  olc::vf2d dCells = pCells - m_cellsViewport.center();
 
   log("p: " + pos.str() + ", " + pCells.str());
   log("pix: " + m_pixelsViewport.topLeft().str() + " d: " + dPixels.str());
@@ -89,15 +89,15 @@ void CoordinateFrame::zoom(float factor, const olc::vf2d &pos)
   dPixels /= factor;
   dCells /= factor;
 
-  m_pixelsViewport.moveTo(dPixels);
-  m_cellsViewport.moveTo(dCells);
+  // m_pixelsViewport.translate(dPixels);
+  m_cellsViewport.translate(dCells);
 
   log("pix: " + m_pixelsViewport.topLeft().str() + " d: " + dPixels.str());
   log("cells: " + m_cellsViewport.center().str() + " d: " + dCells.str());
 
   // Only the dimensions of the cells viewport need to be
   // updated.
-  m_cellsViewport.scale(factor, factor);
+  m_cellsViewport.scale(1.0f / factor, 1.0f / factor);
 }
 
 olc::vf2d CoordinateFrame::pixelsDistToCellsDist(const olc::vf2d &pixelsDist)

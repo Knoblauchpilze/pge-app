@@ -42,6 +42,11 @@ class CoordinateFrame : public utils::CoreObject
   /// @return - the tile position for the input pixel position.
   virtual olc::vf2d pixelsToTiles(float x, float y) const noexcept = 0;
 
+  /// @brief - Similar to the above method but convert the tiles position
+  /// to an integer representation.
+  /// @param pixels - pixels position to convert.
+  /// @param intraTile - output argument storing the fractional tile part.
+  /// @return - the integer tiles position.
   olc::vi2d pixelsToTiles(const olc::vi2d &pixels, olc::vf2d *intraTile = nullptr) const noexcept;
 
   /// @brief - Zoom on the specified position expressed in pixels

@@ -71,32 +71,17 @@ void CoordinateFrame::translate(const olc::vf2d &pos)
 
 void CoordinateFrame::zoom(float factor, const olc::vf2d &pos)
 {
-  // We want to fix `pos` on screen. To zoom of the factor,
-  // we want the distance to:
-  //  - the top left of the pixels viewport to be divided by
-  //    the factor.
-  //  - the center of the cells viewport to be divided by
-  //    the factor.
   olc::vf2d dPixels = pos - m_pixelsViewport.topLeft();
 
   olc::vf2d pCells = pixelsToTiles(pos.x, pos.y);
   olc::vf2d dCells = pCells - m_cellsViewport.center();
 
-  log("p: " + pos.str() + ", " + pCells.str());
-  log("pix: " + m_pixelsViewport.topLeft().str() + " d: " + dPixels.str());
-  log("cells: " + m_cellsViewport.center().str() + " d: " + dCells.str());
-
   dPixels /= factor;
   dCells /= factor;
 
-  // m_pixelsViewport.translate(dPixels);
-  m_cellsViewport.translate(dCells);
+  m_cellsViewport.moveTo(pCells - dCells);
 
-  log("pix: " + m_pixelsViewport.topLeft().str() + " d: " + dPixels.str());
-  log("cells: " + m_cellsViewport.center().str() + " d: " + dCells.str());
-
-  // Only the dimensions of the cells viewport need to be
-  // updated.
+  // Only the dimensions of the cells viewport need to be updated.
   m_cellsViewport.scale(1.0f / factor, 1.0f / factor);
 }
 

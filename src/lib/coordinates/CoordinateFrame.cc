@@ -59,10 +59,25 @@ void CoordinateFrame::beginTranslation(const olc::vf2d &origin)
 
 void CoordinateFrame::translate(const olc::vf2d &pos)
 {
-  // We need to deduce the translation added by the input
-  // `pos` assuming that this will be the final position
-  // of the viewport.
-  olc::vf2d translation = pos - m_translationOrigin;
+  // `m_translationOrigin` moved to `pos`. Let's put some numbers:
+  // m_translationPOrigin = (0, 1)
+  // m_cachedPOrigin      = (0, 0)
+  // pos                  = (1, 1)
+  // It means pos, which **corresponds to m_translationOrigin** is
+  // now more on the left side of the screen.
+  // The question is then: what translation needs to be applied to
+  // the center so that it is consistent with the new position (on
+  // screen) of m_translationOrigin?
+  // The answer to that is to apply the same translation that would
+  // transform pos into m_translationOrigin again. **Not the other
+  // way around**. This translation is computed then as so:
+  // translation = m_translationOrigin - pos
+  // By applying this, we would bring back the current position of
+  // m_translationOrigin (which is pos) to its initial value.
+  olc::vf2d translation = m_translationOrigin - pos;
+  // The argument here is that pixels and cells viewport y axis are
+  // moving in opposite direction.
+  translation.y *= -1.0f;
 
   auto dCells = pixelsDistToCellsDist(translation);
 

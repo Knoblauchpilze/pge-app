@@ -90,8 +90,15 @@ TEST(Unit_TopViewFrame, Translate)
   auto final = origin + translationCells * scale;
   frame->translate(final);
 
-  auto cells      = frame->cellsViewport();
-  auto finalCells = CELLS_CENTER + translationCells;
+  auto cells = frame->cellsViewport();
+  // We moved the position of `[20; 51]` on screen from
+  // this position to `origin + translationCells * scale`.
+  // The center will move in the opposite direction to
+  // accomodate for `origin` being at its new position
+  // on screen. As the y coordinate moves in opposite
+  // direction, we have to adjust the translation.
+  olc::vf2d centerTranslation{translationCells.x, -translationCells.y};
+  auto finalCells = CELLS_CENTER - centerTranslation;
   EXPECT_EQ(cells.center(), finalCells);
 }
 

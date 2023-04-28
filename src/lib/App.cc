@@ -140,15 +140,17 @@ void App::drawDecal(const RenderDesc &res)
   auto bl = olc::BLUE;
   auto br = olc::WHITE;
 
+  auto xMin = 0;
+  auto yMin = 0;
   auto yMax = 2;
   auto xMax = 2;
 
-  for (int y = 0; y <= yMax; ++y)
+  for (int y = yMin; y <= yMax; ++y)
   {
-    auto interpL = colorGradient(tl, bl, 1.0f * y / yMax, alpha::Opaque);
-    auto interpR = colorGradient(tr, br, 1.0f * y / yMax, alpha::Opaque);
+    auto interpL = colorGradient(bl, tl, 1.0f * y / yMax, alpha::Opaque);
+    auto interpR = colorGradient(br, tr, 1.0f * y / yMax, alpha::Opaque);
 
-    for (int x = 0; x <= xMax; ++x)
+    for (int x = xMin; x <= xMax; ++x)
     {
       SpriteDesc t;
       t.x      = x;

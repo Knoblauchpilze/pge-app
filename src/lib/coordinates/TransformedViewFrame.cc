@@ -17,12 +17,7 @@ TransformedViewFrame::TransformedViewFrame(const CenteredViewport &tiles,
                                            const TopLeftViewport &pixels)
   : CoordinateFrame(tiles, pixels)
 {
-  // Eigen uses clockwise rotations, so to rotate in the usual trigonometric
-  // way we have to invert the angle.
-  // https://eigen.tuxfamily.org/dox/classEigen_1_1Rotation2D.html
-  Eigen::Rotation2Df theta(-3.14159f / 4.0f);
-
-  m_tilesToPixelsTransform = theta.toRotationMatrix();
+  m_tilesToPixelsTransform = transform;
   m_pixelsToTilesTransform = m_tilesToPixelsTransform.inverse();
 }
 

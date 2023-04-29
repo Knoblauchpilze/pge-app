@@ -489,7 +489,7 @@ The framework uses the `gtest` library to perform the testing.
 
 ## Adding tests
 
-In order to add a new test, one can create a new file under the relevant test section (say `tests/unit/lib/MyClassTest.cpp`). The structure of the file should look something like so:
+In order to add a new test, one can create a new file under the relevant test section (say `tests/unit/lib/MyClassTest.cc`). The structure of the file should look something like so:
 ```cpp
 
 # include "MyClass.hh"

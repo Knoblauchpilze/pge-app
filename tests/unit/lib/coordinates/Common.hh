@@ -1,5 +1,5 @@
-#ifndef COMMON_HH
-#define COMMON_HH
+
+#pragma once
 
 #include <CoordinateFrame.hh>
 #include <Viewport.hh>
@@ -81,5 +81,3 @@ auto generateTestNamePixelsToTiles(const ::testing::TestParamInfo<TestCasePixels
   -> std::string;
 
 } // namespace pge
-
-#endif /* COMMON_HH */

@@ -1,5 +1,5 @@
-#ifndef PGE_APP_COLOR_UTILS_HH
-#define PGE_APP_COLOR_UTILS_HH
+
+#pragma once
 
 #include "olcEngine.hh"
 
@@ -62,5 +62,3 @@ constexpr int Transparent = 0;
 std::string toString(const olc::Pixel &p) noexcept;
 
 #include "ColorUtils.hxx"
-
-#endif /* PGE_APP_COLOR_UTILS_HH */

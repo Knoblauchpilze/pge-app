@@ -1,5 +1,5 @@
-#ifndef APP_HH
-#define APP_HH
+
+#pragma once
 
 #include "Game.hh"
 #include "GameState.hh"
@@ -102,5 +102,3 @@ class App : public PGEApp
 } // namespace pge
 
 #include "App.hxx"
-
-#endif /* APP_HH */

@@ -1,5 +1,5 @@
-#ifndef PGE_APP_ISOMETRIC_VIEW_FRAME_HH
-#define PGE_APP_ISOMETRIC_VIEW_FRAME_HH
+
+#pragma once
 
 #include "TransformedViewFrame.hh"
 #include <eigen3/Eigen/Eigen>
@@ -15,5 +15,3 @@ class IsometricViewFrame : public TransformedViewFrame
 } // namespace pge
 
 #include "IsometricViewFrame.hxx"
-
-#endif /* PGE_APP_ISOMETRIC_VIEW_FRAME_HH */

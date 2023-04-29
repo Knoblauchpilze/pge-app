@@ -1,5 +1,5 @@
-#ifndef PGE_APP_TRANSFORMED_VIEW_FRAME_HH
-#define PGE_APP_TRANSFORMED_VIEW_FRAME_HH
+
+#pragma once
 
 #include "CoordinateFrame.hh"
 #include <eigen3/Eigen/Eigen>
@@ -28,5 +28,3 @@ class TransformedViewFrame : public CoordinateFrame
 };
 
 } // namespace pge
-
-#endif /* PGE_APP_TRANSFORMED_VIEW_FRAME_HH */

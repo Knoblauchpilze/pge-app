@@ -1,5 +1,5 @@
-#ifndef PGE_APP_SAVED_GAMES_HH
-#define PGE_APP_SAVED_GAMES_HH
+
+#pragma once
 
 #include "Menu.hh"
 #include <core_utils/CoreObject.hh>
@@ -127,5 +127,3 @@ class SavedGames : public utils::CoreObject
 
 using SavedGamesShPtr = std::shared_ptr<SavedGames>;
 } // namespace pge
-
-#endif /* PGE_APP_SAVED_GAMES_HH */

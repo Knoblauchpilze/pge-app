@@ -1,5 +1,5 @@
-#ifndef PGE_APP_ISOMETRIC_VIEW_FRAME_HXX
-#define PGE_APP_ISOMETRIC_VIEW_FRAME_HXX
+
+#pragma once
 
 #include "IsometricViewFrame.hh"
 
@@ -15,5 +15,3 @@ IsometricViewFrame::IsometricViewFrame(const CenteredViewport &tiles, const TopL
 {}
 
 } // namespace pge
-
-#endif /* PGE_APP_ISOMETRIC_VIEW_FRAME_HXX */

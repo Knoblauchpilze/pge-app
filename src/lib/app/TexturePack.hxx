@@ -1,5 +1,5 @@
-#ifndef PGE_APP_TEXTURE_PACK_HXX
-#define PGE_APP_TEXTURE_PACK_HXX
+
+#pragma once
 
 #include "TexturePack.hh"
 
@@ -24,5 +24,3 @@ inline olc::vi2d TexturePack::spriteCoords(const Pack &pack, const olc::vi2d &co
 }
 
 } // namespace pge
-
-#endif /* PGE_APP_TEXTURE_PACK_HXX */

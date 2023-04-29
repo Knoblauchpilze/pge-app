@@ -1,5 +1,5 @@
-#ifndef PGE_APP_GAME_HXX
-#define PGE_APP_GAME_HXX
+
+#pragma once
 
 #include "Game.hh"
 
@@ -41,5 +41,3 @@ inline void Game::resume()
 }
 
 } // namespace pge
-
-#endif /* PGE_APP_GAME_HXX */

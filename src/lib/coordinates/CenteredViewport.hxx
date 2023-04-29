@@ -1,5 +1,5 @@
-#ifndef PGE_APP_CENTERED_VIEWPORT_HXX
-#define PGE_APP_CENTERED_VIEWPORT_HXX
+
+#pragma once
 
 #include "CenteredViewport.hh"
 
@@ -89,5 +89,3 @@ inline bool CenteredViewport::visible(const float x,
 }
 
 } // namespace pge
-
-#endif /* PGE_APP_CENTERED_VIEWPORT_HXX */

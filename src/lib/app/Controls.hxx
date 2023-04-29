@@ -1,5 +1,5 @@
-#ifndef PGE_APP_CONTROLS_HXX
-#define PGE_APP_CONTROLS_HXX
+
+#pragma once
 
 #include "Controls.hh"
 
@@ -21,5 +21,3 @@ inline State newState() noexcept
 }
 
 } // namespace pge::controls
-
-#endif /* PGE_APP_CONTROLS_HXX */

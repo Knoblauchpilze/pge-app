@@ -1,5 +1,5 @@
-#ifndef APP_HXX
-#define APP_HXX
+
+#pragma once
 
 #include "Action.hh"
 #include "App.hh"
@@ -20,5 +20,3 @@ inline void App::drawRect(const SpriteDesc &t, const CoordinateFrame &cf)
 }
 
 } // namespace pge
-
-#endif /* APP_HXX */

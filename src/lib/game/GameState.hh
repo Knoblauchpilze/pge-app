@@ -1,5 +1,5 @@
-#ifndef PGE_APP_GAME_STATE_HH
-#define PGE_APP_GAME_STATE_HH
+
+#pragma once
 
 #include "Menu.hh"
 #include "SavedGames.hh"
@@ -122,5 +122,3 @@ class GameState : public utils::CoreObject
 
 using GameStateShPtr = std::shared_ptr<GameState>;
 } // namespace pge
-
-#endif /* PGE_APP_GAME_STATE_HH */

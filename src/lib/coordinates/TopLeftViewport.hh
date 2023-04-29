@@ -1,5 +1,5 @@
-#ifndef PGE_APP_TOP_LEFT_VIEWPORT_HH
-#define PGE_APP_TOP_LEFT_VIEWPORT_HH
+
+#pragma once
 
 #include "Viewport.hh"
 #include "olcEngine.hh"
@@ -58,5 +58,3 @@ class TopLeftViewport : public Viewport
 } // namespace pge
 
 #include "TopLeftViewport.hxx"
-
-#endif /* PGE_APP_TOP_LEFT_VIEWPORT_HH */

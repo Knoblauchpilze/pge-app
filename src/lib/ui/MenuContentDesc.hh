@@ -1,5 +1,5 @@
-#ifndef PGE_APP_MENU_CONTENT_DESC_HH
-#define PGE_APP_MENU_CONTENT_DESC_HH
+
+#pragma once
 
 #include "olcEngine.hh"
 
@@ -67,5 +67,3 @@ MenuContentDesc newMenuContent(const std::string &text,
                                const Alignment &align = Alignment::Left) noexcept;
 
 } // namespace pge::menu
-
-#endif /* PGE_APP_MENU_CONTENT_DESC_HH */

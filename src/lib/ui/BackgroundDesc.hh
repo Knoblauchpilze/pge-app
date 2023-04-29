@@ -1,5 +1,5 @@
-#ifndef PGE_APP_BACKGROUND_DESC_HH
-#define PGE_APP_BACKGROUND_DESC_HH
+
+#pragma once
 
 #include "olcEngine.hh"
 
@@ -30,5 +30,3 @@ BackgroundDesc newColoredBackground(const olc::Pixel &c) noexcept;
 void updateFromColor(BackgroundDesc &bg, const olc::Pixel &c) noexcept;
 
 } // namespace pge::menu
-
-#endif /* PGE_APP_BACKGROUND_DESC_HH */

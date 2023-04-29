@@ -1,5 +1,5 @@
-#ifndef PGE_APP_COLOR_UTILS_HXX
-#define PGE_APP_COLOR_UTILS_HXX
+
+#pragma once
 
 #include "ColorUtils.hh"
 #include <maths_utils/ComparisonUtils.hh>
@@ -160,5 +160,3 @@ inline std::string toString(const olc::Pixel &p) noexcept
   return std::string("[r: ") + std::to_string(p.r) + ", g: " + std::to_string(p.g)
          + ", b: " + std::to_string(p.b) + ", a: " + std::to_string(p.a) + "]";
 }
-
-#endif /* PGE_APP_COLOR_UTILS_HXX */

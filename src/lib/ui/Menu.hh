@@ -1,5 +1,5 @@
-#ifndef PGE_APP_MENU_HH
-#define PGE_APP_MENU_HH
+
+#pragma once
 
 #include "Action.hh"
 #include "BackgroundDesc.hh"
@@ -272,5 +272,3 @@ class Menu : public utils::CoreObject
 } // namespace pge
 
 #include "Menu.hxx"
-
-#endif /* PGE_APP_MENU_HH */

@@ -1,5 +1,5 @@
-#ifndef PGE_APP_GAME_HH
-#define PGE_APP_GAME_HH
+
+#pragma once
 
 #include <core_utils/CoreObject.hh>
 #include <core_utils/TimeUtils.hh>
@@ -189,5 +189,3 @@ using GameShPtr = std::shared_ptr<Game>;
 } // namespace pge
 
 #include "Game.hxx"
-
-#endif /* PGE_APP_GAME_HH */

@@ -1,5 +1,5 @@
-#ifndef PGE_APP_HH
-#define PGE_APP_HH
+
+#pragma once
 
 #include "AppDesc.hh"
 #include "Controls.hh"
@@ -235,5 +235,3 @@ class PGEApp : public utils::CoreObject, public olc::PixelGameEngine
 } // namespace pge
 
 #include "PGEApp.hxx"
-
-#endif /* PGE_APP_HH */

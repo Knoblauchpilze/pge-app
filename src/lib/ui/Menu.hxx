@@ -1,5 +1,5 @@
-#ifndef PGE_APP_MENU_HXX
-#define PGE_APP_MENU_HXX
+
+#pragma once
 
 #include "Menu.hh"
 
@@ -138,4 +138,4 @@ inline void Menu::clearContent()
 
 } // namespace pge
 
-#endif /* PGE_APP_MENU_HXX */
+#pragma once

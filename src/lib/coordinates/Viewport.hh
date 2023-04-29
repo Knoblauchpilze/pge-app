@@ -1,5 +1,5 @@
-#ifndef PGE_APP_VIEWPORT_HH
-#define PGE_APP_VIEWPORT_HH
+
+#pragma once
 
 #include <maths_utils/Vector2.hh>
 #include <memory>
@@ -101,5 +101,3 @@ using ViewportPtr = std::shared_ptr<Viewport>;
 } // namespace pge
 
 #include "Viewport.hxx"
-
-#endif /* PGE_APP_VIEWPORT_HH */

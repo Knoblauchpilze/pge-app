@@ -1,5 +1,5 @@
-#ifndef PGE_APP_APP_DESC_HH
-#define PGE_APP_APP_DESC_HH
+
+#pragma once
 
 #include "CoordinateFrame.hh"
 #include "olcEngine.hh"
@@ -42,5 +42,3 @@ AppDesc newDesc(const olc::vi2d &dims,
 } // namespace pge
 
 #include "AppDesc.hxx"
-
-#endif /* PGE_APP_APP_DESC_HH */

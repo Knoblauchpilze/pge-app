@@ -1,5 +1,5 @@
-#ifndef PGE_APP_TOP_LEFT_VIEWPORT_HXX
-#define PGE_APP_TOP_LEFT_VIEWPORT_HXX
+
+#pragma once
 
 #include "TopLeftViewport.hh"
 
@@ -88,5 +88,3 @@ inline bool TopLeftViewport::visible(const float x,
 }
 
 } // namespace pge
-
-#endif /* PGE_APP_TOP_LEFT_VIEWPORT_HXX */

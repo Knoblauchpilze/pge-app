@@ -1,5 +1,5 @@
-#ifndef PGE_APP_COORDINATE_FRAME_HH
-#define PGE_APP_COORDINATE_FRAME_HH
+
+#pragma once
 
 #include "CenteredViewport.hh"
 #include "TopLeftViewport.hh"
@@ -127,5 +127,3 @@ class CoordinateFrame : public utils::CoreObject
 
 using CoordinateFramePtr = std::shared_ptr<CoordinateFrame>;
 } // namespace pge
-
-#endif /* PGE_APP_COORDINATE_FRAME_HH */

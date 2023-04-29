@@ -1,5 +1,5 @@
-#ifndef PGE_APP_APP_DESC_HXX
-#define PGE_APP_APP_DESC_HXX
+
+#pragma once
 
 #include "AppDesc.hh"
 
@@ -24,5 +24,3 @@ inline AppDesc newDesc(const olc::vi2d &dims,
 }
 
 } // namespace pge
-
-#endif /* PGE_APP_APP_DESC_HXX */

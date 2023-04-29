@@ -1,5 +1,5 @@
-#ifndef PGE_APP_CONTROLS_HH
-#define PGE_APP_CONTROLS_HH
+
+#pragma once
 
 #include <vector>
 
@@ -81,5 +81,3 @@ State newState() noexcept;
 } // namespace pge::controls
 
 #include "Controls.hxx"
-
-#endif /* PGE_APP_CONTROLS_HH */

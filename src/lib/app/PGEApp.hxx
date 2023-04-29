@@ -1,5 +1,5 @@
-#ifndef PGE_APP_HXX
-#define PGE_APP_HXX
+
+#pragma once
 
 #include "PGEApp.hh"
 
@@ -81,5 +81,3 @@ inline void PGEApp::initialize(const olc::vi2d &dims, const olc::vi2d &pixRatio)
 }
 
 } // namespace pge
-
-#endif /* PGE_APP_HXX */

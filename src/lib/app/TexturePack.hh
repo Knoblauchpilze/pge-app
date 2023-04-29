@@ -1,5 +1,5 @@
-#ifndef PGE_APP_TEXTURE_PACK_HH
-#define PGE_APP_TEXTURE_PACK_HH
+
+#pragma once
 
 #include "olcEngine.hh"
 #include <core_utils/CoreObject.hh>
@@ -140,5 +140,3 @@ using TexturePackShPtr = std::shared_ptr<TexturePack>;
 } // namespace pge
 
 #include "TexturePack.hxx"
-
-#endif /* PGE_APP_TEXTURE_PACK_HH */

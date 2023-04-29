@@ -1,5 +1,5 @@
-#ifndef PGE_APP_ACTION_HH
-#define PGE_APP_ACTION_HH
+
+#pragma once
 
 #include "Game.hh"
 #include <core_utils/CoreObject.hh>
@@ -46,5 +46,3 @@ class Action : public utils::CoreObject
 
 using ActionShPtr = std::shared_ptr<Action>;
 } // namespace pge
-
-#endif /* PGE_APP_ACTION_HH */

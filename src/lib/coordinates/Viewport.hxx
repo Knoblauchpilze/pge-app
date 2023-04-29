@@ -1,5 +1,5 @@
-#ifndef PGE_APP_VIEWPORT_HXX
-#define PGE_APP_VIEWPORT_HXX
+
+#pragma once
 
 #include "Viewport.hh"
 
@@ -31,5 +31,3 @@ inline bool Viewport::visible(const Vectorf &p, const Vectorf &sz) const noexcep
 }
 
 } // namespace pge
-
-#endif /* PGE_APP_VIEWPORT_HXX */

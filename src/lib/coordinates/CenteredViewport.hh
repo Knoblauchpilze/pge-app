@@ -1,5 +1,5 @@
-#ifndef PGE_APP_CENTERED_VIEWPORT_HH
-#define PGE_APP_CENTERED_VIEWPORT_HH
+
+#pragma once
 
 #include "Viewport.hh"
 #include "olcEngine.hh"
@@ -60,5 +60,3 @@ class CenteredViewport : public Viewport
 } // namespace pge
 
 #include "CenteredViewport.hxx"
-
-#endif /* PGE_APP_CENTERED_VIEWPORT_HH */

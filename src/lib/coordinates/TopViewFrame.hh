@@ -1,5 +1,5 @@
-#ifndef PGE_APP_TOP_VIEW_FRAME_HH
-#define PGE_APP_TOP_VIEW_FRAME_HH
+
+#pragma once
 
 #include "CoordinateFrame.hh"
 
@@ -16,5 +16,3 @@ class TopViewFrame : public CoordinateFrame
 };
 
 } // namespace pge
-
-#endif /* PGE_APP_TOP_VIEW_FRAME_HH */

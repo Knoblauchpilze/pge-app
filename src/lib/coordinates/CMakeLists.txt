@@ -2,7 +2,7 @@
 target_sources (example-app_lib PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}/CoordinateFrame.cc
 	${CMAKE_CURRENT_SOURCE_DIR}/TopViewFrame.cc
-	${CMAKE_CURRENT_SOURCE_DIR}/IsometricViewFrame.cc
+	${CMAKE_CURRENT_SOURCE_DIR}/TransformedViewFrame.cc
 	)
 
 target_include_directories (example-app_lib PUBLIC

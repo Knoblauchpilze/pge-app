@@ -21,50 +21,16 @@ TransformedViewFrame::TransformedViewFrame(const CenteredViewport &tiles,
   m_pixelsToTilesTransform = m_tilesToPixelsTransform.inverse();
 }
 
-olc::vf2d TransformedViewFrame::tilesToPixels(float x, float y) const noexcept
+olc::vf2d TransformedViewFrame::normalizedTilesToPixels(const olc::vf2d &tiles) const noexcept
 {
-  auto rel = m_tilesViewport.relativeCoords(x, y);
-  // See TopViewFrame::pixelsToTiles.
-  rel.x = (rel.x + 1.0f) / 2.0f;
-  rel.y = (1.0f - rel.y) / 2.0f;
-
-  Eigen::Vector2f transformed = m_tilesToPixelsTransform * Eigen::Vector2f{rel.x, rel.y};
-  auto out                    = m_pixelsViewport.absoluteCoords(transformed(0), transformed(1));
-
-  log("p: " + std::to_string(x) + "x" + std::to_string(y));
-  log("rel: " + rel.str());
-  std::stringstream str;
-  str << m_tilesToPixelsTransform;
-  log("mat: \n" + str.str());
-  str.clear();
-  log("transformed: " + std::to_string(transformed(0)) + "x" + std::to_string(transformed(1)));
-  log("out: " + out.str());
-
-  return out;
+  Eigen::Vector2f transformed = m_tilesToPixelsTransform * Eigen::Vector2f{tiles.x, tiles.y};
+  return olc::vf2d{transformed(0), transformed(1)};
 }
 
-olc::vf2d TransformedViewFrame::pixelsToTiles(float x, float y) const noexcept
+olc::vf2d TransformedViewFrame::normalizedPixelsToTiles(const olc::vf2d &pixels) const noexcept
 {
-  olc::vf2d rel = m_pixelsViewport.relativeCoords(x, y);
-  auto relSave  = rel;
-  // See TopViewFrame::tilesToPixels.
-  rel.x = 2.0f * rel.x - 1.0f;
-  rel.y = 1.0f - 2.0f * rel.y;
-
-  Eigen::Vector2f transformed = m_pixelsToTilesTransform * Eigen::Vector2f{rel.x, rel.y};
-  auto out                    = m_tilesViewport.absoluteCoords(transformed(0), transformed(1));
-
-  log("p: " + std::to_string(x) + "x" + std::to_string(y));
-  log("relSave: " + relSave.str());
-  log("rel: " + rel.str());
-  std::stringstream str;
-  str << m_tilesToPixelsTransform;
-  log("mat: \n" + str.str());
-  str.clear();
-  log("transformed: " + std::to_string(transformed(0)) + "x" + std::to_string(transformed(1)));
-  log("out: " + out.str());
-
-  return out;
+  Eigen::Vector2f transformed = m_pixelsToTilesTransform * Eigen::Vector2f{pixels.x, pixels.y};
+  return olc::vf2d{transformed(0), transformed(1)};
 }
 
 } // namespace pge

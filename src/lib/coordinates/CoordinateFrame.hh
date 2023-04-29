@@ -33,14 +33,14 @@ class CoordinateFrame : public utils::CoreObject
   /// @param x - x coordinate in tiles.
   /// @param y - y coordinate in tiles.
   /// @return - the pixel position for the input tile position.
-  virtual olc::vf2d tilesToPixels(float x, float y) const noexcept = 0;
+  olc::vf2d tilesToPixels(float x, float y) const noexcept;
 
   /// @brief - Convert the input pixel coordinates to the corresponding
   /// tile coordinates.
   /// @param x - x coordinate in pixels.
   /// @param y - y coordinate in pixels.
   /// @return - the tile position for the input pixel position.
-  virtual olc::vf2d pixelsToTiles(float x, float y) const noexcept = 0;
+  olc::vf2d pixelsToTiles(float x, float y) const noexcept;
 
   /// @brief - Similar to the above method but convert the tiles position
   /// to an integer representation.
@@ -73,6 +73,19 @@ class CoordinateFrame : public utils::CoreObject
   /// the `beginTranslation` method.
   /// @param trackedOrigin - the new position of the origin.
   void translate(const olc::vf2d &trackedOrigin);
+
+  protected:
+  /// @brief - Given some normalized coordinates in tiles space, convert
+  /// them to pixels normalized coordinates.
+  /// @param tiles - normalized coordinate in tiles.
+  /// @return - the normalized pixel position for the input tile position.
+  virtual olc::vf2d normalizedTilesToPixels(const olc::vf2d &tiles) const noexcept = 0;
+
+  /// @brief - Given some normalized coordinates in pixels space, convert
+  /// them to tiles normalized coordinates.
+  /// @param pixels - normalized coordinate in pixels.
+  /// @return - the normalized tile position for the input pixel position.
+  virtual olc::vf2d normalizedPixelsToTiles(const olc::vf2d &pixels) const noexcept = 0;
 
   private:
   /// @brief - Perform the zoom operation to fix the position in input (in

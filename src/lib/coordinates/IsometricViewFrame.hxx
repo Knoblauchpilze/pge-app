@@ -5,7 +5,8 @@
 
 namespace pge {
 
-IsometricViewFrame::IsometricViewFrame(const CenteredViewport &tiles, const TopLeftViewport &pixels)
+inline IsometricViewFrame::IsometricViewFrame(const CenteredViewport &tiles,
+                                              const TopLeftViewport &pixels)
   :
 
   // Eigen uses clockwise rotations, so to rotate in the usual trigonometric

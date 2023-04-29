@@ -1,18 +1,16 @@
 
 #pragma once
 
-#include "CoordinateFrame.hh"
+#include "TransformedViewFrame.hh"
 
 namespace pge {
 
-class TopViewFrame : public CoordinateFrame
+class TopViewFrame : public TransformedViewFrame
 {
   public:
   TopViewFrame(const CenteredViewport &tiles, const TopLeftViewport &pixels);
-
-  olc::vf2d tilesToPixels(float x, float y) const noexcept override;
-
-  olc::vf2d pixelsToTiles(float x, float y) const noexcept override;
 };
 
 } // namespace pge
+
+#include "TopViewFrame.hxx"

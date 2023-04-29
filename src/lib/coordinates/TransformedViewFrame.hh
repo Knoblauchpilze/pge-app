@@ -13,9 +13,10 @@ class TransformedViewFrame : public CoordinateFrame
                        const Eigen::Matrix2f &transform,
                        const TopLeftViewport &pixels);
 
-  olc::vf2d tilesToPixels(float x, float y) const noexcept override;
+  protected:
+  olc::vf2d normalizedTilesToPixels(const olc::vf2d &tiles) const noexcept override;
 
-  olc::vf2d pixelsToTiles(float x, float y) const noexcept override;
+  olc::vf2d normalizedPixelsToTiles(const olc::vf2d &pixels) const noexcept override;
 
   private:
   /// @brief - The transformation matrix to convert from tiles space to pixels

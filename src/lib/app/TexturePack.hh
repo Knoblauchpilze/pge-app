@@ -57,56 +57,39 @@ struct Sprite
 class TexturePack : public utils::CoreObject
 {
   public:
-  /**
-       * @brief - Generate a new texture pack with no resources
-       *          registered yet.
-       */
+  /// @brief - Generate a new texture pack with no resources registered yet.
   TexturePack();
 
-  /**
-       * @brief - Detroys the texture pack and release the sprites
-       *          and resources attached to it.
-       */
+  /// @brief - Detroys the texture pack and release the sprites and resources
+  /// attached to it.
   ~TexturePack();
 
-  /**
-       * @brief - Performs the registration of the input pack
-       *          and return the corresponding pack identifier
-       *          so that the caller can refer to this pack
-       *          afterwards.
-       * @param pack - the pack to load.
-       * @return - an identifier allowing to reference this
-       *           pack for later use.
-       */
+  /// @brief - Performs the registration of the input pack and return the
+  /// corresponding pack identifier so that the caller can refer to this pack
+  /// afterwards.
+  /// @param pack - the pack to load.
+  /// @return - an identifier allowing to reference this pack for later use.
   unsigned registerPack(const sprites::Pack &pack);
 
-  /**
-       * @brief - Used to perform the drawing of the sprite as
-       *          defined by the input argument using the engine.
-       *          The sprite will be associated internally with
-       *          the corresponding visual.
-       * @param pge - the engine to use to perform the rendering.
-       * @param s - the sprite to draw.
-       * @param p - the position where the sprite will be drawn.
-       * @param scale - defines a scaling factor to apply to the
-       *                sprite.
-       */
+  /// @brief - Used to perform the drawing of the sprite as defined by the input
+  /// argument using the engine. The sprite will be associated internally with
+  /// the corresponding visual.
+  /// @param pge - the engine to use to perform the rendering.
+  /// @param s - the sprite to draw.
+  /// @param p - the position where the sprite will be drawn.
+  /// @param scale - defines a scaling factor to apply to the sprite.
   void draw(olc::PixelGameEngine *pge,
             const sprites::Sprite &s,
             const olc::vf2d &p,
             const olc::vf2d &scale = olc::vf2d(1.0f, 1.0f)) const;
 
-  /**
-       * @brief - Variant of the above method to accept a scale
-       *          expressed as a single float: the scale will be
-       *          applied in both directions.
-       * @param pge - the engine to use to perform the rendering.
-       * @param s - the sprite to draw.
-       * @param p - the position where the sprite will be drawn.
-       * @param scale - defines a scaling factor to apply to the
-       *                sprite. Both directions will be scaled
-       *                uniformly.
-       */
+  /// @brief - Variant of the above method to accept a scale expressed as a single
+  /// float: the scale will be applied in both directions.
+  /// @param pge - the engine to use to perform the rendering.
+  /// @param s - the sprite to draw.
+  /// @param p - the position where the sprite will be drawn.
+  /// @param scale - defines a scaling factor to apply to the sprite. Both directions
+  /// will be scaled uniformly.
   void draw(olc::PixelGameEngine *pge,
             const sprites::Sprite &s,
             const olc::vf2d &p,
@@ -133,36 +116,23 @@ class TexturePack : public utils::CoreObject
     olc::Decal *res;
   };
 
-  /**
-       * @brief - Used to convert from sprite coordinates to the
-       *          corresponding pixels coordinates. This method
-       *          should mostly be used to locate a sprite in a
-       *          resource pack. The internal layout allows to
-       *          know in advance how sprites are laid out in
-       *          the pack and thus find the correct location
-       *          based on the coordinates of the sprite and
-       *          its identifier.
-       *          In order to find the correct sprite, both some
-       *          coordinates and a variation id should be set
-       *          to fix a single element in the sprites.
-       * @param pack - the texture pack to which the coordinates
-       *               correspond to.
-       * @param coord - the coordinates of the sprite to convert
-       *                to pixels in the resource pack.
-       * @param id - the index of the variation of the sprite
-       *             to use: default is `0`.
-       * @return - a vector representing the pixels coordinates
-       *           for the input sprite coords.
-       */
+  /// @brief - Used to convert from sprite coordinates to the corresponding pixels
+  /// coordinates. This method should mostly be used to locate a sprite in a resource
+  /// pack. The internal layout allows to know in advance how sprites are laid out in
+  /// the pack and thus find the correct location based on the coordinates of the
+  /// sprite and its identifier.
+  /// In order to find the correct sprite, both some coordinates and a variation id
+  /// should be set to fix a single element in the sprites.
+  /// @param pack - the texture pack to which the coordinates correspond to.
+  /// @param coord - the coordinates of the sprite to convert to pixels in the resource
+  /// pack.
+  /// @param id - the index of the variation of the sprite to use: default is `0`.
+  /// @return - a vector representing the pixels coordinates for the input sprite coords.
   olc::vi2d spriteCoords(const Pack &pack, const olc::vi2d &coord, int id = 0) const;
 
   private:
-  /**
-       * @brief - The list of packs registered so far for
-       *          this object. Note that the identifier of
-       *          each pack corresponds to the position of
-       *          the pack in this vector.
-       */
+  /// @brief - The list of packs registered so far for this object. Note that the
+  /// identifier of each pack corresponds to the position of the pack in this vector.
   std::vector<Pack> m_packs;
 };
 

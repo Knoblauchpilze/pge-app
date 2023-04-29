@@ -1,8 +1,7 @@
 
 #include "MenuContentDesc.hh"
 
-namespace pge {
-namespace menu {
+namespace pge::menu {
 
 MenuContentDesc newTextContent(const std::string &text,
                                const olc::Pixel &color,
@@ -66,5 +65,4 @@ MenuContentDesc newMenuContent(const std::string &text,
   return m;
 }
 
-} // namespace menu
-} // namespace pge
+} // namespace pge::menu

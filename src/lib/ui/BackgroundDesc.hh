@@ -3,8 +3,7 @@
 
 #include "olcEngine.hh"
 
-namespace pge {
-namespace menu {
+namespace pge::menu {
 
 /// @brief - Convenience structure defining the background that can be applied to
 /// a menu. We either define a color that is applied on all the menu or a sprite
@@ -30,7 +29,6 @@ BackgroundDesc newColoredBackground(const olc::Pixel &c) noexcept;
 /// be computed from it.
 void updateFromColor(BackgroundDesc &bg, const olc::Pixel &c) noexcept;
 
-} // namespace menu
-} // namespace pge
+} // namespace pge::menu
 
 #endif /* PGE_APP_BACKGROUND_DESC_HH */

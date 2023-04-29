@@ -1,8 +1,7 @@
 
 #include "BackgroundDesc.hh"
 
-namespace pge {
-namespace menu {
+namespace pge::menu {
 
 BackgroundDesc newColoredBackground(const olc::Pixel &c) noexcept
 {
@@ -29,5 +28,4 @@ void updateFromColor(BackgroundDesc &bg, const olc::Pixel &c) noexcept
   std::swap(bg, nbg);
 }
 
-} // namespace menu
-} // namespace pge
+} // namespace pge::menu

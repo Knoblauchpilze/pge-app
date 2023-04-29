@@ -3,8 +3,7 @@
 
 #include "Controls.hh"
 
-namespace pge {
-namespace controls {
+namespace pge::controls {
 
 inline State newState() noexcept
 {
@@ -21,7 +20,6 @@ inline State newState() noexcept
   return c;
 }
 
-} // namespace controls
-} // namespace pge
+} // namespace pge::controls
 
 #endif /* PGE_APP_CONTROLS_HXX */

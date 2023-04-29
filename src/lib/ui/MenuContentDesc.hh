@@ -3,8 +3,7 @@
 
 #include "olcEngine.hh"
 
-namespace pge {
-namespace menu {
+namespace pge::menu {
 
 /// @brief - Define the alignment of elements within a menu.
 enum class Alignment
@@ -67,7 +66,6 @@ MenuContentDesc newMenuContent(const std::string &text,
                                const olc::vi2d &size,
                                const Alignment &align = Alignment::Left) noexcept;
 
-} // namespace menu
-} // namespace pge
+} // namespace pge::menu
 
 #endif /* PGE_APP_MENU_CONTENT_DESC_HH */

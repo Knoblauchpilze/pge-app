@@ -3,8 +3,7 @@
 
 #include <vector>
 
-namespace pge {
-namespace controls {
+namespace pge::controls {
 
 namespace keys {
 
@@ -75,14 +74,11 @@ struct State
   bool tab;
 };
 
-/**
-     * @brief - Create a new controls structure.
-     * @return - the created structure.
-     */
+/// @brief - Create a new controls structure.
+/// @return - the created structure.
 State newState() noexcept;
 
-} // namespace controls
-} // namespace pge
+} // namespace pge::controls
 
 #include "Controls.hxx"
 

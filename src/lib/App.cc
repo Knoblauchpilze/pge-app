@@ -84,17 +84,13 @@ void App::loadData()
 
 void App::loadResources()
 {
-  // Assign a specific tint to the regular
-  // drawing layer so that we have a built
+  // Assign a specific tint to the regular drawing layer so that we have a built
   // in transparency.
-  // We can't do it directly when drawing
-  // in the rendering function because as
-  // the whole layer will be drawn as one
-  // quad in opengl with an opaque alpha,
-  // we will lose this info.
-  // This means that everything is indeed
-  // transparent but that's the only way
-  // for now to achieve it.
+  // We can't do it directly when drawing in the rendering function because as the
+  // whole layer will be drawn as one quad in opengl with an opaque alpha, we will
+  // lose this info.
+  // This means that everything is indeed transparent but that's the only way for
+  // now to achieve it.
   setLayerTint(Layer::Draw, olc::Pixel(255, 255, 255, alpha::SemiOpaque));
 
   info("Load app resources in the 'm_packs' attribute");
@@ -172,8 +168,7 @@ void App::draw(const RenderDesc & /*res*/)
   SetPixelMode(olc::Pixel::ALPHA);
   Clear(olc::Pixel(255, 255, 255, alpha::Transparent));
 
-  // In case we're not in game mode, just render
-  // the state.
+  // In case we're not in game mode, just render the state.
   if (m_state->getScreen() != Screen::Game)
   {
     m_state->render(this);
@@ -190,8 +185,7 @@ void App::drawUI(const RenderDesc & /*res*/)
   SetPixelMode(olc::Pixel::ALPHA);
   Clear(olc::Pixel(255, 255, 255, alpha::Transparent));
 
-  // In case we're not in game mode, just render
-  // the state.
+  // In case we're not in game mode, just render the state.
   if (m_state->getScreen() != Screen::Game)
   {
     m_state->render(this);
@@ -214,8 +208,7 @@ void App::drawDebug(const RenderDesc &res)
   SetPixelMode(olc::Pixel::ALPHA);
   Clear(olc::Pixel(255, 255, 255, alpha::Transparent));
 
-  // In case we're not in game mode, just render
-  // the state.
+  // In case we're not in game mode, just render the state.
   if (m_state->getScreen() != Screen::Game)
   {
     m_state->render(this);

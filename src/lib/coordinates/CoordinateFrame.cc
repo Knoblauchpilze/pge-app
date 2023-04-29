@@ -3,15 +3,11 @@
 
 namespace pge {
 
-CoordinateFrame::CoordinateFrame(const CenteredViewport &cells, const TopLeftViewport &pixels)
+CoordinateFrame::CoordinateFrame(const CenteredViewport &tiles, const TopLeftViewport &pixels)
   : utils::CoreObject("frame")
-  ,
-
-  m_cellsViewport(cells)
+  , m_tilesViewport(tiles)
   , m_pixelsViewport(pixels)
-  ,
-
-  m_translationOrigin()
+  , m_translationOrigin()
   , m_cachedPOrigin()
 {
   setService("coordinate");
@@ -19,10 +15,15 @@ CoordinateFrame::CoordinateFrame(const CenteredViewport &cells, const TopLeftVie
 
 olc::vf2d CoordinateFrame::tileSize() const noexcept
 {
-  const auto cellsDims  = m_cellsViewport.dims();
+  const auto tilesDims  = m_tilesViewport.dims();
   const auto pixelsDims = m_pixelsViewport.dims();
 
-  return pixelsDims / cellsDims;
+  return pixelsDims / tilesDims;
+}
+
+CenteredViewport CoordinateFrame::tilesViewport() const noexcept
+{
+  return m_tilesViewport;
 }
 
 olc::vi2d CoordinateFrame::pixelsToTiles(const olc::vi2d &pixels,
@@ -54,7 +55,7 @@ void CoordinateFrame::zoomOut(const olc::vf2d &pos)
 void CoordinateFrame::beginTranslation(const olc::vf2d &origin)
 {
   m_translationOrigin = origin;
-  m_cachedPOrigin     = m_cellsViewport.center();
+  m_cachedPOrigin     = m_tilesViewport.center();
 }
 
 void CoordinateFrame::translate(const olc::vf2d &pos)
@@ -75,50 +76,50 @@ void CoordinateFrame::translate(const olc::vf2d &pos)
   // By applying this, we would bring back the current position of
   // m_translationOrigin (which is pos) to its initial value.
   olc::vf2d translation = m_translationOrigin - pos;
-  // The argument here is that pixels and cells viewport y axis are
+  // The argument here is that pixels and tiles viewport y axis are
   // moving in opposite direction.
   translation.y *= -1.0f;
 
-  auto dCells = pixelsDistToCellsDist(translation);
+  auto dTiles = pixelsDistToTilesDist(translation);
 
-  m_cellsViewport.moveTo(m_cachedPOrigin + dCells);
+  m_tilesViewport.moveTo(m_cachedPOrigin + dTiles);
 }
 
 void CoordinateFrame::zoom(float factor, const olc::vf2d &pos)
 {
   olc::vf2d dPixels = pos - m_pixelsViewport.topLeft();
 
-  olc::vf2d pCells = pixelsToTiles(pos.x, pos.y);
-  olc::vf2d dCells = pCells - m_cellsViewport.center();
+  olc::vf2d pTiles = pixelsToTiles(pos.x, pos.y);
+  olc::vf2d dTiles = pTiles - m_tilesViewport.center();
 
   dPixels /= factor;
-  dCells /= factor;
+  dTiles /= factor;
 
-  m_cellsViewport.moveTo(pCells - dCells);
+  m_tilesViewport.moveTo(pTiles - dTiles);
 
-  // Only the dimensions of the cells viewport need to be updated.
-  m_cellsViewport.scale(1.0f / factor, 1.0f / factor);
+  // Only the dimensions of the tiles viewport need to be updated.
+  m_tilesViewport.scale(1.0f / factor, 1.0f / factor);
 }
 
-olc::vf2d CoordinateFrame::pixelsDistToCellsDist(const olc::vf2d &pixelsDist)
+olc::vf2d CoordinateFrame::pixelsDistToTilesDist(const olc::vf2d &pixelsDist)
 {
-  return pixelsDistToCellsDist(pixelsDist.x, pixelsDist.y);
+  return pixelsDistToTilesDist(pixelsDist.x, pixelsDist.y);
 }
 
-olc::vf2d CoordinateFrame::pixelsDistToCellsDist(float dx, float dy)
+olc::vf2d CoordinateFrame::pixelsDistToTilesDist(float dx, float dy)
 {
-  auto ratio = m_pixelsViewport.dims() / m_cellsViewport.dims();
+  auto ratio = m_pixelsViewport.dims() / m_tilesViewport.dims();
   return olc::vf2d{dx / ratio.x, dy / ratio.y};
 }
 
-olc::vf2d CoordinateFrame::cellsDistToPixelsDist(const olc::vf2d &cellsDist)
+olc::vf2d CoordinateFrame::tilesDistToPixelsDist(const olc::vf2d &tilesDist)
 {
-  return cellsDistToPixelsDist(cellsDist.x, cellsDist.y);
+  return tilesDistToPixelsDist(tilesDist.x, tilesDist.y);
 }
 
-olc::vf2d CoordinateFrame::cellsDistToPixelsDist(float dx, float dy)
+olc::vf2d CoordinateFrame::tilesDistToPixelsDist(float dx, float dy)
 {
-  auto ratio = m_cellsViewport.dims() / m_pixelsViewport.dims();
+  auto ratio = m_tilesViewport.dims() / m_pixelsViewport.dims();
   return olc::vf2d{dx / ratio.x, dy / ratio.y};
 }
 

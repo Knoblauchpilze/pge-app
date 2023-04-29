@@ -7,29 +7,29 @@
 using namespace ::testing;
 
 namespace pge {
-const olc::vf2d CELLS_CENTER = {1.0f, 2.0f};
-const olc::vf2d CELLS_DIMS   = {4.0f, 10.0f};
+const olc::vf2d TILES_CENTER = {1.0f, 2.0f};
+const olc::vf2d TILES_DIMS   = {4.0f, 10.0f};
 
 const olc::vf2d PIXELS_TOP_LEFT = {10.0f, 32.0f};
 const olc::vf2d PIXELS_DIMS     = {128.0f, 58.0f};
 
 auto generateTopViewFrame() -> CoordinateFramePtr
 {
-  CenteredViewport cells = {CELLS_CENTER, CELLS_DIMS};
+  CenteredViewport tiles = {TILES_CENTER, TILES_DIMS};
   TopLeftViewport pixels = {PIXELS_TOP_LEFT, PIXELS_DIMS};
-  return std::make_shared<TopViewFrame>(cells, pixels);
+  return std::make_shared<TopViewFrame>(tiles, pixels);
 }
 
 TEST(Unit_TopViewFrame, Constructor)
 {
   auto frame = generateTopViewFrame();
 
-  auto cells = frame->cellsViewport();
-  EXPECT_EQ(cells.center(), CELLS_CENTER);
-  EXPECT_EQ(cells.dims(), CELLS_DIMS);
+  auto tiles = frame->tilesViewport();
+  EXPECT_EQ(tiles.center(), TILES_CENTER);
+  EXPECT_EQ(tiles.dims(), TILES_DIMS);
 
   auto tile = frame->tileSize();
-  EXPECT_EQ(tile, PIXELS_DIMS / CELLS_DIMS);
+  EXPECT_EQ(tile, PIXELS_DIMS / TILES_DIMS);
 }
 
 auto generateTopTestCaseTilesToPixels(const std::string &name,
@@ -84,22 +84,22 @@ TEST(Unit_TopViewFrame, Translate)
   olc::vf2d origin{20.0f, 51.0f};
   frame->beginTranslation(origin);
 
-  olc::vf2d translationCells{2.6f, -1.7f};
-  olc::vf2d scale = PIXELS_DIMS / CELLS_DIMS;
+  olc::vf2d translationTiles{2.6f, -1.7f};
+  olc::vf2d scale = PIXELS_DIMS / TILES_DIMS;
 
-  auto final = origin + translationCells * scale;
+  auto final = origin + translationTiles * scale;
   frame->translate(final);
 
-  auto cells = frame->cellsViewport();
+  auto tiles = frame->tilesViewport();
   // We moved the position of `[20; 51]` on screen from
-  // this position to `origin + translationCells * scale`.
+  // this position to `origin + translationTiles * scale`.
   // The center will move in the opposite direction to
   // accomodate for `origin` being at its new position
   // on screen. As the y coordinate moves in opposite
   // direction, we have to adjust the translation.
-  olc::vf2d centerTranslation{translationCells.x, -translationCells.y};
-  auto finalCells = CELLS_CENTER - centerTranslation;
-  EXPECT_EQ(cells.center(), finalCells);
+  olc::vf2d centerTranslation{translationTiles.x, -translationTiles.y};
+  auto finalTiles = TILES_CENTER - centerTranslation;
+  EXPECT_EQ(tiles.center(), finalTiles);
 }
 
 TEST(Unit_TopViewFrame, Translate_PreserveTileSize)
@@ -107,7 +107,7 @@ TEST(Unit_TopViewFrame, Translate_PreserveTileSize)
   auto frame = generateTopViewFrame();
 
   auto tile = frame->tileSize();
-  EXPECT_EQ(tile, PIXELS_DIMS / CELLS_DIMS);
+  EXPECT_EQ(tile, PIXELS_DIMS / TILES_DIMS);
 
   olc::vf2d origin{20.0f, 51.0f};
   frame->beginTranslation(origin);
@@ -116,7 +116,7 @@ TEST(Unit_TopViewFrame, Translate_PreserveTileSize)
   frame->translate(final);
 
   tile = frame->tileSize();
-  EXPECT_EQ(tile, PIXELS_DIMS / CELLS_DIMS);
+  EXPECT_EQ(tile, PIXELS_DIMS / TILES_DIMS);
 }
 
 TEST(Unit_TopViewFrame, ZoomIn)
@@ -124,12 +124,12 @@ TEST(Unit_TopViewFrame, ZoomIn)
   auto frame = generateTopViewFrame();
 
   olc::vf2d zoomCenter{35.0f, 56.0f};
-  auto cellsPos = frame->pixelsToTiles(zoomCenter.x, zoomCenter.y);
+  auto tilesPos = frame->pixelsToTiles(zoomCenter.x, zoomCenter.y);
 
   frame->zoomIn(zoomCenter);
 
-  auto newCellsPos = frame->pixelsToTiles(zoomCenter.x, zoomCenter.y);
-  EXPECT_EQ(newCellsPos, cellsPos);
+  auto newTilesPos = frame->pixelsToTiles(zoomCenter.x, zoomCenter.y);
+  EXPECT_EQ(newTilesPos, tilesPos);
 }
 
 TEST(Unit_TopViewFrame, ZoomIn_DoubleTileDimensions)
@@ -140,18 +140,18 @@ TEST(Unit_TopViewFrame, ZoomIn_DoubleTileDimensions)
   frame->zoomIn(zoomCenter);
 
   auto tile = frame->tileSize();
-  EXPECT_EQ(tile, (PIXELS_DIMS / CELLS_DIMS) * 2.0f);
+  EXPECT_EQ(tile, (PIXELS_DIMS / TILES_DIMS) * 2.0f);
 }
 
-TEST(Unit_TopViewFrame, ZoomIn_HalveCellsViewport)
+TEST(Unit_TopViewFrame, ZoomIn_HalveTilesViewport)
 {
   auto frame = generateTopViewFrame();
 
   olc::vf2d zoomCenter{35.0f, 56.0f};
   frame->zoomIn(zoomCenter);
 
-  auto dims = frame->cellsViewport().dims();
-  EXPECT_EQ(dims, CELLS_DIMS / 2.0f);
+  auto dims = frame->tilesViewport().dims();
+  EXPECT_EQ(dims, TILES_DIMS / 2.0f);
 }
 
 TEST(Unit_TopViewFrame, ZoomOut)
@@ -159,12 +159,12 @@ TEST(Unit_TopViewFrame, ZoomOut)
   auto frame = generateTopViewFrame();
 
   olc::vf2d zoomCenter{118.0f, 72.0f};
-  auto cellsPos = frame->pixelsToTiles(zoomCenter.x, zoomCenter.y);
+  auto tilesPos = frame->pixelsToTiles(zoomCenter.x, zoomCenter.y);
 
   frame->zoomOut(zoomCenter);
 
-  auto newCellsPos = frame->pixelsToTiles(zoomCenter.x, zoomCenter.y);
-  EXPECT_EQ(newCellsPos, cellsPos);
+  auto newTilesPos = frame->pixelsToTiles(zoomCenter.x, zoomCenter.y);
+  EXPECT_EQ(newTilesPos, tilesPos);
 }
 
 TEST(Unit_TopViewFrame, ZoomOut_HalveTileDimensions)
@@ -175,18 +175,18 @@ TEST(Unit_TopViewFrame, ZoomOut_HalveTileDimensions)
   frame->zoomOut(zoomCenter);
 
   auto tile = frame->tileSize();
-  EXPECT_EQ(tile, (PIXELS_DIMS / CELLS_DIMS) / 2.0f);
+  EXPECT_EQ(tile, (PIXELS_DIMS / TILES_DIMS) / 2.0f);
 }
 
-TEST(Unit_TopViewFrame, ZoomOut_DoubleCellsViewport)
+TEST(Unit_TopViewFrame, ZoomOut_DoubleTilesViewport)
 {
   auto frame = generateTopViewFrame();
 
   olc::vf2d zoomCenter{35.0f, 56.0f};
   frame->zoomOut(zoomCenter);
 
-  auto dims = frame->cellsViewport().dims();
-  EXPECT_EQ(dims, CELLS_DIMS * 2.0f);
+  auto dims = frame->tilesViewport().dims();
+  EXPECT_EQ(dims, TILES_DIMS * 2.0f);
 }
 
 } // namespace pge

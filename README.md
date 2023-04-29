@@ -347,7 +347,7 @@ Game::performAction(float /*x*/, float /*y*/) {
   }
 }
 ```
-Whenever the user clicks on the game and doesn't target directly a menu, the `Game::performAction` method is called. It is passed on the coordinates of the click in cells using a floating point format (meaning that the `Game` can access the intra-tile position).
+Whenever the user clicks on the game and doesn't target directly a menu, the `Game::performAction` method is called. It is passed on the coordinates of the click in tiles using a floating point format (meaning that the `Game` can access the intra-tile position).
 
 By default actions are ignored if the game is disabled: this corresponds to the `Game` being paused. The user is free to add any code to create in-game element whenever the user clicks somewhere.
 
@@ -440,9 +440,9 @@ App::loadMenuResources() {
 
 ## Convenience options
 
-By default, the application allows the user to pan and zoom in the main game view. While very handy in most situations it can also be that the user wants to create a static application where the mechanism of cells is mostly use to reference cells in a game (similarly to what would happen for a Sudoku game for example).
+By default, the application allows the user to pan and zoom in the main game view. While very handy in most situations it can also be that the user wants to create a static application where the mechanism of tiles is mostly use to reference tiles in a game (similarly to what would happen for a Sudoku game for example).
 
-The [AppDesc](https://github.com/Knoblauchpilze/pge-app/blob/master/src/lib/app/AppDesc.hh) structure allows that through the `fixedFrame` boolean which prevents any panning and zooming to be considered. The application will be blocked on the cells defined in the main viewport provided when creating the application.
+The [AppDesc](https://github.com/Knoblauchpilze/pge-app/blob/master/src/lib/app/AppDesc.hh) structure allows that through the `fixedFrame` boolean which prevents any panning and zooming to be considered. The application will be blocked on the tiles defined in the main viewport provided when creating the application.
 
 The user can also select the initial viewport of the app in the `main` file as presented below:
 

@@ -221,7 +221,7 @@ void SavedGames::update()
     m_games[id]->setEnabled(true);
   }
 
-  // Fill the rest of the cells with blank spaces.
+  // Fill the rest of the lines with blank spaces.
   if (id < m_gamesPerPage)
   {
     for (; id < m_gamesPerPage; ++id)

@@ -13,20 +13,20 @@ class CoordinateFrame : public utils::CoreObject
   public:
   /// @brief - Creates a new coordinate frame with the input pixel
   /// viewport and tiles viewport.
-  /// @param cells - the visible area expressed in cells covered by
+  /// @param tiles - the visible area expressed in tiles covered by
   /// this viewport.
-  /// @param pixels - the pixels area representing the cells area.
-  CoordinateFrame(const CenteredViewport &cells, const TopLeftViewport &pixels);
+  /// @param pixels - the pixels area representing the tiles area.
+  CoordinateFrame(const CenteredViewport &tiles, const TopLeftViewport &pixels);
 
   /// @brief - Returns the current tile size for this viewport. It
-  /// is computed from the ratio between the cells viewport and the
+  /// is computed from the ratio between the tiles viewport and the
   /// pixels viewport.
-  /// @return - the size of a cell in pixels.
+  /// @return - the size of a tile in pixels.
   olc::vf2d tileSize() const noexcept;
 
-  /// @brief - Returns the current viewport in cells.
-  /// @return - the viewport of this coordinate frame in cells.
-  virtual CenteredViewport cellsViewport() const noexcept = 0;
+  /// @brief - Returns the current viewport in tiles.
+  /// @return - the viewport of this coordinate frame in tiles.
+  CenteredViewport tilesViewport() const noexcept;
 
   /// @brief - Convert the input tile coordinates to the corresponding
   /// pixel position.
@@ -84,29 +84,29 @@ class CoordinateFrame : public utils::CoreObject
   /// after the zoom operation this position will stay fixed.
   void zoom(float factor, const olc::vf2d &pos);
 
-  olc::vf2d pixelsDistToCellsDist(const olc::vf2d &pixelsDist);
+  olc::vf2d pixelsDistToTilesDist(const olc::vf2d &pixelsDist);
 
-  /// @brief - Converts the distance in pixels to a distance in cells usinng the
-  /// ratio between the size of a unit in pixels and cells space.
+  /// @brief - Converts the distance in pixels to a distance in tiles usinng the
+  /// ratio between the size of a unit in pixels and tiles space.
   /// @param dx - the delta along the x axis in pixels.
   /// @param dy - the delta along the y axis in pixels.
-  /// @return - the distance expressed in cells.
-  olc::vf2d pixelsDistToCellsDist(float dx, float dy);
+  /// @return - the distance expressed in tiles.
+  olc::vf2d pixelsDistToTilesDist(float dx, float dy);
 
-  olc::vf2d cellsDistToPixelsDist(const olc::vf2d &cellsDist);
+  olc::vf2d tilesDistToPixelsDist(const olc::vf2d &tilesDist);
 
-  /// @brief - Converts the distance in cells to a distance in pixels usinng the
-  /// ratio between the size of a unit in cells and pixels space.
-  /// @param dx - the delta along the x axis in cells.
-  /// @param dy - the delta along the y axis in cells.
+  /// @brief - Converts the distance in tiles to a distance in pixels usinng the
+  /// ratio between the size of a unit in tiles and pixels space.
+  /// @param dx - the delta along the x axis in tiles.
+  /// @param dy - the delta along the y axis in tiles.
   /// @return - the distance expressed in pixels.
-  olc::vf2d cellsDistToPixelsDist(float dx, float dy);
+  olc::vf2d tilesDistToPixelsDist(float dx, float dy);
 
   protected:
   /// @brief - Define the viewport for this coordinate frame. It represent the
   /// area that is visible for now given the position of the camera. The viewport
-  /// is expressed in cells and defined through its top left corner and dimensions.
-  CenteredViewport m_cellsViewport;
+  /// is expressed in tiles and defined through its top left corner and dimensions.
+  CenteredViewport m_tilesViewport;
 
   /// @brief - Define a similar element but for the pixels on screen. It is used
   /// to represent the pixels that can be displayed on the device. Computing the

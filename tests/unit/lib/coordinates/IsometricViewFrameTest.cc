@@ -84,11 +84,11 @@ INSTANTIATE_TEST_CASE_P(
                                            {constants::Tiles::CENTER.x,
                                             constants::Tiles::CENTER.y
                                               - std::sqrt(2.0f) * constants::Tiles::DIMS.y / 2.0f}),
-    generateIsometricTestCasePixelsToTiles("inside", {122.0f, 78.4f}, {2.5f, -1.0f}),
-    generateIsometricTestCasePixelsToTiles("x_too_small", {-52.4f, 53.75f}, {-2.95f, 3.25f}),
-    generateIsometricTestCasePixelsToTiles("x_too_large", {442.0f, 53.75f}, {12.5f, 3.25f}),
-    generateIsometricTestCasePixelsToTiles("y_too_small", {18.0f, 172.36f}, {-0.75f, -17.2f}),
-    generateIsometricTestCasePixelsToTiles("y_too_large", {18.0f, -9.18f}, {-0.75f, 14.1f})),
+    generateIsometricTestCasePixelsToTiles("inside", {122.0f, 78.4f}, {2.909188f, 2.530326f}),
+    generateIsometricTestCasePixelsToTiles("x_too_small", {-52.4f, 53.75f}, {-2.146627f, -4.098791f}),
+    generateIsometricTestCasePixelsToTiles("x_too_large", {442.0f, 53.75f}, {8.778179f, 23.213192f}),
+    generateIsometricTestCasePixelsToTiles("y_too_small", {18.0f, 172.36f}, {5.193139f, -14.670052f}),
+    generateIsometricTestCasePixelsToTiles("y_too_large", {18.0f, -9.18f}, {-3.659832f, 7.462408f})),
   generateTestNamePixelsToTiles);
 
 TEST(Unit_IsometricViewFrame, Translate)

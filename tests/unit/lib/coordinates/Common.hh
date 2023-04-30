@@ -5,6 +5,7 @@
 #include <Viewport.hh>
 #include <gtest/gtest.h>
 #include <olcEngine.hh>
+#include <optional>
 
 namespace pge {
 
@@ -59,6 +60,7 @@ struct TestCaseTilesToPixels
 
   olc::vf2d tiles;
   olc::vf2d expected;
+  std::optional<float> tolerance{std::nullopt};
 };
 
 using TilesToPixels = ::testing::TestWithParam<TestCaseTilesToPixels>;
@@ -73,6 +75,7 @@ struct TestCasePixelsToTiles
 
   olc::vf2d pixels;
   olc::vf2d expected;
+  std::optional<float> tolerance{std::nullopt};
 };
 
 using PixelsToTiles = ::testing::TestWithParam<TestCasePixelsToTiles>;

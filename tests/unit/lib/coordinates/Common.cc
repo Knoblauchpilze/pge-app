@@ -65,7 +65,16 @@ TEST_P(TilesToPixels, Test)
   const auto param = GetParam();
 
   olc::vf2d pixels = param.frame->tilesToPixels(param.tiles.x, param.tiles.y);
-  EXPECT_EQ(param.expected, pixels);
+
+  if (param.tolerance)
+  {
+    EXPECT_NEAR(param.expected.x, pixels.x, *param.tolerance);
+    EXPECT_NEAR(param.expected.y, pixels.y, *param.tolerance);
+  }
+  else
+  {
+    EXPECT_EQ(param.expected, pixels);
+  }
 }
 
 auto generateTestNameTilesToPixels(const ::testing::TestParamInfo<TestCaseTilesToPixels> &info)
@@ -79,7 +88,16 @@ TEST_P(PixelsToTiles, Test)
   const auto param = GetParam();
 
   olc::vf2d tiles = param.frame->pixelsToTiles(param.pixels.x, param.pixels.y);
-  EXPECT_EQ(param.expected, tiles);
+
+  if (param.tolerance)
+  {
+    EXPECT_NEAR(param.expected.x, tiles.x, *param.tolerance);
+    EXPECT_NEAR(param.expected.y, tiles.y, *param.tolerance);
+  }
+  else
+  {
+    EXPECT_EQ(param.expected, tiles);
+  }
 }
 
 auto generateTestNamePixelsToTiles(const ::testing::TestParamInfo<TestCasePixelsToTiles> &info)

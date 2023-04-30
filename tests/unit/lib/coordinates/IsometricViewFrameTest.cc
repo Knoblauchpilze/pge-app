@@ -7,20 +7,11 @@
 using namespace ::testing;
 
 namespace pge::tests {
-const olc::vf2d TILES_CENTER = {1.0f, 2.0f};
-const olc::vf2d TILES_DIMS   = {4.0f, 10.0f};
-
-const olc::vf2d PIXELS_TOP_LEFT = {10.0f, 32.0f};
-const olc::vf2d PIXELS_DIMS     = {128.0f, 58.0f};
-
-const olc::vf2d PIXELS_TOP_RIGHT{PIXELS_TOP_LEFT.x + PIXELS_DIMS.x, PIXELS_TOP_LEFT.y};
-const olc::vf2d PIXELS_BOTTOM_RIGHT{PIXELS_TOP_LEFT + PIXELS_DIMS};
-const olc::vf2d PIXELS_BOTTOM_LEFT{PIXELS_TOP_LEFT.x, PIXELS_TOP_LEFT.y + PIXELS_DIMS.y};
 
 auto generateIsometricViewFrame() -> CoordinateFramePtr
 {
-  CenteredViewport tiles = {TILES_CENTER, TILES_DIMS};
-  TopLeftViewport pixels = {PIXELS_TOP_LEFT, PIXELS_DIMS};
+  CenteredViewport tiles = {constants::Tiles::CENTER, constants::Tiles::DIMS};
+  TopLeftViewport pixels = {constants::Pixels::TOP_LEFT, constants::Pixels::DIMS};
   return std::make_shared<IsometricViewFrame>(tiles, pixels);
 }
 
@@ -29,11 +20,11 @@ TEST(Unit_IsometricViewFrame, Constructor)
   auto frame = generateIsometricViewFrame();
 
   auto tiles = frame->tilesViewport();
-  EXPECT_EQ(tiles.center(), TILES_CENTER);
-  EXPECT_EQ(tiles.dims(), TILES_DIMS);
+  EXPECT_EQ(tiles.center(), constants::Tiles::CENTER);
+  EXPECT_EQ(tiles.dims(), constants::Tiles::DIMS);
 
   auto tile = frame->tileSize();
-  EXPECT_EQ(tile, PIXELS_DIMS / TILES_DIMS);
+  EXPECT_EQ(tile, constants::Pixels::DIMS / constants::Tiles::DIMS);
 }
 
 auto generateIsometricTestCaseTilesToPixels(const std::string &name,
@@ -46,15 +37,20 @@ auto generateIsometricTestCaseTilesToPixels(const std::string &name,
 INSTANTIATE_TEST_CASE_P(
   Unit_IsometricViewFrame,
   TilesToPixels,
-  Values(generateIsometricTestCaseTilesToPixels("top_left", {-1.0f, 7.0f}, {10.0f, 32.0f}),
-         generateIsometricTestCaseTilesToPixels("top_right", {3.0f, 7.0f}, {138.0f, 32.0f}),
-         generateIsometricTestCaseTilesToPixels("bottom_right", {3.0f, -3.0f}, {138.0f, 90.0f}),
-         generateIsometricTestCaseTilesToPixels("bottom_left", {-1.0f, -3.0f}, {10.0f, 90.0f}),
-         generateIsometricTestCaseTilesToPixels("inside", {2.5f, -1.0f}, {122.0f, 78.4f}),
-         generateIsometricTestCaseTilesToPixels("x_too_small", {-2.95f, 3.25f}, {-52.4f, 53.75f}),
-         generateIsometricTestCaseTilesToPixels("x_too_large", {12.5f, 3.25f}, {442.0f, 53.75f}),
-         generateIsometricTestCaseTilesToPixels("y_too_small", {-0.75f, -17.2f}, {18.0f, 172.36f}),
-         generateIsometricTestCaseTilesToPixels("y_too_large", {-0.75f, 14.1f}, {18.0f, -9.18f})),
+  Values(
+    generateIsometricTestCaseTilesToPixels("top_left", constants::Tiles::TOP_LEFT, {10.0f, 32.0f}),
+    generateIsometricTestCaseTilesToPixels("top_right", constants::Tiles::TOP_RIGHT, {138.0f, 32.0f}),
+    generateIsometricTestCaseTilesToPixels("bottom_right",
+                                           constants::Tiles::BOTTOM_RIGHT,
+                                           {138.0f, 90.0f}),
+    generateIsometricTestCaseTilesToPixels("bottom_left",
+                                           constants::Tiles::BOTTOM_LEFT,
+                                           {10.0f, 90.0f}),
+    generateIsometricTestCaseTilesToPixels("inside", {2.5f, -1.0f}, {122.0f, 78.4f}),
+    generateIsometricTestCaseTilesToPixels("x_too_small", {-2.95f, 3.25f}, {-52.4f, 53.75f}),
+    generateIsometricTestCaseTilesToPixels("x_too_large", {12.5f, 3.25f}, {442.0f, 53.75f}),
+    generateIsometricTestCaseTilesToPixels("y_too_small", {-0.75f, -17.2f}, {18.0f, 172.36f}),
+    generateIsometricTestCaseTilesToPixels("y_too_large", {-0.75f, 14.1f}, {18.0f, -9.18f})),
   generateTestNameTilesToPixels);
 
 auto generateIsometricTestCasePixelsToTiles(const std::string &name,
@@ -67,21 +63,32 @@ auto generateIsometricTestCasePixelsToTiles(const std::string &name,
 INSTANTIATE_TEST_CASE_P(
   Unit_IsometricViewFrame,
   PixelsToTiles,
-  Values(generateIsometricTestCasePixelsToTiles(
-           "top_left",
-           PIXELS_TOP_LEFT,
-           {-std::sqrt(2.0f) * TILES_DIMS.x / 2.0f + TILES_CENTER.x, TILES_CENTER.y}),
-         generateIsometricTestCasePixelsToTiles(
-           "top_right",
-           olc::vf2d{PIXELS_TOP_LEFT.x + PIXELS_DIMS.x, PIXELS_TOP_LEFT.y},
-           {TILES_CENTER.x, std::sqrt(2.0f) * TILES_DIMS.y / 2.0f + TILES_CENTER.y}),
-         generateIsometricTestCasePixelsToTiles("bottom_right", {138.0f, 90.0f}, {3.0f, -3.0f}),
-         generateIsometricTestCasePixelsToTiles("bottom_left", {10.0f, 90.0f}, {-1.0f, -3.0f}),
-         generateIsometricTestCasePixelsToTiles("inside", {122.0f, 78.4f}, {2.5f, -1.0f}),
-         generateIsometricTestCasePixelsToTiles("x_too_small", {-52.4f, 53.75f}, {-2.95f, 3.25f}),
-         generateIsometricTestCasePixelsToTiles("x_too_large", {442.0f, 53.75f}, {12.5f, 3.25f}),
-         generateIsometricTestCasePixelsToTiles("y_too_small", {18.0f, 172.36f}, {-0.75f, -17.2f}),
-         generateIsometricTestCasePixelsToTiles("y_too_large", {18.0f, -9.18f}, {-0.75f, 14.1f})),
+  Values(
+    generateIsometricTestCasePixelsToTiles("top_left",
+                                           constants::Pixels::TOP_LEFT,
+                                           {constants::Tiles::CENTER.x
+                                              - std::sqrt(2.0f) * constants::Tiles::DIMS.x / 2.0f,
+                                            constants::Tiles::CENTER.y}),
+    generateIsometricTestCasePixelsToTiles("top_right",
+                                           constants::Pixels::TOP_RIGHT,
+                                           {constants::Tiles::CENTER.x,
+                                            constants::Tiles::CENTER.y
+                                              + std::sqrt(2.0f) * constants::Tiles::DIMS.y / 2.0f}),
+    generateIsometricTestCasePixelsToTiles("bottom_right",
+                                           constants::Pixels::BOTTOM_RIGHT,
+                                           {constants::Tiles::CENTER.x
+                                              + std::sqrt(2.0f) * constants::Tiles::DIMS.x / 2.0f,
+                                            constants::Tiles::CENTER.y}),
+    generateIsometricTestCasePixelsToTiles("bottom_left",
+                                           constants::Pixels::BOTTOM_LEFT,
+                                           {constants::Tiles::CENTER.x,
+                                            constants::Tiles::CENTER.y
+                                              - std::sqrt(2.0f) * constants::Tiles::DIMS.y / 2.0f}),
+    generateIsometricTestCasePixelsToTiles("inside", {122.0f, 78.4f}, {2.5f, -1.0f}),
+    generateIsometricTestCasePixelsToTiles("x_too_small", {-52.4f, 53.75f}, {-2.95f, 3.25f}),
+    generateIsometricTestCasePixelsToTiles("x_too_large", {442.0f, 53.75f}, {12.5f, 3.25f}),
+    generateIsometricTestCasePixelsToTiles("y_too_small", {18.0f, 172.36f}, {-0.75f, -17.2f}),
+    generateIsometricTestCasePixelsToTiles("y_too_large", {18.0f, -9.18f}, {-0.75f, 14.1f})),
   generateTestNamePixelsToTiles);
 
 TEST(Unit_IsometricViewFrame, Translate)
@@ -92,7 +99,7 @@ TEST(Unit_IsometricViewFrame, Translate)
   frame->beginTranslation(origin);
 
   olc::vf2d translationTiles{2.6f, -1.7f};
-  olc::vf2d scale = PIXELS_DIMS / TILES_DIMS;
+  olc::vf2d scale = constants::Pixels::DIMS / constants::Tiles::DIMS;
 
   auto final = origin + translationTiles * scale;
   frame->translate(final);
@@ -105,7 +112,7 @@ TEST(Unit_IsometricViewFrame, Translate)
   // on screen. As the y coordinate moves in opposite
   // direction, we have to adjust the translation.
   olc::vf2d centerTranslation{translationTiles.x, -translationTiles.y};
-  auto finalTiles = TILES_CENTER - centerTranslation;
+  auto finalTiles = constants::Tiles::CENTER - centerTranslation;
   EXPECT_EQ(tiles.center(), finalTiles);
 }
 
@@ -114,7 +121,7 @@ TEST(Unit_IsometricViewFrame, Translate_PreserveTileSize)
   auto frame = generateIsometricViewFrame();
 
   auto tile = frame->tileSize();
-  EXPECT_EQ(tile, PIXELS_DIMS / TILES_DIMS);
+  EXPECT_EQ(tile, constants::Pixels::DIMS / constants::Tiles::DIMS);
 
   olc::vf2d origin{20.0f, 51.0f};
   frame->beginTranslation(origin);
@@ -123,7 +130,7 @@ TEST(Unit_IsometricViewFrame, Translate_PreserveTileSize)
   frame->translate(final);
 
   tile = frame->tileSize();
-  EXPECT_EQ(tile, PIXELS_DIMS / TILES_DIMS);
+  EXPECT_EQ(tile, constants::Pixels::DIMS / constants::Tiles::DIMS);
 }
 
 TEST(Unit_IsometricViewFrame, ZoomIn)
@@ -147,7 +154,7 @@ TEST(Unit_IsometricViewFrame, ZoomIn_DoubleTileDimensions)
   frame->zoomIn(zoomCenter);
 
   auto tile = frame->tileSize();
-  EXPECT_EQ(tile, (PIXELS_DIMS / TILES_DIMS) * 2.0f);
+  EXPECT_EQ(tile, (constants::Pixels::DIMS / constants::Tiles::DIMS) * 2.0f);
 }
 
 TEST(Unit_IsometricViewFrame, ZoomIn_HalveTilesViewport)
@@ -158,7 +165,7 @@ TEST(Unit_IsometricViewFrame, ZoomIn_HalveTilesViewport)
   frame->zoomIn(zoomCenter);
 
   auto dims = frame->tilesViewport().dims();
-  EXPECT_EQ(dims, TILES_DIMS / 2.0f);
+  EXPECT_EQ(dims, constants::Tiles::DIMS / 2.0f);
 }
 
 TEST(Unit_IsometricViewFrame, ZoomOut)
@@ -182,7 +189,7 @@ TEST(Unit_IsometricViewFrame, ZoomOut_HalveTileDimensions)
   frame->zoomOut(zoomCenter);
 
   auto tile = frame->tileSize();
-  EXPECT_EQ(tile, (PIXELS_DIMS / TILES_DIMS) / 2.0f);
+  EXPECT_EQ(tile, (constants::Pixels::DIMS / constants::Tiles::DIMS) / 2.0f);
 }
 
 TEST(Unit_IsometricViewFrame, ZoomOut_DoubleTilesViewport)
@@ -193,7 +200,7 @@ TEST(Unit_IsometricViewFrame, ZoomOut_DoubleTilesViewport)
   frame->zoomOut(zoomCenter);
 
   auto dims = frame->tilesViewport().dims();
-  EXPECT_EQ(dims, TILES_DIMS * 2.0f);
+  EXPECT_EQ(dims, constants::Tiles::DIMS * 2.0f);
 }
 
 } // namespace pge::tests

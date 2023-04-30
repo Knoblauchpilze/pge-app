@@ -1,17 +1,21 @@
 
 #include <gtest/gtest.h>
 
-#include "Common.hh"
+#include "CommonCoordinateFrame.hh"
 #include "IsometricViewFrame.hh"
 
 using namespace ::testing;
 
-namespace pge {
+namespace pge::tests {
 const olc::vf2d TILES_CENTER = {1.0f, 2.0f};
 const olc::vf2d TILES_DIMS   = {4.0f, 10.0f};
 
 const olc::vf2d PIXELS_TOP_LEFT = {10.0f, 32.0f};
 const olc::vf2d PIXELS_DIMS     = {128.0f, 58.0f};
+
+const olc::vf2d PIXELS_TOP_RIGHT{PIXELS_TOP_LEFT.x + PIXELS_DIMS.x, PIXELS_TOP_LEFT.y};
+const olc::vf2d PIXELS_BOTTOM_RIGHT{PIXELS_TOP_LEFT + PIXELS_DIMS};
+const olc::vf2d PIXELS_BOTTOM_LEFT{PIXELS_TOP_LEFT.x, PIXELS_TOP_LEFT.y + PIXELS_DIMS.y};
 
 auto generateIsometricViewFrame() -> CoordinateFramePtr
 {
@@ -57,14 +61,20 @@ auto generateIsometricTestCasePixelsToTiles(const std::string &name,
                                             const olc::vf2d &pixels,
                                             const olc::vf2d &expected) -> TestCasePixelsToTiles
 {
-  return TestCasePixelsToTiles{name, generateIsometricViewFrame(), pixels, expected};
+  return TestCasePixelsToTiles{name, generateIsometricViewFrame(), pixels, expected, 1e-5f};
 }
 
 INSTANTIATE_TEST_CASE_P(
   Unit_IsometricViewFrame,
   PixelsToTiles,
-  Values(generateIsometricTestCasePixelsToTiles("top_left", {10.0f, 32.0f}, {-1.0f, 7.0f}),
-         generateIsometricTestCasePixelsToTiles("top_right", {138.0f, 32.0f}, {3.0f, 7.0f}),
+  Values(generateIsometricTestCasePixelsToTiles(
+           "top_left",
+           PIXELS_TOP_LEFT,
+           {-std::sqrt(2.0f) * TILES_DIMS.x / 2.0f + TILES_CENTER.x, TILES_CENTER.y}),
+         generateIsometricTestCasePixelsToTiles(
+           "top_right",
+           olc::vf2d{PIXELS_TOP_LEFT.x + PIXELS_DIMS.x, PIXELS_TOP_LEFT.y},
+           {TILES_CENTER.x, std::sqrt(2.0f) * TILES_DIMS.y / 2.0f + TILES_CENTER.y}),
          generateIsometricTestCasePixelsToTiles("bottom_right", {138.0f, 90.0f}, {3.0f, -3.0f}),
          generateIsometricTestCasePixelsToTiles("bottom_left", {10.0f, 90.0f}, {-1.0f, -3.0f}),
          generateIsometricTestCasePixelsToTiles("inside", {122.0f, 78.4f}, {2.5f, -1.0f}),
@@ -186,4 +196,4 @@ TEST(Unit_IsometricViewFrame, ZoomOut_DoubleTilesViewport)
   EXPECT_EQ(dims, TILES_DIMS * 2.0f);
 }
 
-} // namespace pge
+} // namespace pge::tests

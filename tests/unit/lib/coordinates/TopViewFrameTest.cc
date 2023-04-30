@@ -1,22 +1,17 @@
 
 #include <gtest/gtest.h>
 
-#include "Common.hh"
+#include "CommonCoordinateFrame.hh"
 #include "TopViewFrame.hh"
 
 using namespace ::testing;
 
-namespace pge {
-const olc::vf2d TILES_CENTER = {1.0f, 2.0f};
-const olc::vf2d TILES_DIMS   = {4.0f, 10.0f};
-
-const olc::vf2d PIXELS_TOP_LEFT = {10.0f, 32.0f};
-const olc::vf2d PIXELS_DIMS     = {128.0f, 58.0f};
+namespace pge::tests {
 
 auto generateTopViewFrame() -> CoordinateFramePtr
 {
-  CenteredViewport tiles = {TILES_CENTER, TILES_DIMS};
-  TopLeftViewport pixels = {PIXELS_TOP_LEFT, PIXELS_DIMS};
+  CenteredViewport tiles = {constants::Tiles::CENTER, constants::Tiles::DIMS};
+  TopLeftViewport pixels = {constants::Pixels::TOP_LEFT, constants::Pixels::DIMS};
   return std::make_shared<TopViewFrame>(tiles, pixels);
 }
 
@@ -25,11 +20,11 @@ TEST(Unit_TopViewFrame, Constructor)
   auto frame = generateTopViewFrame();
 
   auto tiles = frame->tilesViewport();
-  EXPECT_EQ(tiles.center(), TILES_CENTER);
-  EXPECT_EQ(tiles.dims(), TILES_DIMS);
+  EXPECT_EQ(tiles.center(), constants::Tiles::CENTER);
+  EXPECT_EQ(tiles.dims(), constants::Tiles::DIMS);
 
   auto tile = frame->tileSize();
-  EXPECT_EQ(tile, PIXELS_DIMS / TILES_DIMS);
+  EXPECT_EQ(tile, constants::Pixels::DIMS / constants::Tiles::DIMS);
 }
 
 auto generateTopTestCaseTilesToPixels(const std::string &name,
@@ -45,10 +40,18 @@ auto generateTopTestCaseTilesToPixels(const std::string &name,
 INSTANTIATE_TEST_CASE_P(
   Unit_TopViewFrame,
   TilesToPixels,
-  Values(generateTopTestCaseTilesToPixels("top_left", {-1.0f, 7.0f}, {10.0f, 32.0f}),
-         generateTopTestCaseTilesToPixels("top_right", {3.0f, 7.0f}, {138.0f, 32.0f}),
-         generateTopTestCaseTilesToPixels("bottom_right", {3.0f, -3.0f}, {138.0f, 90.0f}),
-         generateTopTestCaseTilesToPixels("bottom_left", {-1.0f, -3.0f}, {10.0f, 90.0f}),
+  Values(generateTopTestCaseTilesToPixels("top_left",
+                                          constants::Tiles::TOP_LEFT,
+                                          constants::Pixels::TOP_LEFT),
+         generateTopTestCaseTilesToPixels("top_right",
+                                          constants::Tiles::TOP_RIGHT,
+                                          constants::Pixels::TOP_RIGHT),
+         generateTopTestCaseTilesToPixels("bottom_right",
+                                          constants::Tiles::BOTTOM_RIGHT,
+                                          constants::Pixels::BOTTOM_RIGHT),
+         generateTopTestCaseTilesToPixels("bottom_left",
+                                          constants::Tiles::BOTTOM_LEFT,
+                                          constants::Pixels::BOTTOM_LEFT),
          generateTopTestCaseTilesToPixels("inside", {2.5f, -1.0f}, {122.0f, 78.4f}),
          generateTopTestCaseTilesToPixels("x_too_small", {-2.95f, 3.25f}, {-52.4f, 53.75f}),
          generateTopTestCaseTilesToPixels("x_too_large", {12.5f, 3.25f}, {442.0f, 53.75f}),
@@ -66,10 +69,18 @@ auto generateTopTestCasePixelsToTiles(const std::string &name,
 INSTANTIATE_TEST_CASE_P(
   Unit_TopViewFrame,
   PixelsToTiles,
-  Values(generateTopTestCasePixelsToTiles("top_left", {10.0f, 32.0f}, {-1.0f, 7.0f}),
-         generateTopTestCasePixelsToTiles("top_right", {138.0f, 32.0f}, {3.0f, 7.0f}),
-         generateTopTestCasePixelsToTiles("bottom_right", {138.0f, 90.0f}, {3.0f, -3.0f}),
-         generateTopTestCasePixelsToTiles("bottom_left", {10.0f, 90.0f}, {-1.0f, -3.0f}),
+  Values(generateTopTestCasePixelsToTiles("top_left",
+                                          constants::Pixels::TOP_LEFT,
+                                          constants::Tiles::TOP_LEFT),
+         generateTopTestCasePixelsToTiles("top_right",
+                                          constants::Pixels::TOP_RIGHT,
+                                          constants::Tiles::TOP_RIGHT),
+         generateTopTestCasePixelsToTiles("bottom_right",
+                                          constants::Pixels::BOTTOM_RIGHT,
+                                          constants::Tiles::BOTTOM_RIGHT),
+         generateTopTestCasePixelsToTiles("bottom_left",
+                                          constants::Pixels::BOTTOM_LEFT,
+                                          constants::Tiles::BOTTOM_LEFT),
          generateTopTestCasePixelsToTiles("inside", {122.0f, 78.4f}, {2.5f, -1.0f}),
          generateTopTestCasePixelsToTiles("x_too_small", {-52.4f, 53.75f}, {-2.95f, 3.25f}),
          generateTopTestCasePixelsToTiles("x_too_large", {442.0f, 53.75f}, {12.5f, 3.25f}),
@@ -85,7 +96,7 @@ TEST(Unit_TopViewFrame, Translate)
   frame->beginTranslation(origin);
 
   olc::vf2d translationTiles{2.6f, -1.7f};
-  olc::vf2d scale = PIXELS_DIMS / TILES_DIMS;
+  olc::vf2d scale = constants::Pixels::DIMS / constants::Tiles::DIMS;
 
   auto final = origin + translationTiles * scale;
   frame->translate(final);
@@ -98,7 +109,7 @@ TEST(Unit_TopViewFrame, Translate)
   // on screen. As the y coordinate moves in opposite
   // direction, we have to adjust the translation.
   olc::vf2d centerTranslation{translationTiles.x, -translationTiles.y};
-  auto finalTiles = TILES_CENTER - centerTranslation;
+  auto finalTiles = constants::Tiles::CENTER - centerTranslation;
   EXPECT_EQ(tiles.center(), finalTiles);
 }
 
@@ -107,7 +118,7 @@ TEST(Unit_TopViewFrame, Translate_PreserveTileSize)
   auto frame = generateTopViewFrame();
 
   auto tile = frame->tileSize();
-  EXPECT_EQ(tile, PIXELS_DIMS / TILES_DIMS);
+  EXPECT_EQ(tile, constants::Pixels::DIMS / constants::Tiles::DIMS);
 
   olc::vf2d origin{20.0f, 51.0f};
   frame->beginTranslation(origin);
@@ -116,7 +127,7 @@ TEST(Unit_TopViewFrame, Translate_PreserveTileSize)
   frame->translate(final);
 
   tile = frame->tileSize();
-  EXPECT_EQ(tile, PIXELS_DIMS / TILES_DIMS);
+  EXPECT_EQ(tile, constants::Pixels::DIMS / constants::Tiles::DIMS);
 }
 
 TEST(Unit_TopViewFrame, ZoomIn)
@@ -140,7 +151,7 @@ TEST(Unit_TopViewFrame, ZoomIn_DoubleTileDimensions)
   frame->zoomIn(zoomCenter);
 
   auto tile = frame->tileSize();
-  EXPECT_EQ(tile, (PIXELS_DIMS / TILES_DIMS) * 2.0f);
+  EXPECT_EQ(tile, (constants::Pixels::DIMS / constants::Tiles::DIMS) * 2.0f);
 }
 
 TEST(Unit_TopViewFrame, ZoomIn_HalveTilesViewport)
@@ -151,7 +162,7 @@ TEST(Unit_TopViewFrame, ZoomIn_HalveTilesViewport)
   frame->zoomIn(zoomCenter);
 
   auto dims = frame->tilesViewport().dims();
-  EXPECT_EQ(dims, TILES_DIMS / 2.0f);
+  EXPECT_EQ(dims, constants::Tiles::DIMS / 2.0f);
 }
 
 TEST(Unit_TopViewFrame, ZoomOut)
@@ -175,7 +186,7 @@ TEST(Unit_TopViewFrame, ZoomOut_HalveTileDimensions)
   frame->zoomOut(zoomCenter);
 
   auto tile = frame->tileSize();
-  EXPECT_EQ(tile, (PIXELS_DIMS / TILES_DIMS) / 2.0f);
+  EXPECT_EQ(tile, (constants::Pixels::DIMS / constants::Tiles::DIMS) / 2.0f);
 }
 
 TEST(Unit_TopViewFrame, ZoomOut_DoubleTilesViewport)
@@ -186,7 +197,7 @@ TEST(Unit_TopViewFrame, ZoomOut_DoubleTilesViewport)
   frame->zoomOut(zoomCenter);
 
   auto dims = frame->tilesViewport().dims();
-  EXPECT_EQ(dims, TILES_DIMS * 2.0f);
+  EXPECT_EQ(dims, constants::Tiles::DIMS * 2.0f);
 }
 
-} // namespace pge
+} // namespace pge::tests

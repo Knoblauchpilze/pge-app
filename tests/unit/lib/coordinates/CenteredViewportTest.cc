@@ -1,11 +1,11 @@
 
 #include "CenteredViewport.hh"
-#include "Common.hh"
+#include "CommonViewport.hh"
 #include <gtest/gtest.h>
 
 using namespace ::testing;
 
-namespace pge {
+namespace pge::tests {
 const olc::vf2d CENTER{-12.0f, 5.0f};
 const olc::vf2d DIMS{4.0f, 10.0f};
 
@@ -137,4 +137,4 @@ INSTANTIATE_TEST_CASE_P(Unit_CenteredViewport,
                                generateCenteredTestCaseVisibility("y_too_small", {-13, -7}, false),
                                generateCenteredTestCaseVisibility("y_too_large", {-13, 36}, false)),
                         generateTestNameVisibility);
-} // namespace pge
+} // namespace pge::tests

@@ -1,12 +1,12 @@
 
 #include <gtest/gtest.h>
 
-#include "Common.hh"
+#include "CommonViewport.hh"
 #include "TopLeftViewport.hh"
 
 using namespace ::testing;
 
-namespace pge {
+namespace pge::tests {
 const olc::vf2d TOP_LEFT{-12.0f, 5.0f};
 const olc::vf2d DIMS{4.0f, 15.0f};
 
@@ -128,4 +128,4 @@ INSTANTIATE_TEST_CASE_P(
          generateTopLeftTestCaseVisibility("y_too_large", {-11.0f, 37.0f}, false)),
   generateTestNameVisibility);
 
-} // namespace pge
+} // namespace pge::tests

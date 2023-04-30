@@ -84,8 +84,8 @@ INSTANTIATE_TEST_CASE_P(
          generateTopTestCasePixelsToTiles("inside", {122.0f, 78.4f}, {2.5f, -1.0f}),
          generateTopTestCasePixelsToTiles("x_too_small", {-52.4f, 53.75f}, {-2.95f, 3.25f}),
          generateTopTestCasePixelsToTiles("x_too_large", {442.0f, 53.75f}, {12.5f, 3.25f}),
-         generateTopTestCasePixelsToTiles("y_too_small", {18.0f, 172.36f}, {-0.75f, -17.2f}),
-         generateTopTestCasePixelsToTiles("y_too_large", {18.0f, -9.18f}, {-0.75f, 14.1f})),
+         generateTopTestCasePixelsToTiles("y_too_small", {18.0f, -9.18f}, {-0.75f, 14.1f}),
+         generateTopTestCasePixelsToTiles("y_too_large", {18.0f, 172.36f}, {-0.75f, -17.2f})),
   generateTestNamePixelsToTiles);
 
 TEST(Unit_TopViewFrame, Translate)

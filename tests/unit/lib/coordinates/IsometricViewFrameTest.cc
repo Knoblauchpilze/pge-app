@@ -37,20 +37,27 @@ auto generateIsometricTestCaseTilesToPixels(const std::string &name,
 INSTANTIATE_TEST_CASE_P(
   Unit_IsometricViewFrame,
   TilesToPixels,
-  Values(
-    generateIsometricTestCaseTilesToPixels("top_left", constants::Tiles::TOP_LEFT, {10.0f, 32.0f}),
-    generateIsometricTestCaseTilesToPixels("top_right", constants::Tiles::TOP_RIGHT, {138.0f, 32.0f}),
-    generateIsometricTestCaseTilesToPixels("bottom_right",
-                                           constants::Tiles::BOTTOM_RIGHT,
-                                           {138.0f, 90.0f}),
-    generateIsometricTestCaseTilesToPixels("bottom_left",
-                                           constants::Tiles::BOTTOM_LEFT,
-                                           {10.0f, 90.0f}),
-    generateIsometricTestCaseTilesToPixels("inside", {2.5f, -1.0f}, {122.0f, 78.4f}),
-    generateIsometricTestCaseTilesToPixels("x_too_small", {-2.95f, 3.25f}, {-52.4f, 53.75f}),
-    generateIsometricTestCaseTilesToPixels("x_too_large", {12.5f, 3.25f}, {442.0f, 53.75f}),
-    generateIsometricTestCaseTilesToPixels("y_too_small", {-0.75f, -17.2f}, {18.0f, 172.36f}),
-    generateIsometricTestCaseTilesToPixels("y_too_large", {-0.75f, 14.1f}, {18.0f, -9.18f})),
+  Values(generateIsometricTestCaseTilesToPixels(
+           "top_left",
+           constants::Tiles::TOP_LEFT,
+           {constants::Pixels::TOP_LEFT.x + constants::Pixels::DIMS.x / 2.0f, 19.987808f}),
+         generateIsometricTestCaseTilesToPixels(
+           "top_right",
+           constants::Tiles::TOP_RIGHT,
+           {164.509674f, constants::Pixels::TOP_LEFT.y + constants::Pixels::DIMS.y / 2.0f}),
+         generateIsometricTestCaseTilesToPixels(
+           "bottom_right",
+           constants::Tiles::BOTTOM_RIGHT,
+           {constants::Pixels::TOP_LEFT.x + constants::Pixels::DIMS.x / 2.0f, 102.012199f}),
+         generateIsometricTestCaseTilesToPixels(
+           "bottom_left",
+           constants::Tiles::BOTTOM_LEFT,
+           {-16.509666f, constants::Pixels::TOP_LEFT.y + constants::Pixels::DIMS.y / 2.0f}),
+         generateIsometricTestCaseTilesToPixels("inside", {2.5f, -1.0f}, {122.0f, 78.4f}),
+         generateIsometricTestCaseTilesToPixels("x_too_small", {-2.95f, 3.25f}, {-52.4f, 53.75f}),
+         generateIsometricTestCaseTilesToPixels("x_too_large", {12.5f, 3.25f}, {442.0f, 53.75f}),
+         generateIsometricTestCaseTilesToPixels("y_too_small", {-0.75f, -17.2f}, {18.0f, 172.36f}),
+         generateIsometricTestCaseTilesToPixels("y_too_large", {-0.75f, 14.1f}, {18.0f, -9.18f})),
   generateTestNameTilesToPixels);
 
 auto generateIsometricTestCasePixelsToTiles(const std::string &name,

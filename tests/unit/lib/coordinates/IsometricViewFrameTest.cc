@@ -115,21 +115,11 @@ TEST(Unit_IsometricViewFrame, Translate)
   olc::vf2d origin{20.0f, 51.0f};
   frame->beginTranslation(origin);
 
-  olc::vf2d translationTiles{2.6f, -1.7f};
-  olc::vf2d scale = constants::Pixels::DIMS / constants::Tiles::DIMS;
-
-  auto final = origin + translationTiles * scale;
+  olc::vf2d final{110.0f, 75.0f};
   frame->translate(final);
 
   auto tiles = frame->tilesViewport();
-  // We moved the position of `[20; 51]` on screen from
-  // this position to `origin + translationTiles * scale`.
-  // The center will move in the opposite direction to
-  // accomodate for `origin` being at its new position
-  // on screen. As the y coordinate moves in opposite
-  // direction, we have to adjust the translation.
-  olc::vf2d centerTranslation{translationTiles.x, -translationTiles.y};
-  auto finalTiles = constants::Tiles::CENTER - centerTranslation;
+  olc::vf2d finalTiles{-2.15912175f, -0.0458850861f};
   EXPECT_EQ(tiles.center(), finalTiles);
 }
 

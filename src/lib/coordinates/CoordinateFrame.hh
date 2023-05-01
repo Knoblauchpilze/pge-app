@@ -61,18 +61,18 @@ class CoordinateFrame : public utils::CoreObject
   /// @param pos - the pixels position to fix.
   void zoomOut(const olc::vf2d &pos);
 
-  /// @brief - Begin a translation of the coordinate frame started
-  /// at the input position.
-  /// @param origin - the origin represents where the translation
-  /// started. This position will be kept constant during the
-  /// translation process.
-  void beginTranslation(const olc::vf2d &origin);
+  /// @brief - Begin a translation of the coordinate frame started at the
+  /// input position.
+  /// @param pixelsOrigin - the origin represents where the translation
+  /// started. This position will be kept constant (i.e. under the mouse
+  /// cursor) during the translation process.
+  void beginTranslation(const olc::vf2d &pixelsOrigin);
 
-  /// @brief - Translate the coordinate frame. The input parameter
-  /// represents the new position of the origin passed when calling
-  /// the `beginTranslation` method.
-  /// @param trackedOrigin - the new position of the origin.
-  void translate(const olc::vf2d &trackedOrigin);
+  /// @brief - Translate the coordinate frame. The input parameter represents
+  /// the new position of the origin passed when calling the `beginTranslation`
+  /// method.
+  /// @param pixelsOrigin - the new position of the origin.
+  void translate(const olc::vf2d &pixelsOrigin);
 
   protected:
   /// @brief - Given some normalized coordinates in tiles space, convert
@@ -97,24 +97,6 @@ class CoordinateFrame : public utils::CoreObject
   /// after the zoom operation this position will stay fixed.
   void zoom(float factor, const olc::vf2d &pos);
 
-  olc::vf2d pixelsDistToTilesDist(const olc::vf2d &pixelsDist);
-
-  /// @brief - Converts the distance in pixels to a distance in tiles usinng the
-  /// ratio between the size of a unit in pixels and tiles space.
-  /// @param dx - the delta along the x axis in pixels.
-  /// @param dy - the delta along the y axis in pixels.
-  /// @return - the distance expressed in tiles.
-  olc::vf2d pixelsDistToTilesDist(float dx, float dy);
-
-  olc::vf2d tilesDistToPixelsDist(const olc::vf2d &tilesDist);
-
-  /// @brief - Converts the distance in tiles to a distance in pixels usinng the
-  /// ratio between the size of a unit in tiles and pixels space.
-  /// @param dx - the delta along the x axis in tiles.
-  /// @param dy - the delta along the y axis in tiles.
-  /// @return - the distance expressed in pixels.
-  olc::vf2d tilesDistToPixelsDist(float dx, float dy);
-
   protected:
   /// @brief - Define the viewport for this coordinate frame. It represent the
   /// area that is visible for now given the position of the camera. The viewport
@@ -130,12 +112,12 @@ class CoordinateFrame : public utils::CoreObject
   /// @brief - The origin of the translation (i.e. the pixels position when it
   /// started). Allows to compute the accumulated transform to apply to the world
   /// origin.
-  olc::vf2d m_translationOrigin;
+  olc::vf2d m_pixelsTranslationOrigin;
 
   /// @brief - Cached position of the top left corner of the pixels viewport
   /// when starting the translation. Once the translation is performed we are
   /// able to update the viewport accordingly.
-  olc::vf2d m_cachedPOrigin;
+  olc::vf2d m_tilesCachedPOrigin;
 };
 
 using CoordinateFramePtr = std::shared_ptr<CoordinateFrame>;

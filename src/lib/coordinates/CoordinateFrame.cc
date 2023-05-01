@@ -7,8 +7,6 @@ CoordinateFrame::CoordinateFrame(const CenteredViewport &tiles, const TopLeftVie
   : utils::CoreObject("frame")
   , m_tilesViewport(tiles)
   , m_pixelsViewport(pixels)
-  , m_translationOrigin()
-  , m_cachedPOrigin()
 {
   setService("coordinate");
 }
@@ -85,37 +83,19 @@ void CoordinateFrame::zoomOut(const olc::vf2d &pos)
   zoom(0.5f, pos);
 }
 
-void CoordinateFrame::beginTranslation(const olc::vf2d &origin)
+void CoordinateFrame::beginTranslation(const olc::vf2d &pixelsOrigin)
 {
-  m_translationOrigin = origin;
-  m_cachedPOrigin     = m_tilesViewport.center();
+  m_pixelsTranslationOrigin = pixelsOrigin;
+  m_tilesCachedPOrigin      = m_tilesViewport.center();
 }
 
-void CoordinateFrame::translate(const olc::vf2d &pos)
+void CoordinateFrame::translate(const olc::vf2d &pixelsOrigin)
 {
-  // `m_translationOrigin` moved to `pos`. Let's put some numbers:
-  // m_translationPOrigin = (0, 1)
-  // m_cachedPOrigin      = (0, 0)
-  // pos                  = (1, 1)
-  // It means pos, which **corresponds to m_translationOrigin** is
-  // now more on the left side of the screen.
-  // The question is then: what translation needs to be applied to
-  // the center so that it is consistent with the new position (on
-  // screen) of m_translationOrigin?
-  // The answer to that is to apply the same translation that would
-  // transform pos into m_translationOrigin again. **Not the other
-  // way around**. This translation is computed then as so:
-  // translation = m_translationOrigin - pos
-  // By applying this, we would bring back the current position of
-  // m_translationOrigin (which is pos) to its initial value.
-  olc::vf2d translation = m_translationOrigin - pos;
-  // The argument here is that pixels and tiles viewport y axis are
-  // moving in opposite direction.
-  translation.y *= -1.0f;
+  olc::vf2d originTiles = pixelsToTiles(m_pixelsTranslationOrigin.x, m_pixelsTranslationOrigin.y);
+  olc::vf2d posTiles    = pixelsToTiles(pixelsOrigin.x, pixelsOrigin.y);
+  olc::vf2d translationTiles = originTiles - posTiles;
 
-  auto dTiles = pixelsDistToTilesDist(translation);
-
-  m_tilesViewport.moveTo(m_cachedPOrigin + dTiles);
+  m_tilesViewport.moveTo(m_tilesCachedPOrigin + translationTiles);
 }
 
 void CoordinateFrame::zoom(float factor, const olc::vf2d &pos)
@@ -132,28 +112,6 @@ void CoordinateFrame::zoom(float factor, const olc::vf2d &pos)
 
   // Only the dimensions of the tiles viewport need to be updated.
   m_tilesViewport.scale(1.0f / factor, 1.0f / factor);
-}
-
-olc::vf2d CoordinateFrame::pixelsDistToTilesDist(const olc::vf2d &pixelsDist)
-{
-  return pixelsDistToTilesDist(pixelsDist.x, pixelsDist.y);
-}
-
-olc::vf2d CoordinateFrame::pixelsDistToTilesDist(float dx, float dy)
-{
-  auto ratio = m_pixelsViewport.dims() / m_tilesViewport.dims();
-  return olc::vf2d{dx / ratio.x, dy / ratio.y};
-}
-
-olc::vf2d CoordinateFrame::tilesDistToPixelsDist(const olc::vf2d &tilesDist)
-{
-  return tilesDistToPixelsDist(tilesDist.x, tilesDist.y);
-}
-
-olc::vf2d CoordinateFrame::tilesDistToPixelsDist(float dx, float dy)
-{
-  auto ratio = m_tilesViewport.dims() / m_pixelsViewport.dims();
-  return olc::vf2d{dx / ratio.x, dy / ratio.y};
 }
 
 } // namespace pge

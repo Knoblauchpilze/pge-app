@@ -10,7 +10,7 @@ namespace pge::sprites {
 /// @brief Describe a texture pack to be loaded.
 struct PackDesc
 {
-  // Defines the path tot he file containing the textures. It should
+  // Defines the path to the file containing the textures. It should
   // point to a valid location.
   std::string file;
 
@@ -78,6 +78,15 @@ class TexturePack : public utils::CoreObject
             const Sprite &s,
             const olc::vf2d &p,
             const olc::vf2d &scale = olc::vf2d(1.0f, 1.0f)) const;
+
+  /// @brief - Used to perform the drawing of the sprite as defined by the input
+  /// argument using the engine. The sprite will be associated internally with
+  /// the corresponding visual and warped to match the list of positions for the
+  /// corners.
+  /// @param pge - the engine to use to perform the rendering.
+  /// @param s - the sprite to draw.
+  /// @param p - the position of the corners for the sprite.
+  void draw(olc::PixelGameEngine *pge, const Sprite &s, const std::array<olc::vf2d, 4> &p) const;
 
   private:
   /// @brief Internal representation of a loaded texture pack.

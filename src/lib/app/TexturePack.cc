@@ -64,8 +64,7 @@ void TexturePack::draw(olc::PixelGameEngine *pge,
   // Check whether the pack is valid.
   if (s.pack >= m_packs.size())
   {
-    log("Unable to draw sprite from pack " + std::to_string(s.pack), utils::Level::Error);
-
+    log("Invalid pack " + std::to_string(s.pack) + " to draw sprite", utils::Level::Error);
     return;
   }
 
@@ -73,6 +72,23 @@ void TexturePack::draw(olc::PixelGameEngine *pge,
 
   olc::vi2d sCoords = tp.spriteCoords(s.sprite, s.id);
   pge->DrawPartialDecal(p, tp.res, sCoords, tp.sSize, scale, s.tint);
+}
+
+void TexturePack::draw(olc::PixelGameEngine *pge,
+                       const Sprite &s,
+                       const std::array<olc::vf2d, 4> &p) const
+{
+  // Check whether the pack is valid.
+  if (s.pack >= m_packs.size())
+  {
+    log("Invalid pack " + std::to_string(s.pack) + " to draw sprite", utils::Level::Error);
+    return;
+  }
+
+  const Pack &tp = m_packs[s.pack];
+
+  olc::vi2d sCoords = tp.spriteCoords(s.sprite, s.id);
+  pge->DrawPartialWarpedDecal(tp.res, p, sCoords, tp.sSize, s.tint);
 }
 
 } // namespace pge::sprites

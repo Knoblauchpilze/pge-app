@@ -20,6 +20,10 @@ class App : public PGEApp
   ~App() = default;
 
   protected:
+  bool onFrame(float fElapsed) override;
+
+  void onInputs(const controls::State &c, const CoordinateFrame &cf) override;
+
   void loadData() override;
 
   void loadResources() override;
@@ -38,10 +42,6 @@ class App : public PGEApp
 
   void drawDebug(const RenderDesc &res) override;
 
-  bool onFrame(float fElapsed) override;
-
-  void onInputs(const controls::State &c, const CoordinateFrame &cf) override;
-
   private:
   /// @brief - Convenience structure regrouping needed props to
   /// draw a sprite.
@@ -59,14 +59,6 @@ class App : public PGEApp
 
     // A description of the sprite.
     sprites::Sprite sprite;
-  };
-
-  /// @brief - Describe a possible orientation for a graphic component
-  /// (e.g. a healthbar, etc.).
-  enum class Orientation
-  {
-    Horizontal,
-    Vertical
   };
 
   /// @brief - Used to draw the tile referenced by the input struct to the screen
@@ -100,5 +92,3 @@ class App : public PGEApp
 };
 
 } // namespace pge
-
-#include "App.hxx"

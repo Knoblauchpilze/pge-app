@@ -1,7 +1,16 @@
 
 #include "TexturePack.hh"
 
-namespace pge {
+namespace pge::sprites {
+
+inline olc::vi2d TexturePack::Pack::spriteCoords(const olc::vi2d &coord, int id) const
+{
+  int lID = coord.y * layout.x + coord.x + id;
+
+  // Go back to 2D coordinates using the layout on the linearized ID and the
+  // size of the sprite to obtain a pixels position.
+  return olc::vi2d((lID % layout.x) * sSize.x, (lID / layout.x) * sSize.y);
+}
 
 TexturePack::TexturePack()
   : utils::CoreObject("pack")
@@ -23,7 +32,7 @@ TexturePack::~TexturePack()
   m_packs.clear();
 }
 
-unsigned TexturePack::registerPack(const sprites::Pack &pack)
+PackId TexturePack::registerPack(const PackDesc &pack)
 {
   // Load the file as a sprite and then convert it
   // to a faster `Decal` resource.
@@ -41,7 +50,7 @@ unsigned TexturePack::registerPack(const sprites::Pack &pack)
 
   p.res = new olc::Decal(spr);
 
-  unsigned id = m_packs.size();
+  auto id = static_cast<PackId>(m_packs.size());
   m_packs.push_back(p);
 
   return id;
@@ -62,8 +71,8 @@ void TexturePack::draw(olc::PixelGameEngine *pge,
 
   const Pack &tp = m_packs[s.pack];
 
-  olc::vi2d sCoords = spriteCoords(tp, s.sprite, s.id);
+  olc::vi2d sCoords = tp.spriteCoords(s.sprite, s.id);
   pge->DrawPartialDecal(p, tp.res, sCoords, tp.sSize, scale, s.tint);
 }
 
-} // namespace pge
+} // namespace pge::sprites

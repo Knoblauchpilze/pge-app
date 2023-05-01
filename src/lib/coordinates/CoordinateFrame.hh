@@ -47,7 +47,8 @@ class CoordinateFrame : public utils::CoreObject
   /// @param pixels - pixels position to convert.
   /// @param intraTile - output argument storing the fractional tile part.
   /// @return - the integer tiles position.
-  olc::vi2d pixelsToTiles(const olc::vi2d &pixels, olc::vf2d *intraTile = nullptr) const noexcept;
+  olc::vi2d pixelsToTilesAndIntra(const olc::vi2d &pixels,
+                                  olc::vf2d *intraTile = nullptr) const noexcept;
 
   /// @brief - Zoom on the specified position expressed in pixels
   /// coordinate frame. This will fix this position and make the

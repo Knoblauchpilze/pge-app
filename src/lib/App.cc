@@ -5,14 +5,10 @@ namespace pge {
 
 App::App(const AppDesc &desc)
   : PGEApp(desc)
-  ,
-
-  m_game(nullptr)
+  , m_game(nullptr)
   , m_state(nullptr)
   , m_menus()
-  ,
-
-  m_packs(std::make_shared<TexturePack>())
+  , m_packs(std::make_shared<sprites::TexturePack>())
 {}
 
 bool App::onFrame(float fElapsed)
@@ -65,7 +61,7 @@ void App::onInputs(const controls::State &c, const CoordinateFrame &cf)
   if (lClick && !relevant)
   {
     olc::vf2d it;
-    olc::vi2d tp = cf.pixelsToTiles(olc::vi2d(c.mPosX, c.mPosY), &it);
+    olc::vi2d tp = cf.pixelsToTilesAndIntra(olc::vi2d(c.mPosX, c.mPosY), &it);
 
     m_game->performAction(tp.x + it.x, tp.y + it.y);
   }
@@ -219,7 +215,7 @@ void App::drawDebug(const RenderDesc &res)
   // Draw cursor's position.
   olc::vi2d mp = GetMousePos();
   olc::vf2d it;
-  olc::vi2d mtp = res.cf.pixelsToTiles(mp, &it);
+  olc::vi2d mtp = res.cf.pixelsToTilesAndIntra(mp, &it);
 
   int h       = GetDrawTargetHeight();
   int dOffset = 15;

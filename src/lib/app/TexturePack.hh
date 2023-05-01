@@ -7,7 +7,7 @@
 
 namespace pge::sprites {
 
-/// @brief Describe a texture pack to be loaded.
+/// @brief - Describe a texture pack to be loaded.
 struct PackDesc
 {
   // Defines the path to the file containing the textures. It should
@@ -25,10 +25,10 @@ struct PackDesc
   olc::vi2d layout;
 };
 
-/// @brief An identifier for a texture pack.
+/// @brief - An identifier for a texture pack.
 using PackId = int;
 
-/// @brief Convenience structure regrouping needed props to draw a sprite.
+/// @brief - Convenience structure regrouping needed props to draw a sprite.
 struct Sprite
 {
   // The `pack` defines the identifier of the pack from

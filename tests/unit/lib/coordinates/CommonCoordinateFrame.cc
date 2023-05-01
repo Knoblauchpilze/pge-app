@@ -56,4 +56,21 @@ auto generateTestNamePixelsToTiles(const ::testing::TestParamInfo<TestCasePixels
   return info.param.name;
 }
 
+TEST_P(PixelsToTilesIntra, Test)
+{
+  const auto param = GetParam();
+
+  olc::vf2d intra;
+  olc::vi2d tiles = param.frame->pixelsToTilesAndIntra(param.pixels, &intra);
+
+  EXPECT_EQ(param.expectedTiles, tiles);
+  EXPECT_EQ(param.expectedIntra, intra);
+}
+
+auto generateTestNamePixelsToTilesIntra(
+  const ::testing::TestParamInfo<TestCasePixelsToTilesIntra> &info) -> std::string
+{
+  return info.param.name;
+}
+
 } // namespace pge::tests

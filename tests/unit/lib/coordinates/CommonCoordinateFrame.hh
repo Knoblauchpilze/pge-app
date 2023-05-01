@@ -36,6 +36,21 @@ using PixelsToTiles = ::testing::TestWithParam<TestCasePixelsToTiles>;
 auto generateTestNamePixelsToTiles(const ::testing::TestParamInfo<TestCasePixelsToTiles> &info)
   -> std::string;
 
+struct TestCasePixelsToTilesIntra
+{
+  std::string name;
+  CoordinateFramePtr frame;
+
+  olc::vf2d pixels;
+  olc::vi2d expectedTiles;
+  olc::vf2d expectedIntra;
+};
+
+using PixelsToTilesIntra = ::testing::TestWithParam<TestCasePixelsToTilesIntra>;
+
+auto generateTestNamePixelsToTilesIntra(
+  const ::testing::TestParamInfo<TestCasePixelsToTilesIntra> &info) -> std::string;
+
 namespace constants {
 struct Tiles
 {

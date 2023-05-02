@@ -62,7 +62,7 @@ void TexturePack::draw(olc::PixelGameEngine *pge,
                        const olc::vf2d &scale) const
 {
   // Check whether the pack is valid.
-  if (s.pack >= m_packs.size())
+  if (s.pack >= static_cast<int>(m_packs.size()))
   {
     log("Invalid pack " + std::to_string(s.pack) + " to draw sprite", utils::Level::Error);
     return;
@@ -79,7 +79,7 @@ void TexturePack::draw(olc::PixelGameEngine *pge,
                        const std::array<olc::vf2d, 4> &p) const
 {
   // Check whether the pack is valid.
-  if (s.pack >= m_packs.size())
+  if (s.pack >= static_cast<int>(m_packs.size()))
   {
     log("Invalid pack " + std::to_string(s.pack) + " to draw sprite", utils::Level::Error);
     return;

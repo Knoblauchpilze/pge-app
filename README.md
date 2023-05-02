@@ -189,18 +189,20 @@ In case the test suite is growing one can add some targets to run only the unit 
 
 # Specializing the project
 
-## General structure of the application
+## Generalities
 
 The application and the class within it are designed to easily be reused and extended with various behaviors.
 
 The classes which should be changed by the user are mainly:
-* [App](src/lib/game/App.hh) class
-* [Game](src/lib/game/Game.hh) class
-* [GameState](src/lib/game/GameState.hh) class
+* [App](src/lib/App.hh) class, described [here](#the-app-class).
+* [Game](src/lib/game/Game.hh) class, described [here](#the-game-class).
+* [GameState](src/lib/game/GameState.hh) class, described [here](#the-gamestate-class).
 
 ## The App class
 
-The `App` class provides various methods which can be enriched with behaviors.
+The `App` class provides various methods which can be enriched with behaviors. Below is a description of the main hooks which can be specialized.
+
+### loadResources
 
 ```cpp
 void
@@ -217,14 +219,18 @@ App::loadResources() {
   // Create the texture pack.
   pge::sprites::Pack pack;
   pack.file = "data/img/pieces.png";
+  const auto TILE_SIZE_IN_PIXELS = 64;
   pack.sSize = olc::vi2d(TILE_SIZE, TILE_SIZE);
   pack.layout = olc::vi2d(6, 2);
 
   m_piecesPackID = m_packs->registerPack(pack);
 }
 ```
-The `m_piecesPackID` defines an identifier which can then be used to reference a textures pack during the rendering phase (see the `drawDecal`) section.
+The `m_piecesPackID` defines an identifier which can then be used to reference a textures pack during the rendering phase (see the [drawDecal](#drawDecal)) section.
 
+### loadMenuResources
+
+The default implementation looks like so:
 ```cpp
 void
 App::loadMenuResources() {
@@ -238,8 +244,13 @@ App::loadMenuResources() {
 }
 ```
 
-The `loadMenuResources` main goal is to create the `GameState` and the UI menus. When debugging the application or during the development process, it might be useful to change the `Screen::Home` statement to `Screen::Game` for example to avoid having to select each time a new game.
+The main goal here is to create the `GameState` and the UI menus. When debugging the application or during the development process, it might be useful to change the `Screen::Home` statement to `Screen::Game` for example to avoid having to select each time a new game.
 
+This method also handles the generation of menus and their registration in the main input loop: the `m_menus` attribute provided by the `App` class registers all menus and will call them whenever there's a change in the inputs from the user (see the [game](#the-game-class) section).
+
+### drawDecal
+
+Along with the `draw`, `drawUI` and `drawDebug` method the `drawDecal` allows to render the elements of the application on screen. The code for all of these methods is similar so let's see what it does:
 ```cpp
 void
 App::drawDecal(const RenderDesc& /*res*/) {
@@ -259,9 +270,11 @@ App::drawDecal(const RenderDesc& /*res*/) {
 }
 ```
 
-The `drawDecal` method should be the preferred way to render complex elements. Using the `Decal` mechanism provided by the `Pixel Game Engine` we are able to render very quickly a lot of elements without impacting the framerate too much.
+The first thing to notice is that no matter what, the layer is cleared on each call. In case the screen is different from the `Game` screen (so basically when the main purpose of the application is displayed on screen), we don't do anything. This is to allow the other screens to draw what they want: usually this can be a UI or some configuration info.
 
-The method is already set up so that the user can just insert code in the `FIXME` statement (which doesn't exist in the code). It is recommended to use a new method like `drawBoard`, `drawElements` etc. and perform the rendering there.
+The `drawDecal` method should be the preferred way to render complex elements as opposed to the `draw` method: using the `Decal` mechanism provided by the `Pixel Game Engine` we are able to render very quickly a lot of elements without impacting the framerate too much by leveraging the GPU.
+
+The method is already set up so that the user can just insert code in the `FIXME` statement (which doesn't exist in the code). It is recommended to use new methods like `drawBoard`, `drawElements` etc. and perform the rendering there. This cleanly separates the steps to draw the elements.
 
 Whenever the user needs to perform the rendering of sprites, we define a convenience structure to help with drawing that:
 
@@ -270,7 +283,7 @@ namespace sprites {
   struct Sprite {
     // The `pack` defines the identifier of the pack from
     // which the sprite should be picked.
-    unsigned pack;
+    PackId pack;
 
     // The `sprite` defines an identifier for the sprite. The
     // position of the sprite in the resource pack will be
@@ -295,13 +308,8 @@ struct SpriteDesc {
   // The y coordinate of the sprite.
   float y;
 
-  // The radius of the sprite: applied both along the x and y
-  // coordinates.
+  // The radius of the sprite: applied both along the x and y coordinates.
   float radius;
-
-  // The relative position of the sprite compared to its
-  // position.
-  RelativePosition loc;
 
   // A description of the sprite.
   sprites::Sprite sprite;
@@ -312,21 +320,21 @@ These structures help encapsulate the logic to find and draw a sprite at a speci
 
 ```cpp
 void
-App::drawPieces(const RenderDesc& res) noexcept {
+App::drawFlowers(const RenderDesc& res) noexcept {
   SpriteDesc sd = {};
-  sd.loc = pge::RelativePosition::Center;
   sd.radius = 0.9f;
 
+  // A 8x8 grid with a flower in each cell.
   for (unsigned y = 0u ; y < 8u ; ++y) {
     for (unsigned x = 0u ; x < 8u ; ++x) {
       sd.x = x;
       sd.y = y;
 
-      sd.sprite.pack = m_piecesPackID;
+      sd.sprite.pack = /** index of the texture pack holding the flowers **/;
       sd.sprite.id = 0;
       sd.sprite.tint = olc::WHITE;
       sd.sprite.sprite = olc::vi2d(
-        /** FIXME: determine the sprite index **/,
+        /** FIXME: determine the sprite index in the pack **/,
         /** FIXME: determine the sprite variation **/
       );
 
@@ -335,10 +343,40 @@ App::drawPieces(const RenderDesc& res) noexcept {
   }
 }
 ```
+
 The code above performs the rendering of a 8x8 square of sprites taken from the pack loaded in the example above. The part to determine the index of the sprite based on the element to display is left to the user: it could come from fetching the particular element at this coordinate in the world or determined at random or anything else.
 
 The `drawSprite` method expects the coordinates to be expressed in world coordinates and will automatically convert them in pixels coordinates based on the current position of the viewport in the world.
 
+### Scheduling
+
+Whenever the app is running, the main loop is called. From the `App` perspective, this means that two methods are called in the following order:
+* onInputs
+* onFrame
+
+#### onInputs
+
+The user can easily add hot keys through the [Keys](src/lib/app/Controls.hh) enumeration: specific processes can then be triggered when the key is pressed. Note that the code in the [PGEApp::handleInputs](src/lib/app/PGEApp.cc) method should also be updated to detect the key being hit or released.
+
+```cpp
+void
+App::onInputs(const controls::State& c,
+              const CoordinateFrame& cf)
+{
+  /* ... */
+  if (c.keys[controls::keys::P]) {
+    m_game->togglePause();
+  }
+}
+```
+
+In general, it allows to react to some input and change the state of the game. It is in general not advised to perform graphic changes here but rather to configure everything so that the drawing routines can handle the visual representation.
+
+Typically in a sudoku app the `onInputs` method would be responsible to fill in a digit in a specific cell but wouldn't actually render it, this would be done by the `drawXYZ` routines.
+
+#### onFrame
+
+This method handle the game logic. By default the code looks like this:
 ```cpp
 bool
 App::onFrame(float fElapsed) {
@@ -353,22 +391,11 @@ App::onFrame(float fElapsed) {
 
   return m_game->terminated();
 }
-
-void
-App::onInputs(const controls::State& c,
-              const CoordinateFrame& cf)
-{
-  /* ... */
-  if (c.keys[controls::keys::P]) {
-    m_game->togglePause();
-  }
-}
 ```
-The scheduling of the `App` include a main loop which is called by the parent `PGEApp` at each frame and an event processing method.
 
-Both these methods are supposed to handle respectively the rendering processes and the input processing code.
+As we can see, we already handle the case where the game is terminated (meaning that we need to stop the application) and also call the `step` method in the [Game](#the-game-class) class. This can be extended with other processes which need to be called on each frame: a world simulation, some network connection handling, etc.
 
-The user can easily add hot keys through the [Keys](https://github.com/Knoblauchpilze/pge-app/blob/master/src/lib/app/Controls.hh) enumeration: specific processes can then be triggered when the key is pressed. Note that the code in the [PGEApp::handleInputs](https://github.com/Knoblauchpilze/pge-app/blob/master/src/lib/app/PGEApp.cc) method should also be updated to detect the key being hit or released.
+In general note that this method is synchronous with the rendering which means that any blocking/heavy operations done here will impact negatively the framerate. For a simple application it can be enough to just put processing here but if it becomes too complex it probably makes sense to resort to a more complex asynchronous system where the world has an execution thread separated from the actual execution of the rendering loop.
 
 ## The Game class
 
@@ -490,6 +517,8 @@ Whenever the user clicks on the game and doesn't target directly a menu, the `Ga
 By default actions are ignored if the game is disabled: this corresponds to the `Game` being paused. The user is free to add any code to create in-game element whenever the user clicks somewhere.
 
 ## The GameState class
+
+TODO: Add a game screen.
 
 The `GameState` provides the high level state management for the screens of the application. Just like the `Game` class is meant as a wrapper around the world/simulation that the user wants to execute within the application, the `GameState` is meant as a wrapper allowing to control transitions between the load game screen, the home screen and the game screen.
 

@@ -33,7 +33,7 @@ struct Sprite
 {
   // The `pack` defines the identifier of the pack from
   // which the sprite should be picked.
-  unsigned pack;
+  PackId pack;
 
   // The `sprite` defines an identifier for the sprite. The
   // position of the sprite in the resource pack will be

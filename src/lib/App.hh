@@ -53,8 +53,7 @@ class App : public PGEApp
     // The y coordinate of the sprite.
     float y;
 
-    // The radius of the sprite: applied both along the x and y
-    // coordinates.
+    // The radius of the sprite: applied both along the x and y coordinates.
     float radius;
 
     // A description of the sprite.

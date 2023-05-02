@@ -108,6 +108,40 @@ INSTANTIATE_TEST_CASE_P(
                                            {-3.65983391f, 7.46240044f})),
   generateTestNamePixelsToTiles);
 
+auto generateIsometricTestCasePixelsToTilesIntra(const std::string &name,
+                                                 const olc::vf2d &pixels,
+                                                 const olc::vi2d &expectedTiles,
+                                                 const olc::vf2d &expectedIntra)
+  -> TestCasePixelsToTilesIntra
+{
+  return TestCasePixelsToTilesIntra{name,
+                                    generateIsometricViewFrame(),
+                                    pixels,
+                                    expectedTiles,
+                                    expectedIntra};
+}
+
+INSTANTIATE_TEST_CASE_P(
+  Unit_IsometricViewFrame,
+  PixelsToTilesIntra,
+  Values(generateIsometricTestCasePixelsToTilesIntra("top_left_quadrant",
+                                                     olc::vf2d{67.904251f, 21.468311f},
+                                                     olc::vi2d{-2, 6},
+                                                     olc::vf2d{0.937499762f, 0.482758999f}),
+         generateIsometricTestCasePixelsToTilesIntra("top_right_quadrant",
+                                                     olc::vf2d{149.197144f, 65.375229f},
+                                                     olc::vi2d{2, 5},
+                                                     olc::vf2d{0.875000238f, 0.620688915f}),
+         generateIsometricTestCasePixelsToTilesIntra("bottom_right_quadrant",
+                                                     olc::vf2d{32.548912f, 87.472305f},
+                                                     olc::vi2d{1, -4},
+                                                     olc::vf2d{0.374999762f, 0.482758522f}),
+         generateIsometricTestCasePixelsToTilesIntra("bottom_left_quadrant",
+                                                     olc::vf2d{7.361282f, 39.289612f},
+                                                     olc::vi2d{-2, 0},
+                                                     olc::vf2d{0.468749762f, 0.965517282f})),
+  generateTestNamePixelsToTilesIntra);
+
 TEST(Unit_IsometricViewFrame, Translate)
 {
   auto frame = generateIsometricViewFrame();

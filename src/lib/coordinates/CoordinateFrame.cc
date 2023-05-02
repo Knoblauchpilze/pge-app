@@ -57,7 +57,7 @@ olc::vf2d CoordinateFrame::pixelsToTiles(float x, float y) const noexcept
   return m_tilesViewport.absoluteCoords(transformed.x, transformed.y);
 }
 
-olc::vi2d CoordinateFrame::pixelsToTilesAndIntra(const olc::vi2d &pixels,
+olc::vi2d CoordinateFrame::pixelsToTilesAndIntra(const olc::vf2d &pixels,
                                                  olc::vf2d *intraTile) const noexcept
 {
   auto tiles = pixelsToTiles(pixels.x, pixels.y);

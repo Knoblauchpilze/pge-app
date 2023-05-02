@@ -36,7 +36,7 @@ The usage of the script is as follows:
 ./configureProject.sh project_name
 ```
 
-# Usage
+# Generalities
 
 The application is structured around a base [App](src/lib/App.hh) which can be customized to include more complex behaviors.
 
@@ -62,6 +62,133 @@ The application provides a base [Game](src/lib/game/Game.hh) class which can be 
 
 While this class is called `Game` it can also receive some other type of data.
 
+Some generic types are also provided to help easily create some menus and UI elements for a game. See more details in the [specialization](#specializing-the-project) section.
+
+## App
+
+The [App](src/lib/App.hh) class is the element which is executed by default when starting the project. It aims at receiving the logic to control the interaction with the user, the rendering and the controlling of the game/app elements.
+
+Multiple hooks are provided where the user can insert custom behavior in order to enrich the base implementation with new processes and features.
+
+## In-app content
+
+The base project comes with a set of basic features to start developing either a game or an app. Some of them are detailed below.
+
+### Creating an App
+
+In order to ease the creation of an `App` object, we regrouped the options within a struct named [AppDesc](src/lib/app/AppDesc.hh). This contains several attributes, among which:
+* the dimensions of the window in pixels.
+* a coordinate frame (see more details in the dedicated [section](#coordinate-frame)).
+* whether or not the view allows panning and zooming.
+
+### Coordinate frame
+
+Usually, an application maps what happens on the screen to an internal coordinate frame. The start of most interactions begins in pixels frame: the user clicks somewhere or moves the mouse somewhere and we get the information about where the mouse is in pixels. From this, the application needs to transform these coordinates and see if anything interesting happens because of this.
+
+The base app defines a coordinate frame to handle such things. A [coordinate frame](src/lib/coordinates/CoordinateFrame.hh) is an interface which aims at converting the information in pixels space to the internal world space. To do this, it uses two [viewports](src/lib/coordinates/Viewport.hh): one defining the pixels space and the other one the tiles space.
+
+By default, two separate frames are already available:
+* a [top view](src/lib/coordinates/TopViewFrame.hh) frame: this represents a simple scaling between the position in pixels and the position in tiles. It can be used for a top down app, or most 2D apps.
+* an [isometric view](src/lib/coordinates/IsometricViewFrame.hh) frame: this represents a semi-3D projection which allows to produce graphics like [this](https://en.wikipedia.org/wiki/Isometric_video_game_graphics).
+
+Panning and zooming are handled for both frames, along with converting from pixels to tiles and vice versa.
+
+### Fixing the frame
+
+For some applications, it might be undesirable to have panning and zooming enabled (for example a sudoku app). The `AppDesc` structure allows to configure this through the `fixedFrame` boolean which prevents any panning and zooming to be considered. The application will be blocked on the tiles defined in the main viewport provided when creating the application.
+
+### Logging
+
+By default the app comes with a logger allowing to print some messages in the console executing the program. Most of the objects provided in the app are also integrating a logger which makes it possible to debug the processes easily.
+
+### Putting it together
+
+This is the default `main` program provided in this template app:
+
+```cpp
+int
+main(int /*argc*/, char** /*argv*/) {
+  // Create the logger.
+  utils::StdLogger raw;
+  raw.setLevel(utils::Level::Debug);
+  utils::PrefixedLogger logger("pge", "main");
+  utils::LoggerLocator::provide(&raw);
+
+  logger.logMessage(utils::Level::Notice, "Starting application");
+
+  /// FIXME: Definition of the viewports: the tiles viewport and the pixels viewport.
+  auto tiles  = pge::CenteredViewport({0.0f, 0.0f}, {4.0f, 3.0f});
+  auto pixels = pge::TopLeftViewport({0.0f, 0.0f}, {800.0f, 600.0f});
+
+  auto cf = std::make_shared<pge::TopViewFrame>(tiles, pixels);
+
+  pge::AppDesc ad = pge::newDesc(olc::vi2d(800, 600), cf, "pge-app");
+  pge::App demo(ad);
+
+  demo.Start();
+
+  return EXIT_SUCCESS;
+}
+```
+
+Both the tiles and pixels viewports are important and define respectively how much of the world will be visible and how zoomed-in the initial setup will be.
+
+In case the user wants to access more log messages or reduce the severity of logs produced by the app, it is easy to adjust the `raw.setLevel` call to not use `Debug` but another level.
+
+# Profiling
+
+A convenience script is provided in order to profile the app. This comes from [this](https://stackoverflow.com/questions/375913/how-can-i-profile-c-code-running-on-linux) topic. This requires a few things to be installed on the system:
+* [GIMP](https://doc.ubuntu-fr.org/gimp)
+* [valgrind](https://wiki.ubuntu.com/Valgrind)
+* [gprof2dot](https://github.com/jrfonseca/gprof2dot)
+
+The output image is a png that is opened with GIMP and can give ideas about what is slowing down the application.
+
+The profiling can be triggered with the following command:
+```bash
+make profile
+```
+
+# Testing
+
+## Generalities
+
+The default application comes with a functional testing framework. The tests are meant to be located in the [tests](tests/) folder and can be further specialized into unit tests (existing [here](tests/unit) already) but also integration tests, functional tests, etc.
+
+The framework uses the `gtest` library to perform the testing.
+
+## Adding tests
+
+In order to add a new test, one can create a new file under the relevant test section (say `tests/unit/lib/MyClassTest.cc`). The structure of the file should look something like so:
+```cpp
+
+# include "MyClass.hh"
+# include <gtest/gtest.h>
+
+using namespace ::testing;
+
+namespace the::namespace::of::the::class {
+
+TEST(Unit_MyClass, Test_MyFeature)
+{
+  /* FIXME: Some testing. */
+  EXPECT_EQ(/* Some condition */);
+}
+
+}
+```
+
+## Run the tests
+
+Once the tests are written, the root `Makefile` defines a target to execute all the tests under:
+```bash
+make tests
+```
+
+In case the test suite is growing one can add some targets to run only the unit or integration tests but it is not provided yet.
+
+# Specializing the project
+
 ## General structure of the application
 
 The application and the class within it are designed to easily be reused and extended with various behaviors.
@@ -71,7 +198,7 @@ The classes which should be changed by the user are mainly:
 * [Game](src/lib/game/Game.hh) class
 * [GameState](src/lib/game/GameState.hh) class
 
-### The App class
+## The App class
 
 The `App` class provides various methods which can be enriched with behaviors.
 
@@ -243,7 +370,7 @@ Both these methods are supposed to handle respectively the rendering processes a
 
 The user can easily add hot keys through the [Keys](https://github.com/Knoblauchpilze/pge-app/blob/master/src/lib/app/Controls.hh) enumeration: specific processes can then be triggered when the key is pressed. Note that the code in the [PGEApp::handleInputs](https://github.com/Knoblauchpilze/pge-app/blob/master/src/lib/app/PGEApp.cc) method should also be updated to detect the key being hit or released.
 
-#### The Game class
+## The Game class
 
 The `Game` class provides a wrapping context to handle the execution of the code related to the specific code of the application. This is where the user should insert the specific processes and behaviors that the App should process.
 
@@ -362,7 +489,7 @@ Whenever the user clicks on the game and doesn't target directly a menu, the `Ga
 
 By default actions are ignored if the game is disabled: this corresponds to the `Game` being paused. The user is free to add any code to create in-game element whenever the user clicks somewhere.
 
-#### The GameState class
+## The GameState class
 
 The `GameState` provides the high level state management for the screens of the application. Just like the `Game` class is meant as a wrapper around the world/simulation that the user wants to execute within the application, the `GameState` is meant as a wrapper allowing to control transitions between the load game screen, the home screen and the game screen.
 
@@ -448,97 +575,3 @@ App::loadMenuResources() {
   m_menus = m_game->generateMenus(ScreenWidth(), ScreenHeight());
 }
 ```
-
-## Convenience options
-
-By default, the application allows the user to pan and zoom in the main game view. While very handy in most situations it can also be that the user wants to create a static application where the mechanism of tiles is mostly use to reference tiles in a game (similarly to what would happen for a Sudoku game for example).
-
-The [AppDesc](https://github.com/Knoblauchpilze/pge-app/blob/master/src/lib/app/AppDesc.hh) structure allows that through the `fixedFrame` boolean which prevents any panning and zooming to be considered. The application will be blocked on the tiles defined in the main viewport provided when creating the application.
-
-The user can also select the initial viewport of the app in the `main` file as presented below:
-
-```cpp
-int
-main(int /*argc*/, char** /*argv*/) {
-  // Create the logger.
-  utils::StdLogger raw;
-  raw.setLevel(utils::Level::Debug);
-  utils::PrefixedLogger logger("pge", "main");
-  utils::LoggerLocator::provide(&raw);
-
-  logger.logMessage(utils::Level::Notice, "Starting application");
-
-  /// FIXME: Definition of the viewports: the tiles viewport and the pixel viewport.
-  pge::Viewport tViewport = pge::Viewport(olc::vf2d(-6.0f, -5.0f), olc::vf2d(20.0f, 15.0f));
-  pge::Viewport pViewport = pge::Viewport(olc::vf2d(10.0f, 50.0f), olc::vf2d(800.0f, 600.0f));
-
-  pge::CoordinateFramePtr cf = std::make_shared<pge::TopViewFrame>(
-    tViewport,
-    pViewport,
-    olc::vi2d(64, 64)
-    );
-  pge::AppDesc ad = pge::newDesc(olc::vi2d(800, 600), cf, "pge-app");
-  pge::App demo(ad);
-
-  demo.Start();
-
-  return EXIT_SUCCESS;
-}
-```
-
-Both the tiles and pixels viewports are important and define respectively how much of the world will be visible and how zoomed-in the initial setup will be.
-
-In case the user wants to access more log messages or reduce the severity of logs produced by the app, it is easy to adjust the `raw.setLevel` call to not use `Debug` but another level.
-
-# Testing
-
-## Generalities
-
-The default application comes with a functional testing framework. The tests are meant to be located in the [tests](tests/) folder and can be further specialized into unit tests (existing [here](tests/unit) already) but also integration tests, functional tests, etc.
-
-The framework uses the `gtest` library to perform the testing.
-
-## Adding tests
-
-In order to add a new test, one can create a new file under the relevant test section (say `tests/unit/lib/MyClassTest.cc`). The structure of the file should look something like so:
-```cpp
-
-# include "MyClass.hh"
-# include <gtest/gtest.h>
-
-using namespace ::testing;
-
-namespace the::namespace::of::the::class {
-
-TEST(Unit_MyClass, Test_MyFeature)
-{
-  /* FIXME: Some testing. */
-  EXPECT_EQ(/* Some condition */);
-}
-
-}
-```
-
-## Run the tests
-
-Once the tests are written, the root `Makefile` defines a target to execute all the tests under:
-```bash
-make tests
-```
-
-In case the test suite is growing one can add some targets to run only the unit or integration tests but it is not provided yet.
-
-# Profiling
-
-A convenience script is provided in order to profile the app. This comes from [this](https://stackoverflow.com/questions/375913/how-can-i-profile-c-code-running-on-linux) topic. This requires a few things to be installed on the system:
-* GIMP
-* valgrind
-* [gprof2dot](https://github.com/jrfonseca/gprof2dot)
-
-The output image is a png that is opened with GIMP and can give ideas about what is slowing down the application.
-
-The profiling can be triggered with the following command:
-```bash
-make profile
-```
-

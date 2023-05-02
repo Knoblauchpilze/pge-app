@@ -1,7 +1,7 @@
 
 # pge-app
 
-Simple implementation of an application relying on the [PixelGameEngine](https://github.com/OneLoneCoder/olcPixelGameEngine) to perform the rendering. This project comes with a basic event handling system, some basic menu which can register actions and a default `game` structure which can be extended to handle various processes.
+Simple implementation of an application relying on the [PixelGameEngine](https://github.com/OneLoneCoder/olcPixelGameEngine) to perform the rendering. This project comes with a basic event handling system, some basic menus which can register actions and a default `game` structure which can be extended to handle various processes.
 
 It is meant as a simple way to build an application without having to reinvent the wheel for every project. Most of the behaviors can be customized in order to handle more complex behaviors (resources loading, step function, pause system, etc.).
 
@@ -9,16 +9,25 @@ The general architecture of the repository has been inspired by the one describe
 
 # Installation
 
-- Clone the repo: `git clone git@github.com:Knoblauchpilze/pge-app.git`.
-- Clone dependencies:
+## Prerequisite
+
+This projects uses:
+* [google test](https://github.com/google/googletest): installation instructions [here](https://www.eriksmistad.no/getting-started-with-google-test-on-ubuntu/), a simple `apt-get` should be enough.
+* `cmake`: installation instructions [here](https://askubuntu.com/questions/355565/how-do-i-install-the-latest-version-of-cmake-from-the-command-line), a simple `apt-get` should also be enough.
+* [eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page): installation instructions [here](https://www.cyberithub.com/how-to-install-eigen3-on-ubuntu-20-04-lts-focal-fossa/) for Ubuntu 20.04, a simple `sudo apt install libeigen3-dev` should be enough.
+
+## Instructions
+
+* Clone the repo: `git clone git@github.com:Knoblauchpilze/pge-app.git`.
+* Clone dependencies:
     * [core_utils](https://github.com/Knoblauchpilze/core_utils)
     * [maths_utils](https://github.com/Knoblauchpilze/maths_utils)
-- Install required libraries:
-    * [gtest](https://www.eriksmistad.no/getting-started-with-google-test-on-ubuntu/)
-- Go to the project's directory `cd ~/path/to/the/repo`.
-- Compile: `make run`.
+* Go to the project's directory `cd ~/path/to/the/repo`.
+* Compile: `make run`.
 
 Don't forget to add `/usr/local/lib` to your `LD_LIBRARY_PATH` to be able to load shared libraries at runtime. This is handled automatically when using the `make run` target (which internally uses the [run.sh](data/run.sh) script).
+
+## Configuration
 
 If the user wants to update the project to another name and start with a more complex app, a convenience script is [provided](configureProject.sh) which allows to perform the renaming of elements as needed to have a new app with a different name.
 
@@ -44,6 +53,8 @@ The ordering of the layer matters as it will describe how elements are overlaid.
 * non-decal graphical resource layer
 * ui layer
 * debug layer
+
+When pressing the `D` key the debug layer can easily be toggled on or off.
 
 ## Game
 

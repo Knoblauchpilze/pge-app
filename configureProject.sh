@@ -35,9 +35,11 @@ sed -i "s/example-project\b/${PROJECT_NAME}/g" CMakeLists.txt
 sed -i "s/example-app\b/${PROJECT_NAME}/g" src/CMakeLists.txt
 
 echo "Updating scripts..."
+sed -i "s/example-app/${PROJECT_NAME}/g" data/debug-tests.sh
 sed -i "s/example-app/${PROJECT_NAME}/g" data/debug.sh
 sed -i "s/example-app/${PROJECT_NAME}/g" data/profile.sh
 sed -i "s/example-app/${PROJECT_NAME}/g" data/run.sh
+sed -i "s/example-app/${PROJECT_NAME}/g" data/tests.sh
 sed -i "s/example-app/${PROJECT_NAME}/g" data/valgrind.sh
 
 echo "Updating code..."

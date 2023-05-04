@@ -101,6 +101,8 @@ For some applications, it might be undesirable to have panning and zooming enabl
 
 By default the app comes with a logger allowing to print some messages in the console executing the program. Most of the objects provided in the app are also integrating a logger which makes it possible to debug the processes easily.
 
+In case the user wants to access more log messages or reduce the severity of logs produced by the app, it is easy to adjust the `raw.setLevel` call to not use `Debug` but another level.
+
 ### Putting it together
 
 This is the default `main` program provided in this template app:
@@ -133,11 +135,9 @@ main(int /*argc*/, char** /*argv*/) {
 
 Both the tiles and pixels viewports are important and define respectively how much of the world will be visible and how zoomed-in the initial setup will be.
 
-In case the user wants to access more log messages or reduce the severity of logs produced by the app, it is easy to adjust the `raw.setLevel` call to not use `Debug` but another level.
-
 # Profiling
 
-A convenience script is provided in order to profile the app. This comes from [this](https://stackoverflow.com/questions/375913/how-can-i-profile-c-code-running-on-linux) topic. This requires a few things to be installed on the system:
+A convenience script is provided in order to profile the app. This comes from [this](https://stackoverflow.com/a/771005) answer (although the other answers are interesting as well). This requires a few things to be installed on the system:
 * [GIMP](https://doc.ubuntu-fr.org/gimp)
 * [valgrind](https://wiki.ubuntu.com/Valgrind)
 * [gprof2dot](https://github.com/jrfonseca/gprof2dot)
@@ -413,7 +413,7 @@ The `generateMenus` class is called by the `App` class and is supposed to create
 
 The method is passed on the width and height of the rendering canvas which can help adapt the size of the menus to the actual size of the application.
 
-Typically the user can create dedicated method like so:
+Typically the user can create dedicated methods like so:
 
 ```cpp
 std::vector<MenuShPtr>
@@ -521,13 +521,13 @@ Game::step(float /*tDelta*/) {
 }
 ```
 
-One pre-filled process happening in the `step` method is the `updateUI` method: this is responsible to make sure that menus also get the chance to be updated each frame. More info in the dedicate [section](#updateUI-or-how-menus-live)
+One pre-filled process happening in the `step` method is the `updateUI` method: this is responsible to make sure that menus also get the chance to be updated each frame. More info in the dedicated [section](#updateUI-or-how-menus-live)
 
 ### updateUI or how menus live
 
 The `updateUI` method is very similar to the `step` method but is dedicated to the UI. It allows the menus to also be aware of the passage of time in the simulation and to update their content with meaningful information.
 
-Such an update is important for two kind of menus:
+Such an update is important for two kinds of menus:
 * timed menus
 * menus which information changes over time
 

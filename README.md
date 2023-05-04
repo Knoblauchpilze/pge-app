@@ -399,49 +399,40 @@ In general note that this method is synchronous with the rendering which means t
 
 ## The Game class
 
-The `Game` class provides a wrapping context to handle the execution of the code related to the specific code of the application. This is where the user should insert the specific processes and behaviors that the App should process.
+The [Game](src/lib/game/Game.hh) class provides a context to handle the execution of the code related to the game. The game is a bit of a blanket for the app specific logic. In the case of a sudoku app it can mean handling the verification to place a digit. In the case of a real game it can mean running the simulation and moving entities around.
 
-```cpp
-bool
-Game::step(float /*tDelta*/) {
-  // When the game is paused it is not over yet.
-  if (m_state.paused) {
-    return true;
-  }
+The recommended approach is to create a specialized class (e.g. `World`) and use composition to make the `Game` class aware of it.
 
-  info("Perform step method of the game");
+Another responsibility of the class is to handle the UI of the app: it should generate the various controls to interact with the app and also transmit the interaction of the user to apply them to the game (for example through the `World` class).
 
-  updateUI();
+Several hooks are provided to customize the behavior easily.
 
-  return true;
-}
-```
+### generateMenus
 
-The main method is probably `step` where the user can perform the update of the elements that will be added to the `Game` class. This can include a `World` class for example which would be responsible for the simulation. The user is given the elapsed time since the last frame in seconds.
+The `generateMenus` class is called by the `App` class and is supposed to create the menus to display when the user is on the `Game` screen. Any menu returned here will be automatically considered by the `App` framework and passed on events in case they are relevant.
 
-It is usually recommended to convert that to an internal `frame ID` which represents the number of steps that have been executed since the start of the simulation. It also plays nicely with the `Pause` mechanism: we just have to resume the frames and not consider how much time has passed for dynamic processes.
+The method is passed on the width and height of the rendering canvas which can help adapt the size of the menus to the actual size of the application.
 
-```cpp
-void
-Game::updateUI() {
-  info("Perform update of UI menus");
-}
-```
-
-The `updateUI` method allows to perfor the update of the menus which content might vary based on the state of the simulation: this could be the number of lives remaining for the user, the amount of a certain resource, etc. This method is called by the `step` method whenever the game is not paused.
+Typically the user can create dedicated method like so:
 
 ```cpp
 std::vector<MenuShPtr>
 Game::generateMenus(float /*width*/,
                     float /*height*/)
 {
-  info("Generate UI menus here");
-  return std::vector<MenuShPtr>();
+  auto statusBarMenus = generateStatusBarMenus();
+  auto controlPanelMenus = generateControlPanelMenus();
+  /* ... */
+
+  std::vector<MenuShPtr> out;
+  out.insert(statusBarMenus.begin(), statusBarMenus.end());
+  out.insert(controlPanelMenus.begin(), controlPanelMenus.end());
+
+  return out;
 }
 ```
-The `generateMenus` class is called by the `App` class and is supposed to create the menus to display when the user is on the `Game` screen. Any menu returned here will be automatically considered by the `App` framework and passed on events in case they are relevant.
 
-The method is passed on the width and height of the rendering canvas which can help adapt the size of the menus to the actual size of the application.
+### How to store the menus
 
 The `Game` class also defines an internal convenience structure to regroup all the menus that might be needed by the `App`:
 
@@ -452,9 +443,11 @@ struct Menus {
   /// FIXME: Add menus here.
 };
 ```
-The user can add all the menus that are needed here to keep the number of attributes to a minimum.
+The user can add necessary menus here to group them in a neat object to pass around.
 
-**NOTE:** all menus do not need to be registered. It is mainly interesting to keep them in case their content needs to be updated (typically a label). Otherwise, the menus will automatically handle the release of their children menus when being destroyed. The concept of actions should also be sufficient to trigger processes on the `Game` (and ultimately on any element of the `Game`) when the user clicks on a [Menu](https://github.com/Knoblauchpilze/pge-app/blob/master/src/lib/ui/Menu.hh).
+**NOTE:** all menus do not need to be registered. It is mainly interesting to keep them in case their content needs to be updated (typically a label) during the game. Otherwise, the menus will automatically handle the release of their children sub-menus when being destroyed. The concept of actions (see the corresponding [section](#attach-an-action-to-a-menu)) should be sufficient to trigger processes on the `Game` (and also on elements of the `World` class for example) when the user clicks on a [Menu](https://github.com/Knoblauchpilze/pge-app/blob/master/src/lib/ui/Menu.hh).
+
+### Attach an action to a menu
 
 Each menu created with the [Menu](https://github.com/Knoblauchpilze/pge-app/blob/master/src/lib/ui/Menu.hh) class can be attached an [Action](https://github.com/Knoblauchpilze/pge-app/blob/master/src/lib/ui/Action.hh) which is triggered by the menu whenever it is clicked upon (provided that the menu is `clickable`).
 
@@ -472,9 +465,11 @@ The action receives a reference to the game and can trigger an action on it. A t
 
 Actions can be reset and can also include variables from the context creating it, such as a certain value or a compile time parameter. This mechanism proved quite reliable and easy-to-use to trigger processes on the `Game` from the UI.
 
-Furthermore, the `Game` class defines a convenience internal structure called a `TimedMenu` which allows to display a menu for a certain period of time based on a certain condition.
+### Timed menu
 
-The user needs to configure the menu and then update its status in the `updateUI` function like so:
+The `Game` class defines a convenience internal structure called a `TimedMenu` which allows to display a menu for a certain period of time based on a certain condition.
+
+The user needs to configure the menu (usually in the [generateMenus](#generatemenus) method) and then update its status in the `updateUI` function like so:
 
 ```cpp
 std::vector<MenuShPtr>
@@ -502,6 +497,45 @@ Game::updateUI() {
 
 This allows to easily display alerts for example, or any information that needs to be presented to the user for a short period of time. Note that it is usually recommended to set the `clickable` and `selectable` flags of the menu attached to the component.
 
+The condition to provide in the update should be `true` when the menu is supposed to be visible and `false` otherwise. The base class already provides the mechanism so that the menu can be reactivated as needed without any additional processing.
+
+### The step method
+
+The main method is probably `step` where the user can perform the update of the elements that will be added to the `Game` class. Once again, this plays nicely with the concept of a `World` class which would be responsible for the simulation.
+
+The user is given the elapsed time since the last frame in seconds. This information is sufficient to handle menus for example but in general it shouldn't be considered as the main way to measure time passing in the simulation.
+
+```cpp
+bool
+Game::step(float /*tDelta*/) {
+  // When the game is paused it is not over yet.
+  if (m_state.paused) {
+    return true;
+  }
+
+  info("Perform step method of the game");
+
+  updateUI();
+
+  return true;
+}
+```
+
+One pre-filled process happening in the `step` method is the `updateUI` method: this is responsible to make sure that menus also get the chance to be updated each frame. More info in the dedicate [section](#updateUI-or-how-menus-live)
+
+### updateUI or how menus live
+
+The `updateUI` method is very similar to the `step` method but is dedicated to the UI. It allows the menus to also be aware of the passage of time in the simulation and to update their content with meaningful information.
+
+Such an update is important for two kind of menus:
+* timed menus
+* menus which information changes over time
+
+The static menus don't need this. A non-static menu is for example a label indicating how much gold a player has in a game: this typically changes based on the events of the game and should be updated regularly.
+
+### Make changes to the game
+
+The last hook provided by the `Game` class is the `performAction` method. It looks like so:
 ```cpp
 void
 Game::performAction(float /*x*/, float /*y*/) {
@@ -512,9 +546,10 @@ Game::performAction(float /*x*/, float /*y*/) {
   }
 }
 ```
+
 Whenever the user clicks on the game and doesn't target directly a menu, the `Game::performAction` method is called. It is passed on the coordinates of the click in tiles using a floating point format (meaning that the `Game` can access the intra-tile position).
 
-By default actions are ignored if the game is disabled: this corresponds to the `Game` being paused. The user is free to add any code to create in-game element whenever the user clicks somewhere.
+By default actions are ignored if the game is disabled: this corresponds to the `Game` being paused. The user is free to add any code to create in-game element whenever the user clicks somewhere. For example, display a label if the user clicks on a building somewhere in the game, or spawn a new entity.
 
 ## The GameState class
 

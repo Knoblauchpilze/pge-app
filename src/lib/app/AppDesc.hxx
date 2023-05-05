@@ -1,30 +1,26 @@
-#ifndef    PGE_APP_APP_DESC_HXX
-# define   PGE_APP_APP_DESC_HXX
 
-# include "AppDesc.hh"
+#pragma once
+
+#include "AppDesc.hh"
 
 namespace pge {
 
-  inline
-  AppDesc
-  newDesc(const olc::vi2d& dims,
-          CoordinateFrameShPtr cf,
-          const std::string& name) noexcept
-  {
-    AppDesc ad;
+inline AppDesc newDesc(const olc::vi2d &dims,
+                       CoordinateFramePtr cf,
+                       const std::string &name) noexcept
+{
+  AppDesc ad;
 
-    ad.dims = dims;
-    ad.pixRatio = olc::vi2d(1, 1);
+  ad.dims     = dims;
+  ad.pixRatio = olc::vi2d(1, 1);
 
-    ad.name = name;
+  ad.name = name;
 
-    ad.frame = cf;
+  ad.frame = cf;
 
-    ad.fixedFrame = false;
+  ad.fixedFrame = false;
 
-    return ad;
-  }
-
+  return ad;
 }
 
-#endif    /* PGE_APP_APP_DESC_HXX */
+} // namespace pge

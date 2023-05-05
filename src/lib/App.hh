@@ -1,148 +1,110 @@
-#ifndef    APP_HH
-# define   APP_HH
 
-# include "PGEApp.hh"
-# include "TexturePack.hh"
-# include "Menu.hh"
-# include "Game.hh"
-# include "GameState.hh"
+#pragma once
+
+#include "Game.hh"
+#include "GameState.hh"
+#include "Menu.hh"
+#include "PGEApp.hh"
+#include "TexturePack.hh"
 
 namespace pge {
 
-  class App: public PGEApp {
-    public:
+class App : public PGEApp
+{
+  public:
+  /// @brief - Create a new default pixel game engine app.
+  /// @param desc - contains all the needed information to create the canvas needed
+  /// by the app and set up base properties.
+  App(const AppDesc &desc);
 
-      /**
-       * @brief - Create a new default pixel game engine app.
-       * @param desc - contains all the needed information to
-       *               create the canvas needed by the app and
-       *               set up base properties.
-       */
-      App(const AppDesc& desc);
+  ~App() = default;
 
-      /**
-       * @brief - Desctruction of the object.
-       */
-      ~App() = default;
+  protected:
+  bool onFrame(float fElapsed) override;
 
-    protected:
+  void onInputs(const controls::State &c, const CoordinateFrame &cf) override;
 
-      void
-      loadData() override;
+  void loadData() override;
 
-      void
-      loadResources() override;
+  void loadResources() override;
 
-      void
-      loadMenuResources() override;
+  void loadMenuResources() override;
 
-      void
-      cleanResources() override;
+  void cleanResources() override;
 
-      void
-      cleanMenuResources() override;
+  void cleanMenuResources() override;
 
-      void
-      drawDecal(const RenderDesc& res) override;
+  void drawDecal(const RenderDesc &res) override;
 
-      void
-      draw(const RenderDesc& res) override;
+  void draw(const RenderDesc &res) override;
 
-      void
-      drawUI(const RenderDesc& res) override;
+  void drawUI(const RenderDesc &res) override;
 
-      void
-      drawDebug(const RenderDesc& res) override;
+  void drawDebug(const RenderDesc &res) override;
 
-      bool
-      onFrame(float fElapsed) override;
+  private:
+  /// @brief - Convenience structure regrouping needed props to
+  /// draw a sprite.
+  struct SpriteDesc
+  {
+    // The x coordinate of the sprite.
+    float x;
 
-      void
-      onInputs(const controls::State& c,
-               const CoordinateFrame& cf) override;
+    // The y coordinate of the sprite.
+    float y;
 
-    private:
+    // The radius of the sprite: applied both along the x and y coordinates.
+    float radius;
 
-      /// @brief - Convenience structure regrouping needed props to
-      /// draw a sprite.
-      struct SpriteDesc {
-        // The x coordinate of the sprite.
-        float x;
-
-        // The y coordinate of the sprite.
-        float y;
-
-        // The radius of the sprite: applied both along the x and y
-        // coordinates.
-        float radius;
-
-        // The relative position of the sprite compared to its
-        // position.
-        RelativePosition loc;
-
-        // A description of the sprite.
-        sprites::Sprite sprite;
-      };
-
-      /// @brief - Describe a possible orientation for a graphic component
-      /// (e.g. a healthbar, etc.).
-      enum class Orientation {
-        Horizontal,
-        Vertical
-      };
-
-      /**
-       * @brief - Used to draw the tile referenced by the input
-       *          struct to the screen using the corresponding
-       *          visual representation.
-       * @param t - the description of the tile to draw.
-       * @param cf - the coordinate frame to use to perform the
-       *             conversion from tile position to pixels.
-       */
-      void
-      drawSprite(const SpriteDesc& t, const CoordinateFrame& cf);
-
-      /**
-       * @brief - Used to draw a simple rect at the specified
-       *          location. Note that we reuse the sprite desc
-       *          but don't actually use the sprite.
-       * @param t - the description of the tile to draw.
-       * @param cf - the coordinate frame to use to perform the
-       *             conversion from tile position to pixels.
-       */
-      void
-      drawRect(const SpriteDesc& t,
-               const CoordinateFrame& cf);
-
-    private:
-
-      /**
-       * @brief - The game managed by this application.
-       */
-      GameShPtr m_game;
-
-      /**
-       * @brief - The management of the game state, which includes
-       *          loading the saved games, handling game over and
-       *          such things.
-       */
-      GameStateShPtr m_state;
-
-      /**
-       * @brief - Defines the list of menus available for
-       *          this app.
-       */
-      std::vector<MenuShPtr> m_menus;
-
-      /**
-       * @brief - A description of the textures used to represent
-       *          the elements of the game.
-       */
-      TexturePackShPtr m_packs;
+    // A description of the sprite.
+    sprites::Sprite sprite;
   };
 
-}
+  /// @brief - Used to draw the tile referenced by the input struct to the screen
+  /// using the corresponding visual representation.
+  /// @param t - the description of the tile to draw.
+  /// @param cf - the coordinate frame to use to perform the conversion from tile
+  /// position to pixels.
+  void drawSprite(const SpriteDesc &t, const CoordinateFrame &cf);
 
-# include "App.hxx"
+  /// @brief - Render a warped sprite. The position of the sprite as defined in
+  /// the input argument will be used to map the sprite to occupy exactly the
+  /// corresponding tile. For example if `t.x = 0, t.y = 0`, the sprite will be
+  /// mapped to occupy the `(0, 0)` tile, based on the zoom and orientation of
+  /// the tile given the coordinate frame.
+  /// @param t - the description of the tile to draw.
+  /// @param cf - the coordinate frame to use to perform the conversion from tile
+  /// position to pixels.
+  void drawWarpedSprite(const SpriteDesc &t, const CoordinateFrame &cf);
 
-#endif    /* APP_HH */
+  /// @brief - Used to draw a simple rect at the specified location. Note that we
+  /// reuse the sprite desc but don't actually use the sprite.
+  /// @param t - the description of the tile to draw.
+  /// @param cf - the coordinate frame to use to perform the conversion from tile
+  /// position to pixels.
+  void drawRect(const SpriteDesc &t, const CoordinateFrame &cf);
+
+  /// @brief - Example method to render the default texture pack.
+  /// @param cf - the coordinate frame to convert from tiles to pixels space.
+  void renderDefaultTexturePack(const CoordinateFrame &cf);
+
+  private:
+  /// @brief - The game managed by this application.
+  GameShPtr m_game;
+
+  /// @brief - The management of the game state, which includes loading the saved
+  /// games, handling game over and the general execution of the game.
+  GameStateShPtr m_state;
+
+  /// @brief - Defines the list of menus available for
+  std::vector<MenuShPtr> m_menus;
+
+  /// @brief - A description of the textures used to represent the elements of
+  /// the game.
+  sprites::TexturePackShPtr m_packs;
+
+  /// @brief - Default texture pack identifier.
+  sprites::PackId m_defaultPackId;
+};
+
+} // namespace pge

@@ -1,86 +1,83 @@
-#ifndef    PGE_APP_CONTROLS_HH
-# define   PGE_APP_CONTROLS_HH
 
-# include <vector>
+#pragma once
 
-namespace pge {
-  namespace controls {
+#include <vector>
 
-    namespace keys {
+namespace pge::controls {
 
-      /// @brief - The list of keys that are trackes by the
-      /// controls structure.
-      enum Keys {
-        Right,
-        Up,
-        Left,
-        Down,
+namespace keys {
 
-        Space,
+/// @brief - The list of keys that are trackes by the
+/// controls structure.
+enum Keys
+{
+  Right,
+  Up,
+  Left,
+  Down,
 
-        P,
+  Space,
 
-        KeysCount
-      };
+  P,
 
-    }
+  KeysCount
+};
 
-    namespace mouse {
+} // namespace keys
 
-      /// @brief - The possible mouse buttons recognized for
-      /// controls.
-      enum MouseButton {
-        Left,
-        Middle,
-        Right,
+namespace mouse {
 
-        ButtonsCount
-      };
+/// @brief - The possible mouse buttons recognized for
+/// controls.
+enum MouseButton
+{
+  Left,
+  Middle,
+  Right,
 
-    }
+  ButtonsCount
+};
 
-    /// @brief - The possible states for a button. Note
-    /// that the `Pressed` state state is only active
-    /// once when the button is first pressed. Similarly
-    /// the `Released` state is only active once when
-    /// the button is first released.
-    enum class ButtonState {
-      Free,
-      Released,
-      Pressed,
-      Held
-    };
+} // namespace mouse
 
-    /// @brief - Describe a structure holding the controls
-    /// that are relevant extracted from the keys pressed
-    /// by the user and the mouse info.
-    struct State {
-      // The position of the mouse along the x coordinates.
-      int mPosX;
+/// @brief - The possible states for a button. Note
+/// that the `Pressed` state state is only active
+/// once when the button is first pressed. Similarly
+/// the `Released` state is only active once when
+/// the button is first released.
+enum class ButtonState
+{
+  Free,
+  Released,
+  Pressed,
+  Held
+};
 
-      // The position of the mouse along the y coordinates.
-      int mPosY;
+/// @brief - Describe a structure holding the controls
+/// that are relevant extracted from the keys pressed
+/// by the user and the mouse info.
+struct State
+{
+  // The position of the mouse along the x coordinates.
+  int mPosX;
 
-      // The current state of the keys.
-      std::vector<bool> keys;
+  // The position of the mouse along the y coordinates.
+  int mPosY;
 
-      // The current state of the mouse buttons.
-      std::vector<ButtonState> buttons;
+  // The current state of the keys.
+  std::vector<bool> keys;
 
-      // Whether the tab key is pressed.
-      bool tab;
-    };
+  // The current state of the mouse buttons.
+  std::vector<ButtonState> buttons;
 
-    /**
-     * @brief - Create a new controls structure.
-     * @return - the created structure.
-     */
-    State
-    newState() noexcept;
+  // Whether the tab key is pressed.
+  bool tab;
+};
 
-  }
-}
+/// @brief - Create a new controls structure.
+/// @return - the created structure.
+State newState() noexcept;
 
-# include "Controls.hxx"
+} // namespace pge::controls
 
-#endif    /* PGE_APP_CONTROLS_HH */
+#include "Controls.hxx"

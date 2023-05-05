@@ -1,28 +1,23 @@
-#ifndef    PGE_APP_CONTROLS_HXX
-# define   PGE_APP_CONTROLS_HXX
 
-# include "Controls.hh"
+#pragma once
 
-namespace pge {
-  namespace controls {
+#include "Controls.hh"
 
-    inline
-    State
-    newState() noexcept {
-      State c;
+namespace pge::controls {
 
-      c.mPosX = 0;
-      c.mPosY = 0;
+inline State newState() noexcept
+{
+  State c;
 
-      c.keys.resize(keys::KeysCount, false);
-      c.buttons.resize(mouse::ButtonsCount, ButtonState::Free);
+  c.mPosX = 0;
+  c.mPosY = 0;
 
-      c.tab = false;
+  c.keys.resize(keys::KeysCount, false);
+  c.buttons.resize(mouse::ButtonsCount, ButtonState::Free);
 
-      return c;
-    }
+  c.tab = false;
 
-  }
+  return c;
 }
 
-#endif    /* PGE_APP_CONTROLS_HXX */
+} // namespace pge::controls

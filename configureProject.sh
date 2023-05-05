@@ -31,16 +31,17 @@ echo "Updating source files..."
 sed -i "s/pge-app/${PROJECT_NAME}/g" src/main.cc
 
 echo "Updating CMakeLists files..."
+for file in $(find . -name CMakeLists.txt);
+do
+  sed -i "s/example-app/${PROJECT_NAME}/g" $file
+done
 sed -i "s/example-project\b/${PROJECT_NAME}/g" CMakeLists.txt
-sed -i "s/example-app\b/${PROJECT_NAME}/g" src/CMakeLists.txt
 
 echo "Updating scripts..."
-sed -i "s/example-app/${PROJECT_NAME}/g" data/debug-tests.sh
-sed -i "s/example-app/${PROJECT_NAME}/g" data/debug.sh
-sed -i "s/example-app/${PROJECT_NAME}/g" data/profile.sh
-sed -i "s/example-app/${PROJECT_NAME}/g" data/run.sh
-sed -i "s/example-app/${PROJECT_NAME}/g" data/tests.sh
-sed -i "s/example-app/${PROJECT_NAME}/g" data/valgrind.sh
+for file in data/*.sh;
+do
+  sed -i "s/example-app/${PROJECT_NAME}/g" $file
+done
 
 echo "Updating code..."
 sed -i "s/pge-app/${PROJECT_NAME}/g" src/lib/app/olcPixelGameEngine.h

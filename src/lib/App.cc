@@ -3,6 +3,9 @@
 
 namespace pge {
 
+// https://opengameart.org/content/tiny-16-basic
+constexpr auto DEFAULT_TEXTURE_PACK_FILE_PATH = "data/tiles/default.png";
+
 constexpr auto DEFAULT_TEXTURE_PACK_WIDTH_IN_TILES  = 8;
 constexpr auto DEFAULT_TEXTURE_PACK_HEIGHT_IN_TILES = 13;
 
@@ -94,7 +97,7 @@ void App::loadResources()
   // now to achieve it.
   setLayerTint(Layer::Draw, olc::Pixel(255, 255, 255, alpha::SemiOpaque));
 
-  auto pack = sprites::PackDesc{.file = "data/tiles/default.png",
+  auto pack = sprites::PackDesc{.file = DEFAULT_TEXTURE_PACK_FILE_PATH,
                                 .sSize{DEFAULT_TEXTURE_PACK_TILE_SIZE_IN_PIXELS,
                                        DEFAULT_TEXTURE_PACK_TILE_SIZE_IN_PIXELS},
                                 .layout{DEFAULT_TEXTURE_PACK_WIDTH_IN_TILES,

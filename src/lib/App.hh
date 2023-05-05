@@ -67,12 +67,26 @@ class App : public PGEApp
   /// position to pixels.
   void drawSprite(const SpriteDesc &t, const CoordinateFrame &cf);
 
+  /// @brief - Render a warped sprite. The position of the sprite as defined in
+  /// the input argument will be used to map the sprite to occupy exactly the
+  /// corresponding tile. For example if `t.x = 0, t.y = 0`, the sprite will be
+  /// mapped to occupy the `(0, 0)` tile, based on the zoom and orientation of
+  /// the tile given the coordinate frame.
+  /// @param t - the description of the tile to draw.
+  /// @param cf - the coordinate frame to use to perform the conversion from tile
+  /// position to pixels.
+  void drawWarpedSprite(const SpriteDesc &t, const CoordinateFrame &cf);
+
   /// @brief - Used to draw a simple rect at the specified location. Note that we
   /// reuse the sprite desc but don't actually use the sprite.
   /// @param t - the description of the tile to draw.
   /// @param cf - the coordinate frame to use to perform the conversion from tile
   /// position to pixels.
   void drawRect(const SpriteDesc &t, const CoordinateFrame &cf);
+
+  /// @brief - Example method to render the default texture pack.
+  /// @param cf - the coordinate frame to convert from tiles to pixels space.
+  void renderDefaultTexturePack(const CoordinateFrame &cf);
 
   private:
   /// @brief - The game managed by this application.
@@ -88,6 +102,9 @@ class App : public PGEApp
   /// @brief - A description of the textures used to represent the elements of
   /// the game.
   sprites::TexturePackShPtr m_packs;
+
+  /// @brief - Default texture pack identifier.
+  sprites::PackId m_defaultPackId;
 };
 
 } // namespace pge

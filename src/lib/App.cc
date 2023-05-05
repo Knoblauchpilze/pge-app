@@ -3,6 +3,11 @@
 
 namespace pge {
 
+constexpr auto DEFAULT_TEXTURE_PACK_WIDTH_IN_TILES  = 8;
+constexpr auto DEFAULT_TEXTURE_PACK_HEIGHT_IN_TILES = 13;
+
+constexpr auto DEFAULT_TEXTURE_PACK_TILE_SIZE_IN_PIXELS = 16;
+
 App::App(const AppDesc &desc)
   : PGEApp(desc)
   , m_game(nullptr)
@@ -89,7 +94,13 @@ void App::loadResources()
   // now to achieve it.
   setLayerTint(Layer::Draw, olc::Pixel(255, 255, 255, alpha::SemiOpaque));
 
-  info("Load app resources in the 'm_packs' attribute");
+  auto pack = sprites::PackDesc{.file = "data/tiles/default.png",
+                                .sSize{DEFAULT_TEXTURE_PACK_TILE_SIZE_IN_PIXELS,
+                                       DEFAULT_TEXTURE_PACK_TILE_SIZE_IN_PIXELS},
+                                .layout{DEFAULT_TEXTURE_PACK_WIDTH_IN_TILES,
+                                        DEFAULT_TEXTURE_PACK_HEIGHT_IN_TILES}};
+
+  m_defaultPackId = m_packs->registerPack(pack);
 }
 
 void App::loadMenuResources()
@@ -126,34 +137,7 @@ void App::drawDecal(const RenderDesc &res)
     return;
   }
 
-  auto tl = olc::RED;
-  auto tr = olc::GREEN;
-
-  auto bl = olc::BLUE;
-  auto br = olc::WHITE;
-
-  auto xMin = 0;
-  auto yMin = 0;
-  auto yMax = 2;
-  auto xMax = 2;
-
-  for (int y = yMin; y <= yMax; ++y)
-  {
-    auto interpL = colorGradient(bl, tl, 1.0f * y / yMax, alpha::Opaque);
-    auto interpR = colorGradient(br, tr, 1.0f * y / yMax, alpha::Opaque);
-
-    for (int x = xMin; x <= xMax; ++x)
-    {
-      SpriteDesc t;
-      t.x      = x;
-      t.y      = y;
-      t.radius = 1.0f;
-
-      t.sprite.tint = colorGradient(interpL, interpR, 1.0f * x / xMax, alpha::Opaque);
-
-      drawRect(t, res.cf);
-    }
-  }
+  renderDefaultTexturePack(res.cf);
 
   SetPixelMode(olc::Pixel::NORMAL);
 }
@@ -233,10 +217,61 @@ inline void App::drawSprite(const SpriteDesc &t, const CoordinateFrame &cf)
   m_packs->draw(this, t.sprite, p, t.radius * cf.tileSize());
 }
 
+inline void App::drawWarpedSprite(const SpriteDesc &t, const CoordinateFrame &cf)
+{
+  auto p0 = cf.tilesToPixels(t.x, t.y + 1.0f);
+  auto p1 = cf.tilesToPixels(t.x, t.y);
+  auto p2 = cf.tilesToPixels(t.x + 1.0f, t.y);
+  auto p3 = cf.tilesToPixels(t.x + 1.0f, t.y + 1.0f);
+
+  auto p = std::array<olc::vf2d, 4>{p0, p1, p2, p3};
+  m_packs->draw(this, t.sprite, p);
+}
+
 inline void App::drawRect(const SpriteDesc &t, const CoordinateFrame &cf)
 {
   olc::vf2d p = cf.tilesToPixels(t.x, t.y);
   FillRectDecal(p, t.radius * cf.tileSize(), t.sprite.tint);
+}
+
+inline void App::renderDefaultTexturePack(const CoordinateFrame &cf)
+{
+  // Define a color gradient.
+  auto tl = olc::RED;
+  auto tr = olc::GREEN;
+
+  auto bl = olc::BLUE;
+  auto br = olc::YELLOW;
+
+  for (int y = 0; y < DEFAULT_TEXTURE_PACK_HEIGHT_IN_TILES; ++y)
+  {
+    auto interpL = colorGradient(bl,
+                                 tl,
+                                 1.0f * y / DEFAULT_TEXTURE_PACK_HEIGHT_IN_TILES,
+                                 alpha::Opaque);
+    auto interpR = colorGradient(br,
+                                 tr,
+                                 1.0f * y / DEFAULT_TEXTURE_PACK_HEIGHT_IN_TILES,
+                                 alpha::Opaque);
+
+    for (int x = 0; x < DEFAULT_TEXTURE_PACK_WIDTH_IN_TILES; ++x)
+    {
+      SpriteDesc t;
+      t.x = x;
+      t.y = y;
+
+      t.radius = 1.0f;
+
+      t.sprite.pack   = m_defaultPackId;
+      t.sprite.sprite = {x, y};
+      t.sprite.tint   = colorGradient(interpL,
+                                    interpR,
+                                    1.0f * x / DEFAULT_TEXTURE_PACK_WIDTH_IN_TILES,
+                                    alpha::Opaque);
+
+      drawWarpedSprite(t, cf);
+    }
+  }
 }
 
 } // namespace pge

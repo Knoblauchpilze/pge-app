@@ -122,9 +122,18 @@ main(int /*argc*/, char** /*argv*/) {
   auto tiles  = pge::CenteredViewport({0.0f, 0.0f}, {4.0f, 3.0f});
   auto pixels = pge::TopLeftViewport({0.0f, 0.0f}, {800.0f, 600.0f});
 
-  auto cf = std::make_shared<pge::TopViewFrame>(tiles, pixels);
+  pge::CoordinateFramePtr frame;
+  auto useIsometric = true;
+  if (useIsometric)
+  {
+    frame = std::make_shared<pge::IsometricViewFrame>(tiles, pixels);
+  }
+  else
+  {
+    frame = std::make_shared<pge::TopViewFrame>(tiles, pixels);
+  }
 
-  pge::AppDesc ad = pge::newDesc(olc::vi2d(800, 600), cf, "pge-app");
+  pge::AppDesc ad = pge::newDesc(olc::vi2d(800, 600), frame, "pge-app");
   pge::App demo(ad);
 
   demo.Start();
@@ -133,7 +142,7 @@ main(int /*argc*/, char** /*argv*/) {
 }
 ```
 
-Both the tiles and pixels viewports are important and define respectively how much of the world will be visible and how zoomed-in the initial setup will be.
+Both the tiles and pixels viewports are important and define respectively how much of the world will be visible and how zoomed-in the initial setup will be. Also, the user can configure whether an isometric view frame should be used or rather a top view one.
 
 # Profiling
 
@@ -267,7 +276,7 @@ The first thing to notice is that no matter what, the layer is cleared on each c
 
 The `drawDecal` method should be the preferred way to render complex elements as opposed to the `draw` method: using the `Decal` mechanism provided by the `Pixel Game Engine` we are able to render very quickly a lot of elements without impacting the framerate too much by leveraging the GPU.
 
-The method is already set up so that the user can just insert code in the `FIXME` statement (which doesn't exist in the code). It is recommended to use new methods like `drawBoard`, `drawElements` etc. and perform the rendering there. This cleanly separates the steps to draw the elements.
+The method is already set up so that the user can just insert code in the `FIXME` statement (which doesn't exist in the code). It is recommended to use new methods like `drawBoard`, `drawElements` etc. and perform the rendering there. This cleanly separates the steps to draw the elements. This is done in the demo app with the `renderDefaultTexturePack` method.
 
 Whenever the user needs to perform the rendering of sprites, we define a convenience structure to help with drawing that:
 
@@ -286,11 +295,11 @@ namespace sprites {
     // The `id` allows to select a variant for the sprite. By
     // default this value is `0` meaning the principal display
     // for the sprite.
-    int id;
+    int id{0};
 
     // The `tint` defines a color to apply to tint the sprite
     // as a whole. Can also be used to provide some alpha.
-    olc::Pixel tint;
+    olc::Pixel tint{olc::WHITE};
   };
 }
 
@@ -340,6 +349,8 @@ App::drawFlowers(const RenderDesc& res) noexcept {
 The code above performs the rendering of a 8x8 square of sprites taken from the pack loaded in the example above. The part to determine the index of the sprite based on the element to display is left to the user: it could come from fetching the particular element at this coordinate in the world or determined at random or anything else.
 
 The `drawSprite` method expects the coordinates to be expressed in world coordinates and will automatically convert them in pixels coordinates based on the current position of the viewport in the world.
+
+We also provide a `drawWarpedSprite` which ignores the radius to define the tile as exactly one tile big (given the current zoom level and coordinate frame).
 
 ### Scheduling
 

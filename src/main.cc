@@ -1,12 +1,10 @@
 
-/**
- * @brief - Canonical application allowing to instantiate
- *          a working PGE process with configurable hooks
- *          to customize the behavior.
- */
+/// @brief - Canonical application allowing to instantiate a working PGE process
+/// with configurable hooks to customize the behavior.
 
 #include "App.hh"
 #include "AppDesc.hh"
+#include "IsometricViewFrame.hh"
 #include "TopViewFrame.hh"
 #include <core_utils/CoreException.hh>
 #include <core_utils/LoggerLocator.hh>
@@ -28,8 +26,18 @@ int main(int /*argc*/, char ** /*argv*/)
     auto tiles  = pge::CenteredViewport({0.0f, 0.0f}, {4.0f, 3.0f});
     auto pixels = pge::TopLeftViewport({0.0f, 0.0f}, {800.0f, 600.0f});
 
-    auto cf         = std::make_shared<pge::TopViewFrame>(tiles, pixels);
-    pge::AppDesc ad = pge::newDesc(olc::vi2d(800, 600), cf, "pge-app");
+    pge::CoordinateFramePtr frame;
+    auto useIsometric = true;
+    if (useIsometric)
+    {
+      frame = std::make_shared<pge::IsometricViewFrame>(tiles, pixels);
+    }
+    else
+    {
+      frame = std::make_shared<pge::TopViewFrame>(tiles, pixels);
+    }
+
+    pge::AppDesc ad = pge::newDesc(olc::vi2d(800, 600), frame, "pge-app");
     pge::App demo(ad);
 
     demo.Start();

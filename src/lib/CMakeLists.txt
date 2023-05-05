@@ -29,8 +29,6 @@ target_sources (example-app_lib PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}/App.cc
 	)
 
-set (EXAMPLE_APP_LIB_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}" PARENT_SCOPE)
-
 target_link_libraries (example-app_lib
 	png
 	X11

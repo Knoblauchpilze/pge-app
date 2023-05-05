@@ -25,7 +25,7 @@ add_subdirectory(
 	)
 
 target_sources (example-app-tests PRIVATE
-	${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+	${CMAKE_CURRENT_SOURCE_DIR}/main.cc
 	)
 
 target_include_directories (example-app-tests PUBLIC

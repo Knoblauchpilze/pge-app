@@ -666,7 +666,7 @@ The configuration includes how many games should be displayed in a single page, 
 m_savedGames(10u, "data/saves", "ext")
 ```
 
-Once the user picks a saved games, a signal is emitted by this object and transmitted to the `GameState` class (the connection is already active). To react to such an event, the user has to elaborate the implementation of the dedicated method:
+Once the user picks a saved game, a signal is emitted by this object and transmitted to the `GameState` class (the connection is already active). To react to such an event, the user has to elaborate the implementation of the dedicated method:
 ```cpp
 void
 GameState::onSavedGamePicked(const std::string& game) {

@@ -43,11 +43,11 @@ struct Sprite
   // The `id` allows to select a variant for the sprite. By
   // default this value is `0` meaning the principal display
   // for the sprite.
-  int id;
+  int id{0};
 
   // The `tint` defines a color to apply to tint the sprite
   // as a whole. Can also be used to provide some alpha.
-  olc::Pixel tint;
+  olc::Pixel tint{olc::WHITE};
 };
 
 class TexturePack : public utils::CoreObject

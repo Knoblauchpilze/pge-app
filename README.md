@@ -553,25 +553,73 @@ By default actions are ignored if the game is disabled: this corresponds to the 
 
 ## The GameState class
 
-TODO: Add a game screen.
+The [GameState](src/lib/game/GameState.hh) class provides the high level state management for the screens of the application. With _Screen_ we mean for example the welcome screen, the load game screen, the game over screen or the main game screen.
 
-The `GameState` provides the high level state management for the screens of the application. Just like the `Game` class is meant as a wrapper around the world/simulation that the user wants to execute within the application, the `GameState` is meant as a wrapper allowing to control transitions between the load game screen, the home screen and the game screen.
+In order to transition from one screen to the other and making sure that when a phase ends we can go to the next logical one is handled by this class.
 
-It is possible to add more screens in the application (for example a pause screen, or a selection of properties before entering the new game).
+### An application as a state machine
 
+The application can be seen as a state machine which can transition to various screens based on the actions of the user.
+
+![State machine](resources/screens_state_machine.png)
+
+As we can see, the _Home_ screen is a root and allows to transition to the _Game_ or _Load_ game screen. The `GameState` manages the transitions and hide this behind an enumeration called [Screen](src/lib/game/GameState.hh):
+```cpp
+enum class Screen
+{
+  Home,
+  LoadGame,
+  Game,
+  GameOver,
+  Exit
+};
+```
+
+The app is then using the current state in the `drawDecal` (and other related routines) like so:
+```cpp
+void App::drawDecal(const RenderDesc &res)
+{
+  /* ... */
+
+  if (m_state->getScreen() != Screen::Game)
+  {
+    return;
+  }
+
+  /* ... */
+}
+```
+
+So we only consider rendering something when the screen is set to `Game`. On the other hand the state is rendered in the `draw` method like so:
+```cpp
+void App::draw(const RenderDesc & /*res*/)
+{
+  /* ... */
+
+  if (m_state->getScreen() != Screen::Game)
+  {
+    m_state->render(this);
+    return;
+  }
+
+  /* ... */
+}
+```
+
+This guarantees that the menus are rendered as long as we're not in the `Game` screen. As soon as we leave it again then the menus are also rendered. The default application defines a simple state machine with a few screens, but the user can configure new ones if needed.
+
+### Adding new screens
+
+It might be useful to create new screens: for example in a chess app, we might want to add some screens corresponding to selecting the difficulty of the AI or which color to play. To do so, the first step is to add a value in the enumeration and then generate the corresponding menu. The existing menus are generated in the constructor of the `GameState`:
 ```cpp
 GameState::GameState(const olc::vi2d& dims,
                      const Screen& screen):
   utils::CoreObject("state"),
 
-  // Assign a different screen so that we can use the
-  // `setScreen` routine to initialize the visibility
-  // status of screens.
-  m_screen(screen == Screen::Home ? Screen::Exit : Screen::Home),
+  /* ... */
 
   m_home(nullptr),
   m_loadGame(nullptr),
-  m_savedGames(10u, "data/saves", "ext"),
   m_gameOver(nullptr)
   /** NOTE: Add an attribute for the menu **/
 {
@@ -582,21 +630,21 @@ GameState::GameState(const olc::vi2d& dims,
   generateGameOverScreen(dims);
   /** NOTE: Add a generation method **/
 
-  // Assign the screen, which will handle the visibility
-  // update.
-  setScreen(screen);
-
-  // Connect the slot to receive updates about saved games.
-  m_savedGames.onSavedGameSelected.connect_member<GameState>(this, &GameState::onSavedGamePicked);
+  /* ... */
 }
 ```
-The user is encouraged to create a separate attribute for the new screen, then add a generation function and the corresponding enumeration value in the [Screen](https://github.com/Knoblauchpilze/pge-app/blob/master/src/lib/game/GameState.hh) enumeration.
 
-The rest of the application should behave correctly with the new state, it is up to the user to add the handling of the new state where needed.
+When generating the new menu, one can add transition like so:
+```cpp
+m->setSimpleAction([this](Game & /*g*/) {
+  /* ... */
+  setScreen(Screen::YourNewScreen);
+});
+```
 
-The application can be seen as a state machine which can transition to various screens based on the actions of the user.
+The rest of the application should behave correctly as long as the transitions are properly wired.
 
-![State machine](resources/screens_state_machine.png)
+### Default journey in the app
 
 Most applications start on the home screen:
 ![Home screen](resources/home_screen.png)
@@ -609,7 +657,9 @@ This view is empty in the default application and display the debug layer. The u
 Finally the user can select to load an existing 'game' (whatever it can mean):
 ![Load game](resources/load_game.png)
 
-We provide a convenience structure to handle the saved games. By default the `GameState` has an attribute called `m_savedGames` which allows to perform the display and generation of a menu to present the saved games to the user.
+### Saved games
+
+We provide a convenience structure to handle the saved games. By default the `GameState` has an attribute called `m_savedGames` which allows to perform the generation of a menu to present the saved games to the user.
 
 The configuration includes how many games should be displayed in a single page, the directory where saved games should be fetched and the extension of the files defining saved games:
 ```cpp
@@ -624,18 +674,7 @@ GameState::onSavedGamePicked(const std::string& game) {
   setScreen(Screen::Game);
 }
 ```
+
 For now nothing is done and the application switches to the `Game` state immediately. A popular way to deal with the loading of a game is to add an internal attribute to the `GameState` class which represents the `Game` (typically a reference) and then call a newly created method such as `loadNewGame(const std::string& file)`. The input attribute `game` is the full path to the saved file data.
 
 The user should also modify the `App::loadMenuResources` method to account for the modified signature of the `GameState` constructor.
-```cpp
-void
-App::loadMenuResources() {
-  // Generate the game state.
-  m_state = std::make_shared<GameState>(
-    olc::vi2d(ScreenWidth(), ScreenHeight()),
-    Screen::Home
-  );
-
-  m_menus = m_game->generateMenus(ScreenWidth(), ScreenHeight());
-}
-```

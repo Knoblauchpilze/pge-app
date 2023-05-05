@@ -204,23 +204,16 @@ The `App` class provides various methods which can be enriched with behaviors. B
 
 ### loadResources
 
-```cpp
-void
-App::loadResources() {
-  info("Load app resources in the 'm_packs' attribute");
-}
-```
-
 The `loadResources` method can be used to load the graphic resources needed by the `App`. This includes textures, sprites or any sort of graphic elements. A typical example could look like this:
 
 ```cpp
 void
 App::loadResources() {
   // Create the texture pack.
-  pge::sprites::Pack pack;
+  sprites::Pack pack;
   pack.file = "data/img/pieces.png";
   const auto TILE_SIZE_IN_PIXELS = 64;
-  pack.sSize = olc::vi2d(TILE_SIZE, TILE_SIZE);
+  pack.sSize = olc::vi2d(TILE_SIZE_IN_PIXELS, TILE_SIZE_IN_PIXELS);
   pack.layout = olc::vi2d(6, 2);
 
   m_piecesPackID = m_packs->registerPack(pack);

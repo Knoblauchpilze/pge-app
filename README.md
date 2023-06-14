@@ -1,4 +1,3 @@
-
 # pge-app
 
 Simple implementation of an application relying on the [PixelGameEngine](https://github.com/OneLoneCoder/olcPixelGameEngine) to perform the rendering. This project comes with a basic event handling system, some basic menus which can register actions and a default `game` structure which can be extended to handle various processes.
@@ -12,18 +11,19 @@ The general architecture of the repository has been inspired by the one describe
 ## Prerequisite
 
 This projects uses:
-* [google test](https://github.com/google/googletest): installation instructions [here](https://www.eriksmistad.no/getting-started-with-google-test-on-ubuntu/), a simple `apt-get` should be enough.
-* `cmake`: installation instructions [here](https://askubuntu.com/questions/355565/how-do-i-install-the-latest-version-of-cmake-from-the-command-line), a simple `apt-get` should also be enough.
-* [eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page): installation instructions [here](https://www.cyberithub.com/how-to-install-eigen3-on-ubuntu-20-04-lts-focal-fossa/) for Ubuntu 20.04, a simple `sudo apt install libeigen3-dev` should be enough.
+
+- [google test](https://github.com/google/googletest): installation instructions [here](https://www.eriksmistad.no/getting-started-with-google-test-on-ubuntu/), a simple `sudo apt-get install libgtest-dev` should be enough.
+- `cmake`: installation instructions [here](https://askubuntu.com/questions/355565/how-do-i-install-the-latest-version-of-cmake-from-the-command-line), a simple `apt-get` should also be enough.
+- [eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page): installation instructions [here](https://www.cyberithub.com/how-to-install-eigen3-on-ubuntu-20-04-lts-focal-fossa/) for Ubuntu 20.04, a simple `sudo apt install libeigen3-dev` should be enough.
 
 ## Instructions
 
-* Clone the repo: `git clone git@github.com:Knoblauchpilze/pge-app.git`.
-* Clone dependencies:
-    * [core_utils](https://github.com/Knoblauchpilze/core_utils)
-    * [maths_utils](https://github.com/Knoblauchpilze/maths_utils)
-* Go to the project's directory `cd ~/path/to/the/repo`.
-* Compile: `make run`.
+- Clone the repo: `git clone git@github.com:Knoblauchpilze/pge-app.git`.
+- Clone dependencies:
+  - [core_utils](https://github.com/Knoblauchpilze/core_utils)
+  - [maths_utils](https://github.com/Knoblauchpilze/maths_utils)
+- Go to the project's directory `cd ~/path/to/the/repo`.
+- Compile: `make run`.
 
 Don't forget to add `/usr/local/lib` to your `LD_LIBRARY_PATH` to be able to load shared libraries at runtime. This is handled automatically when using the `make run` target (which internally uses the [run.sh](data/run.sh) script).
 
@@ -32,6 +32,7 @@ Don't forget to add `/usr/local/lib` to your `LD_LIBRARY_PATH` to be able to loa
 If the user wants to update the project to another name and start with a more complex app, a convenience script is [provided](configureProject.sh) which allows to perform the renaming of elements as needed to have a new app with a different name.
 
 The usage of the script is as follows:
+
 ```bash
 ./configureProject.sh project_name
 ```
@@ -43,16 +44,18 @@ The application is structured around a base [App](src/lib/App.hh) which can be c
 ## Layers
 
 The rendering is dividied into four layers:
-* the debug layer is meant to handle every debug display and can be hidden for increased performance.
-* the ui layer receives all the UI information such as menus. Can also be hidden if needed.
-* the rendering layer receives any resource that compose the main content of the application.
-* the decal layer is meant to receive any GPU accelerated resource.
+
+- the debug layer is meant to handle every debug display and can be hidden for increased performance.
+- the ui layer receives all the UI information such as menus. Can also be hidden if needed.
+- the rendering layer receives any resource that compose the main content of the application.
+- the decal layer is meant to receive any GPU accelerated resource.
 
 The ordering of the layer matters as it will describe how elements are overlaid. The order is as follows:
-* decal layer
-* non-decal graphical resource layer
-* ui layer
-* debug layer
+
+- decal layer
+- non-decal graphical resource layer
+- ui layer
+- debug layer
 
 When pressing the `D` key the debug layer can easily be toggled on or off.
 
@@ -77,9 +80,10 @@ The base project comes with a set of basic features to start developing either a
 ### Creating an App
 
 In order to ease the creation of an `App` object, we regrouped the options within a struct named [AppDesc](src/lib/app/AppDesc.hh). This contains several attributes, among which:
-* the dimensions of the window in pixels.
-* a coordinate frame (see more details in the dedicated [section](#coordinate-frame)).
-* whether or not the view allows panning and zooming.
+
+- the dimensions of the window in pixels.
+- a coordinate frame (see more details in the dedicated [section](#coordinate-frame)).
+- whether or not the view allows panning and zooming.
 
 ### Coordinate frame
 
@@ -88,8 +92,9 @@ Usually, an application maps what happens on the screen to an internal coordinat
 The base app defines a coordinate frame to handle such things. A [coordinate frame](src/lib/coordinates/CoordinateFrame.hh) is an interface which aims at converting the information in pixels space to the internal world space. To do this, it uses two [viewports](src/lib/coordinates/Viewport.hh): one defining the pixels space and the other one the tiles space.
 
 By default, two separate frames are already available:
-* a [top view](src/lib/coordinates/TopViewFrame.hh) frame: this represents a simple scaling between the position in pixels and the position in tiles. It can be used for a top down app, or most 2D apps.
-* an [isometric view](src/lib/coordinates/IsometricViewFrame.hh) frame: this represents a semi-3D projection which allows to produce graphics like [this](https://en.wikipedia.org/wiki/Isometric_video_game_graphics).
+
+- a [top view](src/lib/coordinates/TopViewFrame.hh) frame: this represents a simple scaling between the position in pixels and the position in tiles. It can be used for a top down app, or most 2D apps.
+- an [isometric view](src/lib/coordinates/IsometricViewFrame.hh) frame: this represents a semi-3D projection which allows to produce graphics like [this](https://en.wikipedia.org/wiki/Isometric_video_game_graphics).
 
 Panning and zooming are handled for both frames, along with converting from pixels to tiles and vice versa.
 
@@ -147,13 +152,15 @@ Both the tiles and pixels viewports are important and define respectively how mu
 # Profiling
 
 A convenience script is provided in order to profile the app. This comes from [this](https://stackoverflow.com/a/771005) answer (although the other answers are interesting as well). This requires a few things to be installed on the system:
-* [GIMP](https://doc.ubuntu-fr.org/gimp)
-* [valgrind](https://wiki.ubuntu.com/Valgrind)
-* [gprof2dot](https://github.com/jrfonseca/gprof2dot)
+
+- [GIMP](https://doc.ubuntu-fr.org/gimp)
+- [valgrind](https://wiki.ubuntu.com/Valgrind)
+- [gprof2dot](https://github.com/jrfonseca/gprof2dot)
 
 The output image is a png that is opened with GIMP and can give ideas about what is slowing down the application.
 
 The profiling can be triggered with the following command:
+
 ```bash
 make profile
 ```
@@ -169,6 +176,7 @@ The framework uses the `gtest` library to perform the testing.
 ## Adding tests
 
 In order to add a new test, one can create a new file under the relevant test section (say `tests/unit/lib/MyClassTest.cc`). The structure of the file should look something like so:
+
 ```cpp
 
 # include "MyClass.hh"
@@ -190,6 +198,7 @@ TEST(Unit_MyClass, Test_MyFeature)
 ## Run the tests
 
 Once the tests are written, the root `Makefile` defines a target to execute all the tests under:
+
 ```bash
 make tests
 ```
@@ -203,9 +212,10 @@ In case the test suite is growing one can add some targets to run only the unit 
 The application and the class within it are designed to easily be reused and extended with various behaviors.
 
 The classes which should be changed by the user are mainly:
-* [App](src/lib/App.hh) class, described [here](#the-app-class).
-* [Game](src/lib/game/Game.hh) class, described [here](#the-game-class).
-* [GameState](src/lib/game/GameState.hh) class, described [here](#the-gamestate-class).
+
+- [App](src/lib/App.hh) class, described [here](#the-app-class).
+- [Game](src/lib/game/Game.hh) class, described [here](#the-game-class).
+- [GameState](src/lib/game/GameState.hh) class, described [here](#the-gamestate-class).
 
 ## The App class
 
@@ -228,11 +238,13 @@ App::loadResources() {
   m_piecesPackID = m_packs->registerPack(pack);
 }
 ```
+
 The `m_piecesPackID` defines an identifier which can then be used to reference a textures pack during the rendering phase (see the [drawDecal](#drawDecal)) section.
 
 ### loadMenuResources
 
 The default implementation looks like so:
+
 ```cpp
 void
 App::loadMenuResources() {
@@ -253,6 +265,7 @@ This method also handles the generation of menus and their registration in the m
 ### drawDecal
 
 Along with the `draw`, `drawUI` and `drawDebug` method the `drawDecal` allows to render the elements of the application on screen. The code for all of these methods is similar so let's see what it does:
+
 ```cpp
 void
 App::drawDecal(const RenderDesc& /*res*/) {
@@ -355,8 +368,9 @@ We also provide a `drawWarpedSprite` which ignores the radius to define the tile
 ### Scheduling
 
 Whenever the app is running, the main loop is called. From the `App` perspective, this means that two methods are called in the following order:
-* onInputs
-* onFrame
+
+- onInputs
+- onFrame
 
 #### onInputs
 
@@ -381,6 +395,7 @@ Typically in a sudoku app the `onInputs` method would be responsible to fill in 
 #### onFrame
 
 This method handle the game logic. By default the code looks like this:
+
 ```cpp
 bool
 App::onFrame(float fElapsed) {
@@ -447,6 +462,7 @@ struct Menus {
   /// FIXME: Add menus here.
 };
 ```
+
 The user can add necessary menus here to group them in a neat object to pass around.
 
 **NOTE:** all menus do not need to be registered. It is mainly interesting to keep them in case their content needs to be updated (typically a label) during the game. Otherwise, the menus will automatically handle the release of their children sub-menus when being destroyed. The concept of actions (see the corresponding [section](#attach-an-action-to-a-menu)) should be sufficient to trigger processes on the `Game` (and also on elements of the `World` class for example) when the user clicks on a [Menu](https://github.com/Knoblauchpilze/pge-app/blob/master/src/lib/ui/Menu.hh).
@@ -456,6 +472,7 @@ The user can add necessary menus here to group them in a neat object to pass aro
 Each menu created with the [Menu](https://github.com/Knoblauchpilze/pge-app/blob/master/src/lib/ui/Menu.hh) class can be attached an [Action](https://github.com/Knoblauchpilze/pge-app/blob/master/src/lib/ui/Action.hh) which is triggered by the menu whenever it is clicked upon (provided that the menu is `clickable`).
 
 Such an action is defined as follows:
+
 ```cpp
 bool clickable = true;
 pge::MenuShPtr m = std::make_shared<pge::Menu>(/* arguments */, clickable, /* arguments */);
@@ -465,6 +482,7 @@ m->setSimpleAction(
   }
 );
 ```
+
 The action receives a reference to the game and can trigger an action on it. A typical use case is to create a public method in the `Game` class (say `Game::foo`) and then have it called by the simple action. This could be for example the creation of a new element, the update of a certain attribute, etc.
 
 Actions can be reset and can also include variables from the context creating it, such as a certain value or a compile time parameter. This mechanism proved quite reliable and easy-to-use to trigger processes on the `Game` from the UI.
@@ -532,14 +550,16 @@ One pre-filled process happening in the `step` method is the `updateUI` method: 
 The `updateUI` method is very similar to the `step` method but is dedicated to the UI. It allows the menus to also be aware of the passage of time in the simulation and to update their content with meaningful information.
 
 Such an update is important for two kinds of menus:
-* timed menus
-* menus which information changes over time
+
+- timed menus
+- menus which information changes over time
 
 The static menus don't need this. A non-static menu is for example a label indicating how much gold a player has in a game: this typically changes based on the events of the game and should be updated regularly.
 
 ### Make changes to the game
 
 The last hook provided by the `Game` class is the `performAction` method. It looks like so:
+
 ```cpp
 void
 Game::performAction(float /*x*/, float /*y*/) {
@@ -568,6 +588,7 @@ The application can be seen as a state machine which can transition to various s
 ![State machine](resources/screens_state_machine.png)
 
 As we can see, the _Home_ screen is a root and allows to transition to the _Game_ or _Load_ game screen. The `GameState` manages the transitions and hide this behind an enumeration called [Screen](src/lib/game/GameState.hh):
+
 ```cpp
 enum class Screen
 {
@@ -580,6 +601,7 @@ enum class Screen
 ```
 
 The app is then using the current state in the `drawDecal` (and other related routines) like so:
+
 ```cpp
 void App::drawDecal(const RenderDesc &res)
 {
@@ -595,6 +617,7 @@ void App::drawDecal(const RenderDesc &res)
 ```
 
 So we only consider rendering something when the screen is set to `Game`. On the other hand the state is rendered in the `draw` method like so:
+
 ```cpp
 void App::draw(const RenderDesc & /*res*/)
 {
@@ -615,6 +638,7 @@ This guarantees that the menus are rendered as long as we're not in the `Game` s
 ### Adding new screens
 
 It might be useful to create new screens: for example in a chess app, we might want to add some screens corresponding to selecting the difficulty of the AI or which color to play. To do so, the first step is to add a value in the enumeration and then generate the corresponding menu. The existing menus are generated in the constructor of the `GameState`:
+
 ```cpp
 GameState::GameState(const olc::vi2d& dims,
                      const Screen& screen):
@@ -639,6 +663,7 @@ GameState::GameState(const olc::vi2d& dims,
 ```
 
 When generating the new menu, one can add transition like so:
+
 ```cpp
 m->setSimpleAction([this](Game & /*g*/) {
   /* ... */
@@ -666,11 +691,13 @@ Finally the user can select to load an existing 'game' (whatever it can mean):
 We provide a convenience structure to handle the saved games. By default the `GameState` has an attribute called `m_savedGames` which allows to perform the generation of a menu to present the saved games to the user.
 
 The configuration includes how many games should be displayed in a single page, the directory where saved games should be fetched and the extension of the files defining saved games:
+
 ```cpp
 m_savedGames(10u, "data/saves", "ext")
 ```
 
 Once the user picks a saved game, a signal is emitted by this object and transmitted to the `GameState` class (the connection is already active). To react to such an event, the user has to elaborate the implementation of the dedicated method:
+
 ```cpp
 void
 GameState::onSavedGamePicked(const std::string& game) {

@@ -42,6 +42,8 @@ class App : public PGEApp
 
   void drawDebug(const RenderDesc &res) override;
 
+  void renderCursor(const RenderDesc &res);
+
   private:
   /// @brief - Convenience structure regrouping needed props to
   /// draw a sprite.
@@ -68,10 +70,11 @@ class App : public PGEApp
   void drawSprite(const SpriteDesc &t, const CoordinateFrame &cf);
 
   /// @brief - Render a warped sprite. The position of the sprite as defined in
-  /// the input argument will be used to map the sprite to occupy exactly the
-  /// corresponding tile. For example if `t.x = 0, t.y = 0`, the sprite will be
-  /// mapped to occupy the `(0, 0)` tile, based on the zoom and orientation of
-  /// the tile given the coordinate frame.
+  /// the input argument will be used to map the sprite to occupy exactly the part
+  /// of the tile corresponding to the radius. For example if `t.x = 0, t.y = 0`,
+  /// the sprite will be mapped to occupy the `(0, 0)` tile and extends up to the
+  /// coordinate `(0 + radius, 0 + radius)`. It respects the current zoom and the
+  /// the orientation of the tile given the coordinate frame.
   /// @param t - the description of the tile to draw.
   /// @param cf - the coordinate frame to use to perform the conversion from tile
   /// position to pixels.
@@ -83,6 +86,14 @@ class App : public PGEApp
   /// @param cf - the coordinate frame to use to perform the conversion from tile
   /// position to pixels.
   void drawRect(const SpriteDesc &t, const CoordinateFrame &cf);
+
+  /// @brief - Render a warped rect. Similar to what happens for `drawWarpedSprite`
+  /// but with a rectangle instead of a sprite. Similarly we don't use the sprite
+  /// defined in the `t` argument.
+  /// @param t - the description of the rect to draw.
+  /// @param cf - the coordinate frame to use to perform the conversion from tile
+  /// position to pixels.
+  void drawWarpedRect(const SpriteDesc &t, const CoordinateFrame &cf);
 
   /// @brief - Example method to render the default texture pack.
   /// @param cf - the coordinate frame to convert from tiles to pixels space.

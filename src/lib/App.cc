@@ -11,6 +11,8 @@ constexpr auto DEFAULT_TEXTURE_PACK_HEIGHT_IN_TILES = 13;
 
 constexpr auto DEFAULT_TEXTURE_PACK_TILE_SIZE_IN_PIXELS = 16;
 
+const auto CURSOR_COLOR = olc::Pixel{255, 255, 0, alpha::SemiOpaque};
+
 App::App(const AppDesc &desc)
   : PGEApp(desc)
   , m_game(nullptr)
@@ -141,6 +143,10 @@ void App::drawDecal(const RenderDesc &res)
   }
 
   renderDefaultTexturePack(res.cf);
+  if (hasCursor())
+  {
+    renderCursor(res);
+  }
 
   SetPixelMode(olc::Pixel::NORMAL);
 }
@@ -213,6 +219,19 @@ void App::drawDebug(const RenderDesc &res)
   SetPixelMode(olc::Pixel::NORMAL);
 }
 
+void App::renderCursor(const RenderDesc &res)
+{
+  olc::vf2d it;
+  const auto mouseTilePosition = res.cf.pixelsToTilesAndIntra(GetMousePos(), &it);
+
+  SpriteDesc s;
+  s.radius      = 1.0f;
+  s.x           = mouseTilePosition.x;
+  s.y           = mouseTilePosition.y;
+  s.sprite.tint = CURSOR_COLOR;
+  drawWarpedRect(s, res.cf);
+}
+
 inline void App::drawSprite(const SpriteDesc &t, const CoordinateFrame &cf)
 {
   olc::vf2d p = cf.tilesToPixels(t.x, t.y);
@@ -222,10 +241,10 @@ inline void App::drawSprite(const SpriteDesc &t, const CoordinateFrame &cf)
 
 inline void App::drawWarpedSprite(const SpriteDesc &t, const CoordinateFrame &cf)
 {
-  auto p0 = cf.tilesToPixels(t.x, t.y + 1.0f);
+  auto p0 = cf.tilesToPixels(t.x, t.y + t.radius);
   auto p1 = cf.tilesToPixels(t.x, t.y);
-  auto p2 = cf.tilesToPixels(t.x + 1.0f, t.y);
-  auto p3 = cf.tilesToPixels(t.x + 1.0f, t.y + 1.0f);
+  auto p2 = cf.tilesToPixels(t.x + t.radius, t.y);
+  auto p3 = cf.tilesToPixels(t.x + t.radius, t.y + t.radius);
 
   auto p = std::array<olc::vf2d, 4>{p0, p1, p2, p3};
   m_packs->draw(this, t.sprite, p);
@@ -235,6 +254,25 @@ inline void App::drawRect(const SpriteDesc &t, const CoordinateFrame &cf)
 {
   olc::vf2d p = cf.tilesToPixels(t.x, t.y);
   FillRectDecal(p, t.radius * cf.tileSize(), t.sprite.tint);
+}
+
+inline void App::drawWarpedRect(const SpriteDesc &t, const CoordinateFrame &cf)
+{
+  auto p0 = cf.tilesToPixels(t.x, t.y + t.radius);
+  auto p1 = cf.tilesToPixels(t.x, t.y);
+  auto p2 = cf.tilesToPixels(t.x + t.radius, t.y);
+  auto p3 = cf.tilesToPixels(t.x + t.radius, t.y + t.radius);
+
+  // See: FillRectDecal(const olc::vf2d& pos, const olc::vf2d& size, const olc::Pixel col)
+  // in the pixel game engine file.
+  auto p = std::array<olc::vf2d, 4>{p0, p1, p2, p3};
+  std::array<olc::vf2d, 4> uvs;
+  uvs.fill({0, 0});
+
+  std::array<olc::Pixel, 4> colors;
+  colors.fill(t.sprite.tint);
+
+  DrawExplicitDecal(nullptr, p.data(), uvs.data(), colors.data());
 }
 
 inline void App::renderDefaultTexturePack(const CoordinateFrame &cf)

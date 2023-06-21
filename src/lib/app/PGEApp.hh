@@ -82,6 +82,9 @@ class PGEApp : public utils::CoreObject, public olc::PixelGameEngine
   /// @return - `true` if the UI layer is active.
   bool hasUI() const noexcept;
 
+  /// @brief - Returns `true` in case the cursor should be visible.
+  bool hasCursor() const noexcept;
+
   /// @brief - Used to assign a certain tint to the layer defined by the input
   /// descriptor.
   /// @param layer - the layer for which a tint should be assigned.
@@ -191,29 +194,32 @@ class PGEApp : public utils::CoreObject, public olc::PixelGameEngine
   /// As we want the debug and UI layers to be on top of the base layer, we need
   /// to give it the largest index so that it is displayed first, and then the
   /// rest on top.
-  uint32_t m_mDecalLayer;
+  uint32_t m_mDecalLayer{};
 
   //// @brief - The index representing the main layer but where only non-decal
   /// objects can be drawn. This layer will be displayed on top of the `m_mLayer`
   /// so it limits a bit how we can intertwine the items in the rendering.
-  uint32_t m_mLayer;
+  uint32_t m_mLayer{};
 
   /// @brief - The index of the layer allowing to display debug information. This
   /// layer will be assigned to the default layer created by the pixel game engine.
   /// It is needed in order to initialize the last of the layers (and thus the one
   /// that will be set on top of all the others) with meaningful data.
-  uint32_t m_dLayer;
+  uint32_t m_dLayer{};
 
   //// @brief - A layer used to represent all the UI elements of the application
   /// (menu, etc).
-  uint32_t m_uiLayer;
+  uint32_t m_uiLayer{};
 
   /// @brief - Used to determine whether debug display is needed for this app.
-  bool m_debugOn;
+  bool m_debugOn{true};
 
   /// @brief - Similar to the `m_debugOn` but controls whether the UI is active or
   /// not.
-  bool m_uiOn;
+  bool m_uiOn{true};
+
+  /// @brief - Defines whether or not the cursor should be displayed.
+  bool m_cursorOn{true};
 
   /// @brief - A map to keep track of the state of the controls to be transmitted
   /// to the world's entities for the simulation.
@@ -221,7 +227,7 @@ class PGEApp : public utils::CoreObject, public olc::PixelGameEngine
 
   /// @brief - Boolean allowing to display logs only on the first frame. Or do any
   /// other process a single time upon rendering the first frame.
-  bool m_first;
+  bool m_first{true};
 
   /// @brief - Whether or not panning and zooming is allowed in this app.
   bool m_fixedFrame;

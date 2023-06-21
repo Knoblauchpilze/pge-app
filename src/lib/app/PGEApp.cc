@@ -6,23 +6,8 @@ namespace pge {
 PGEApp::PGEApp(const AppDesc &desc)
   : utils::CoreObject(desc.name)
   , olc::PixelGameEngine()
-  ,
-
-  m_mDecalLayer(0u)
-  , m_mLayer(0u)
-  , m_dLayer(0u)
-  , m_uiLayer(0u)
-  ,
-
-  m_debugOn(true)
-  , m_uiOn(true)
-  ,
-
-  m_controls(controls::newState())
-  , m_first(true)
-  ,
-
-  m_fixedFrame(desc.fixedFrame)
+  , m_controls(controls::newState())
+  , m_fixedFrame(desc.fixedFrame)
   , m_frame(desc.frame)
 {
   // Initialize the application settings.

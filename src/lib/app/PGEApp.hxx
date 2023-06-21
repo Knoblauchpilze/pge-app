@@ -38,6 +38,11 @@ inline bool PGEApp::hasUI() const noexcept
   return m_uiOn;
 }
 
+inline bool PGEApp::hasCursor() const noexcept
+{
+  return m_cursorOn;
+}
+
 inline void PGEApp::setLayerTint(const Layer &layer, const olc::Pixel &tint)
 {
   switch (layer)

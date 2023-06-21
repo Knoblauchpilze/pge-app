@@ -291,6 +291,8 @@ The `drawDecal` method should be the preferred way to render complex elements as
 
 The method is already set up so that the user can just insert code in the `FIXME` statement (which doesn't exist in the code). It is recommended to use new methods like `drawBoard`, `drawElements` etc. and perform the rendering there. This cleanly separates the steps to draw the elements. This is done in the demo app with the `renderDefaultTexturePack` method.
 
+Additionally, the demo app also displays a cursor following the mouse. This can be decativated in the parent [PGEApp](src/lib/app/PGEApp.hh) class if needed using the [m_cursorOn](src/lib/app/PGEApp.hh#L222) attribute.
+
 Whenever the user needs to perform the rendering of sprites, we define a convenience structure to help with drawing that:
 
 ```cpp
@@ -363,7 +365,9 @@ The code above performs the rendering of a 8x8 square of sprites taken from the 
 
 The `drawSprite` method expects the coordinates to be expressed in world coordinates and will automatically convert them in pixels coordinates based on the current position of the viewport in the world.
 
-We also provide a `drawWarpedSprite` which ignores the radius to define the tile as exactly one tile big (given the current zoom level and coordinate frame).
+We also provide a `drawWarpedSprite` which uses the radius to draw a warped sprite: this will cover a flat ground of surface based on the current coordinate frame as and zoom level. The sprite will be covering the area between the provided position `[x, y]` and `[x + radius, y + radius]`.
+
+The above two methods are also available for rects, which are just surfaces of a uniform color displayed in the game (see `drawRect` and `drawWarpedRect`).
 
 ### Scheduling
 

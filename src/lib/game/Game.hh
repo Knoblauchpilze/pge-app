@@ -112,16 +112,16 @@ class Game : public utils::CoreObject
     // pause status) or not. This allows to react
     // to consecutive pause requests and prevent
     // weird behaviors to occur.
-    bool paused;
+    bool paused{true};
 
     // Whether or not the UI is disabled.
-    bool disabled;
+    bool disabled{true};
 
     // Used to hold whether or not the game has been shut
     // down. It usually indicates that no simulation will
     // be performed anymore and usually indicates that a
     // termination request has been received.
-    bool terminated;
+    bool terminated{false};
   };
 
   /// @brief - Convenience structure allowing to regroup all info about the menu
@@ -130,11 +130,11 @@ class Game : public utils::CoreObject
   {};
 
   /// @brief - The definition of the game state.
-  State m_state;
+  State m_state{};
 
   /// @brief - The menus displaying information about the current state of the
   /// simulation.
-  Menus m_menus;
+  Menus m_menus{};
 };
 
 using GameShPtr = std::shared_ptr<Game>;

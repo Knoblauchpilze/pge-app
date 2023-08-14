@@ -70,17 +70,17 @@ class GameState : public utils::CoreObject
   Screen m_screen;
 
   /// @brief - Defines the screen to display when the game is on the home screen.
-  MenuShPtr m_home;
+  MenuShPtr m_home{nullptr};
 
   /// @brief - Defines the screen to display when the game is on the loading game
   /// screen.
-  MenuShPtr m_loadGame;
+  MenuShPtr m_loadGame{nullptr};
 
   /// @brief - The data needed to represent the list of games available for loading.
   SavedGames m_savedGames;
 
   /// @brief - Defines the menu to display in case the game is over.
-  MenuShPtr m_gameOver;
+  MenuShPtr m_gameOver{nullptr};
 };
 
 using GameStateShPtr = std::shared_ptr<GameState>;

@@ -55,18 +55,11 @@ namespace pge {
 
 GameState::GameState(const olc::vi2d &dims, const Screen &screen)
   : utils::CoreObject("state")
-  ,
-
   // Assign a different screen so that we can use the
   // `setScreen` routine to initialize the visibility
   // status of screens.
-  m_screen(screen == Screen::Home ? Screen::Exit : Screen::Home)
-  ,
-
-  m_home(nullptr)
-  , m_loadGame(nullptr)
+  , m_screen(screen == Screen::Home ? Screen::Exit : Screen::Home)
   , m_savedGames(10u, "data/saves", "ext")
-  , m_gameOver(nullptr)
 {
   setService("chess");
 

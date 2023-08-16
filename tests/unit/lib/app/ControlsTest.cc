@@ -21,7 +21,6 @@ TEST(Controls, Test_Constructor)
   for (const auto &key : state.keys)
   {
     EXPECT_FALSE(key);
-    EXPECT_FALSE(key);
   }
 
   for (const auto &button : state.buttons)

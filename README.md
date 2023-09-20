@@ -110,6 +110,8 @@ The [AppDesc](src/lib/app/AppDesc.hh) provides a way to limit the framerate with
 
 Note that the main thread will then periodically halt to not go over the limit framerate. This means that if another process should be continuously executed, it's better to have a dedicated thread for it.
 
+Finally note that the precision seems to decrease the higher the desired framerate. This might be because of the way we implemented the sleeping time to not sleep below a certain time. Up until 100 fps it works fine though.
+
 ### Logging
 
 By default the app comes with a logger allowing to print some messages in the console executing the program. Most of the objects provided in the app are also integrating a logger which makes it possible to debug the processes easily.

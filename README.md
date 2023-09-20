@@ -102,6 +102,14 @@ Panning and zooming are handled for both frames, along with converting from pixe
 
 For some applications, it might be undesirable to have panning and zooming enabled (for example a sudoku app). The `AppDesc` structure allows to configure this through the `fixedFrame` boolean which prevents any panning and zooming to be considered. The application will be blocked on the tiles defined in the main viewport provided when creating the application.
 
+### Limiting the framerate
+
+By default the application will try to run as fast as possible. In case of a very simple rendering process, this can lead to reach framerates of over 200 FPS. This is rarely useful.
+
+The [AppDesc](src/lib/app/AppDesc.hh) provides a way to limit the framerate with the `maxFps` attribute: if it is set, the app will throttle the rendering process to not go over the defined limit. In case the rendering process is becoming too slow to maintain the pace no throttling will happen.
+
+Note that the main thread will then periodically halt to not go over the limit framerate. This means that if another process should be continuously executed, it's better to have a dedicated thread for it.
+
 ### Logging
 
 By default the app comes with a logger allowing to print some messages in the console executing the program. Most of the objects provided in the app are also integrating a logger which makes it possible to debug the processes easily.

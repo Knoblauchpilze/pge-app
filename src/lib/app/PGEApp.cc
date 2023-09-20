@@ -20,6 +20,11 @@ PGEApp::PGEApp(const AppDesc &desc)
     error("Unable to create PGE application", "Invalid null coordinate frame provided");
   }
 
+  if (desc.maxFps)
+  {
+    m_fpsControl = FramerateControl(*desc.maxFps);
+  }
+
   // Generate and construct the window.
   initialize(desc.dims, desc.pixRatio);
 }
@@ -98,18 +103,12 @@ bool PGEApp::OnUserUpdate(float fElapsedTime)
     clearLayer();
   }
 
-  // Draw the debug layer. As it is saved
-  // in the layer `0` we need to clear it
-  // when it is not displayed as it will
-  // be rendered on top of any other layer
-  // and thus we would still display the
-  // last frame when it is inactive.
-  // Note that we also clear it in case
-  // the debug is set to `false` from the
-  // beginning of the rendering: if we
-  // don't do this nothing will be visible
-  // as the `0`-th layer would never be
-  // updated.
+  // Draw the debug layer. As it is saved in the layer `0` we need to clear it
+  // when it is not displayed as it will be rendered on top of any other layer
+  // and thus we would still display the last frame when it is inactive.
+  // Note that we also clear it in case the debug is set to `false` from the
+  // beginning of the rendering: if we don't do this nothing will be visible
+  // as the `0`-th layer would never be updated.
   if (hasDebug())
   {
     SetDrawTarget(m_dLayer);
@@ -126,6 +125,11 @@ bool PGEApp::OnUserUpdate(float fElapsedTime)
 
   // Not the first frame anymore.
   m_first = false;
+
+  if (m_fpsControl)
+  {
+    m_fpsControl->throttle();
+  }
 
   return !ic.quit && !quit;
 }

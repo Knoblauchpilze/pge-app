@@ -3,6 +3,7 @@
 
 #include "CoordinateFrame.hh"
 #include "olcEngine.hh"
+#include <optional>
 #include <string>
 
 namespace pge {
@@ -28,6 +29,12 @@ struct AppDesc
   // Whether or not the coordinate frame is fixed (meaning
   // that panning and zooming is disabled) or not.
   bool fixedFrame;
+
+  // The maximum FPS that the app should try to maintain. If
+  // it is able to render faster than this, it will sleep to
+  // not exceed this value. The default is not provided, so
+  // it means the app will try to render as fast as possible.
+  std::optional<int> maxFps{};
 };
 
 /// @brief - Creates a default app description.

@@ -4,9 +4,11 @@
 #include "AppDesc.hh"
 #include "Controls.hh"
 #include "CoordinateFrame.hh"
+#include "FramerateControl.hh"
 #include "olcEngine.hh"
 #include <core_utils/CoreObject.hh>
 #include <maths_utils/Point2.hh>
+#include <optional>
 
 namespace pge {
 
@@ -236,6 +238,11 @@ class PGEApp : public utils::CoreObject, public olc::PixelGameEngine
   /// frames handled by the app. It handles conversion between tiles coordinate and
   /// screen coordinates and conversely.
   CoordinateFramePtr m_frame;
+
+  /// @brief - Allows to control the framerate of the application. In case its
+  /// value is not assigned, the app will run as fast as possible, otherwise it
+  /// will try to maintain the maximum desired fps.
+  std::optional<FramerateControl> m_fpsControl{};
 };
 
 } // namespace pge

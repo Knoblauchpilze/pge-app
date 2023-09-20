@@ -38,6 +38,7 @@ int main(int /*argc*/, char ** /*argv*/)
     }
 
     pge::AppDesc ad = pge::newDesc(olc::vi2d(800, 600), frame, "pge-app");
+    ad.maxFps       = {50};
     pge::App demo(ad);
 
     demo.Start();

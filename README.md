@@ -299,7 +299,7 @@ The `drawDecal` method should be the preferred way to render complex elements as
 
 The method is already set up so that the user can just insert code in the `FIXME` statement (which doesn't exist in the code). It is recommended to use new methods like `drawBoard`, `drawElements` etc. and perform the rendering there. This cleanly separates the steps to draw the elements. This is done in the demo app with the `renderDefaultTexturePack` method.
 
-Additionally, the demo app also displays a cursor following the mouse. This can be decativated in the parent [PGEApp](src/lib/app/PGEApp.hh) class if needed using the [m_cursorOn](src/lib/app/PGEApp.hh#L222) attribute.
+Additionally, the demo app also displays a cursor following the mouse. This can be decativated in the parent [PGEApp](src/lib/app/PGEApp.hh) class if needed using the [m_cursorOn](src/lib/app/PGEApp.hh#L224) attribute.
 
 Whenever the user needs to perform the rendering of sprites, we define a convenience structure to help with drawing that:
 

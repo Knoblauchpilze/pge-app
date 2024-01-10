@@ -24,7 +24,7 @@ void Game::performAction(float /*x*/, float /*y*/)
   // Only handle actions when the game is not disabled.
   if (m_state.disabled)
   {
-    log("Ignoring action while menu is disabled");
+    debug("Ignoring action while menu is disabled");
     return;
   }
 }
@@ -64,11 +64,11 @@ void Game::enable(bool enable)
 
   if (m_state.disabled)
   {
-    log("Disabled game UI", utils::Level::Verbose);
+    verbose("Disabled game UI");
   }
   else
   {
-    log("Enabled game UI", utils::Level::Verbose);
+    verbose("Enabled game UI");
   }
 }
 

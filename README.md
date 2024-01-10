@@ -126,12 +126,12 @@ This is the default `main` program provided in this template app:
 int
 main(int /*argc*/, char** /*argv*/) {
   // Create the logger.
-  utils::StdLogger raw;
-  raw.setLevel(utils::Level::Debug);
-  utils::PrefixedLogger logger("pge", "main");
-  utils::LoggerLocator::provide(&raw);
+  utils::log::StdLogger raw;
+  raw.setLevel(utils::log::Severity::DEBUG);
+  utils::log::PrefixedLogger logger("pge", "main");
+  utils::log::Locator::provide(&raw);
 
-  logger.logMessage(utils::Level::Notice, "Starting application");
+  logger.notice("Starting application");
 
   /// FIXME: Definition of the viewports: the tiles viewport and the pixels viewport.
   auto tiles  = pge::CenteredViewport({0.0f, 0.0f}, {4.0f, 3.0f});

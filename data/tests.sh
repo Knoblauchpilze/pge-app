@@ -3,4 +3,4 @@
 export LD_LIBRARY_PATH=/usr/local/lib/:$LD_LIBRARY_PATH
 
 CURR_DIR=$(dirname $0)
-./bin/example-app-tests
+./bin/bsgalone_tests

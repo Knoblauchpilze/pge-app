@@ -25,14 +25,24 @@ sandbox: release copy copyRelease
 
 sandboxDebug: debug copy copyDebug
 
+# Run client
 run: sandbox
-	cd sandbox && ./run.sh local
+	cd sandbox && ./run.sh bsgalone_client
 
+# Debug client
 drun: sandboxDebug
-	cd sandbox && ./debug.sh local
+	cd sandbox && ./debug.sh bsgalone_client
+
+# Run server
+runserver: sandbox
+	cd sandbox && ./run.sh bsgalone_server
+
+# Debug server
+drunserver: sandboxDebug
+	cd sandbox && ./debug.sh bsgalone_server
 
 v: sandboxDebug
-	cd sandbox && ./valgrind.sh local
+	cd sandbox && ./valgrind.sh bsgalone_server
 
 profile: sandboxDebug
 	cd sandbox && ./profile.sh local

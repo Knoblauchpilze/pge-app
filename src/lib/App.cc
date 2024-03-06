@@ -33,6 +33,9 @@ void App::onInputs(const controls::State &controls, CoordinateFrame &frame)
   }
 
   m_game->processUserInput(controls, frame);
+
+  m_mousePos = frame.pixelsToTilesAndIntra(
+    Vec2f{static_cast<float>(controls.mPosX), static_cast<float>(controls.mPosY)});
 }
 
 void App::loadResources(const Vec2i &screenDims, Renderer &engine)
@@ -86,6 +89,13 @@ void App::drawDebug(const RenderState &state, const Vec2f &mouseScreenPos)
   state.renderer.drawDebugString(pos,
                                  "Screen            : " + str(m_game->getScreen()),
                                  colors::DARK_GREEN);
+
+  SpriteDesc s;
+  s.radius      = 1.0f;
+  s.x           = m_mousePos.x;
+  s.y           = m_mousePos.y;
+  s.sprite.tint = makeTransparent(colors::AMBER, alpha::SEMI_OPAQUE);
+  state.renderer.drawWarpedRect(s, state.frame);
 }
 
 } // namespace pge

@@ -29,6 +29,7 @@ class App : public PGEApp
   void drawDebug(const RenderState &state, const Vec2f &mouseScreenPos) override;
 
   private:
+  Vec2i m_mousePos{};
   GameShPtr m_game{nullptr};
 };
 

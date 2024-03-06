@@ -58,7 +58,7 @@ The ordering of the layer matters as it will describe how elements are overlaid.
 - ui layer
 - debug layer
 
-When pressing the `D` key the debug layer can easily be toggled on or off.
+When pressing the `Shift + D` key the debug layer can easily be toggled on or off. Similarly, `Shift + U` toggles the UI.
 
 ## Game
 
@@ -80,22 +80,23 @@ The base project comes with a set of basic features to start developing either a
 
 ### Creating an App
 
-In order to ease the creation of an `App` object, we regrouped the options within a struct named [AppDesc](src/lib/app/AppDesc.hh). This contains several attributes, among which:
+In order to ease the creation of an `App` object, we regrouped the options within a struct named [AppDesc](src/pge/app/AppDesc.hh). This contains several attributes, among which:
 
 - the dimensions of the window in pixels.
 - a coordinate frame (see more details in the dedicated [section](#coordinate-frame)).
 - whether or not the view allows panning and zooming.
+- an option to throttle the framerate of the application.
 
 ### Coordinate frame
 
 Usually, an application maps what happens on the screen to an internal coordinate frame. The start of most interactions begins in pixels frame: the user clicks somewhere or moves the mouse somewhere and we get the information about where the mouse is in pixels. From this, the application needs to transform these coordinates and see if anything interesting happens because of this.
 
-The base app defines a coordinate frame to handle such things. A [coordinate frame](src/lib/coordinates/CoordinateFrame.hh) is an interface which aims at converting the information in pixels space to the internal world space. To do this, it uses two [viewports](src/lib/coordinates/Viewport.hh): one defining the pixels space and the other one the tiles space.
+The base app defines a coordinate frame to handle such things. A [coordinate frame](src/pge/coordinates/CoordinateFrame.hh) is an interface which aims at converting the information in pixels space to the internal world space. To do this, it uses two [viewports](src/pge/coordinates/Viewport.hh): one defining the pixels space and the other one the tiles space.
 
 By default, two separate frames are already available:
 
-- a [top view](src/lib/coordinates/TopViewFrame.hh) frame: this represents a simple scaling between the position in pixels and the position in tiles. It can be used for a top down app, or most 2D apps.
-- an [isometric view](src/lib/coordinates/IsometricViewFrame.hh) frame: this represents a semi-3D projection which allows to produce graphics like [this](https://en.wikipedia.org/wiki/Isometric_video_game_graphics).
+- a [top view](src/pge/coordinates/TopViewFrame.hh) frame: this represents a simple scaling between the position in pixels and the position in tiles. It can be used for a top down app, or most 2D apps.
+- an [isometric view](src/pge/coordinates/IsometricViewFrame.hh) frame: this represents a semi-3D projection which allows to produce graphics like [this](https://en.wikipedia.org/wiki/Isometric_video_game_graphics).
 
 Panning and zooming are handled for both frames, along with converting from pixels to tiles and vice versa.
 
@@ -107,7 +108,7 @@ For some applications, it might be undesirable to have panning and zooming enabl
 
 By default the application will try to run as fast as possible. In case of a very simple rendering process, this can lead to reach framerates of over 200 FPS. This is rarely useful.
 
-The [AppDesc](src/lib/app/AppDesc.hh) provides a way to limit the framerate with the `maxFps` attribute: if it is set, the app will throttle the rendering process to not go over the defined limit. In case the rendering process is becoming too slow to maintain the pace no throttling will happen.
+The [AppDesc](src/pge/app/AppDesc.hh) provides a way to limit the framerate with the `maxFps` attribute: if it is set, the app will throttle the rendering process to not go over the defined limit. In case the rendering process is becoming too slow to maintain the pace no throttling will happen.
 
 Note that the main thread will then periodically halt to not go over the limit framerate. This means that if another process should be continuously executed, it's better to have a dedicated thread for it.
 
@@ -149,10 +150,14 @@ main(int /*argc*/, char** /*argv*/) {
     frame = std::make_shared<pge::TopViewFrame>(tiles, pixels);
   }
 
-  pge::AppDesc ad = pge::newDesc(olc::vi2d(800, 600), frame, "pge-app");
-  pge::App demo(ad);
+  pge::AppDesc desc{.dims       = pge::Vec2i{800, 600},
+                    .frame      = std::make_unique<pge::IsometricViewFrame>(tiles, pixels),
+                    .name       = "pge-app",
+                    .fixedFrame = false,
+                    .maxFps     = 50};
+  pge::App demo(std::move(desc));
 
-  demo.Start();
+  demo.run();
 
   return EXIT_SUCCESS;
 }
@@ -218,17 +223,38 @@ In case the test suite is growing one can add some targets to run only the unit 
 
 # Specializing the project
 
-## Generalities
+## Existing structure
 
-The application and the class within it are designed to easily be reused and extended with various behaviors.
+The application and the classes within it are designed to easily be reused and extended with various behaviors.
 
-The classes which should be changed by the user are mainly:
+So far, most of the applications we built were structure in a similar way: a bunch of screens representing different information and connected to one another by logical link. For example from the home screen the user can choose to start a new game or load an existing one, and from the game screen it can either transition back to the main screen or exit the application.
 
-- [App](src/lib/App.hh) class, described [here](#the-app-class).
-- [Game](src/lib/game/Game.hh) class, described [here](#the-game-class).
-- [GameState](src/lib/game/GameState.hh) class, described [here](#the-gamestate-class).
+This concept is represented in the [Screen](src/lib/game/Screen.hh) enum and can also be thought of as a state machine in a similar fashion as below:
 
-## The App class
+![State machine](resources/screens_state_machine.png)
+
+Within each screen, the application does three things:
+* process the user input
+* render some UI components
+* render some graphics
+
+Each of these operation has its dedicated base class in our sample project:
+* [IInputHandler](src/lib/inputs/IInputHandler.hh) is responsible to handle user input
+* [IUiHandler](src/lib/ui/IUiHandler.hh) is responsible to display the UI
+* [IRenderer](src/lib/renderers/IRenderer.hh) is responsible to display the graphics
+
+The classes described above are interfaces that the user can subclass to adapt to their needs.
+
+In order to bring everything together, the [Game](src/lib/game/Game.hh) holds a list of input/ui handlers and renderers. The [App](src/lib/App.hh) is calling at each frame the various hooks of the game to allow the processing of the information. In order each frame will successively:
+* process the user input (through the `Game::processUserInput` method)
+* process the game logic (through the `Game::step` method)
+* render the graphic elements (through the `Game::render` method), which includes both the ui and the renderers
+
+This logic is already provided and should not have to be modified too much from one application to the other. In order to specialize what happens in the application, the user is encourage to:
+* adapt the values of the [Screen](src/lib/game/Screen.hh) enum
+* subclass [IInputHandler](src/lib/inputs/IInputHandler.hh), [IUiHandler](src/lib/ui/IUiHandler.hh) and [IRenderer](src/lib/renderers/IRenderer.hh) as needed
+
+## TODO replace with IInputHandler
 
 The `App` class provides various methods which can be enriched with behaviors. Below is a description of the main hooks which can be specialized.
 
@@ -431,7 +457,7 @@ As we can see, we already handle the case where the game is terminated (meaning 
 
 In general note that this method is synchronous with the rendering which means that any blocking/heavy operations done here will impact negatively the framerate. For a simple application it can be enough to just put processing here but if it becomes too complex it probably makes sense to resort to a more complex asynchronous system where the world has an execution thread separated from the actual execution of the rendering loop.
 
-## The Game class
+## TODO replace with IUiHandler
 
 The [Game](src/lib/game/Game.hh) class provides a context to handle the execution of the code related to the game. The game is a bit of a blanket for the app specific logic. In the case of a sudoku app it can mean handling the verification to place a digit. In the case of a real game it can mean running the simulation and moving entities around.
 
@@ -590,100 +616,30 @@ Whenever the user clicks on the game and doesn't target directly a menu, the `Ga
 
 By default actions are ignored if the game is disabled: this corresponds to the `Game` being paused. The user is free to add any code to create in-game element whenever the user clicks somewhere. For example, display a label if the user clicks on a building somewhere in the game, or spawn a new entity.
 
-## The GameState class
+## TODO replace with IRenderer
 
 The [GameState](src/lib/game/GameState.hh) class provides the high level state management for the screens of the application. With _Screen_ we mean for example the welcome screen, the load game screen, the game over screen or the main game screen.
 
 In order to transition from one screen to the other and making sure that when a phase ends we can go to the next logical one is handled by this class.
 
-### An application as a state machine
+## An application as a state machine
 
 The application can be seen as a state machine which can transition to various screens based on the actions of the user.
 
-![State machine](resources/screens_state_machine.png)
-
-As we can see, the _Home_ screen is a root and allows to transition to the _Game_ or _Load_ game screen. The `GameState` manages the transitions and hide this behind an enumeration called [Screen](src/lib/game/GameState.hh):
-
-```cpp
-enum class Screen
-{
-  Home,
-  LoadGame,
-  Game,
-  GameOver,
-  Exit
-};
-```
-
-The app is then using the current state in the `drawDecal` (and other related routines) like so:
-
-```cpp
-void App::drawDecal(const RenderDesc &res)
-{
-  /* ... */
-
-  if (m_state->getScreen() != Screen::Game)
-  {
-    return;
-  }
-
-  /* ... */
-}
-```
-
-So we only consider rendering something when the screen is set to `Game`. On the other hand the state is rendered in the `draw` method like so:
-
-```cpp
-void App::draw(const RenderDesc & /*res*/)
-{
-  /* ... */
-
-  if (m_state->getScreen() != Screen::Game)
-  {
-    m_state->render(this);
-    return;
-  }
-
-  /* ... */
-}
-```
-
-This guarantees that the menus are rendered as long as we're not in the `Game` screen. As soon as we leave it again then the menus are also rendered. The default application defines a simple state machine with a few screens, but the user can configure new ones if needed.
+Whenever a screen is selected, the `Game` updates the handlers which are attached to the current one: this makes sure that only the relevant processes will get a chance to be executed.
 
 ### Adding new screens
 
-It might be useful to create new screens: for example in a chess app, we might want to add some screens corresponding to selecting the difficulty of the AI or which color to play. To do so, the first step is to add a value in the enumeration and then generate the corresponding menu. The existing menus are generated in the constructor of the `GameState`:
+It might be useful to create new screens: for example in a chess app, we might want to add some screens corresponding to selecting the difficulty of the AI or which color to play. To do so, the first step is to add a value in the enumeration and then generate the corresponding handlers (for inputs, ui and rendering).
+
+When generating the menu which allow to transition from a screen to another, one can add transition like so:
 
 ```cpp
-GameState::GameState(const olc::vi2d& dims,
-                     const Screen& screen):
-  utils::CoreObject("state"),
-
-  /* ... */
-
-  m_home(nullptr),
-  m_loadGame(nullptr),
-  m_gameOver(nullptr)
-  /** NOTE: Add an attribute for the menu **/
-{
-  setService("chess");
-
-  generateHomeScreen(dims);
-  generateLoadGameScreen(dims);
-  generateGameOverScreen(dims);
-  /** NOTE: Add a generation method **/
-
-  /* ... */
-}
-```
-
-When generating the new menu, one can add transition like so:
-
-```cpp
-m->setSimpleAction([this](Game & /*g*/) {
-  /* ... */
-  setScreen(Screen::YourNewScreen);
-});
+const MenuConfig config{
+  .gameClickCallback = [](Game& g) {
+    g.setScreen(Screen::YOUR_NEW_SCREEN);
+  }
+};
 ```
 
 The rest of the application should behave correctly as long as the transitions are properly wired.
@@ -694,33 +650,30 @@ Most applications start on the home screen:
 ![Home screen](resources/home_screen.png)
 
 From there the user can select a new game:
-![Game screen](resources/main_view.png)
+![Game screen](resources/cover_view.png)
 
-This view is empty in the default application and display the debug layer. The user can freely refine it by adding menus and displaying the actual content of the game.
+This view is empty (outside of the default texture pack) in the default application and display the debug layer. The user can freely refine it by adding menus and displaying the actual content of the game.
 
 Finally the user can select to load an existing 'game' (whatever it can mean):
 ![Load game](resources/load_game.png)
 
 ### Saved games
 
-We provide a convenience structure to handle the saved games. By default the `GameState` has an attribute called `m_savedGames` which allows to perform the generation of a menu to present the saved games to the user.
+We provide a skeleton workflow to handle saved games. By default the [LoadGameScreenUiHandler](src/lib/ui/LoadGameScreenUiHandler.hh) has an attribute called `m_savedGames` which allows to perform the generation of a menu to present the saved games to the user.
 
-The configuration includes how many games should be displayed in a single page, the directory where saved games should be fetched and the extension of the files defining saved games:
+The configuration includes:
+* how many games should be displayed in a single page
+* the directory where saved games should be fetched
+* the extension of the files defining saved games
+
+Once the user picks a saved game, we call a method on the game (`onSavedGameSelected`) with the name of the file picked by the user:
 
 ```cpp
-m_savedGames(10u, "data/saves", "ext")
-```
-
-Once the user picks a saved game, a signal is emitted by this object and transmitted to the `GameState` class (the connection is already active). To react to such an event, the user has to elaborate the implementation of the dedicated method:
-
-```cpp
-void
-GameState::onSavedGamePicked(const std::string& game) {
-  info("Picked saved game \"" + game + "\"");
-  setScreen(Screen::Game);
+void Game::onSavedGameSelected(const std::string &filePath)
+{
+  info("Picked game \"" + filePath + "\"");
+  setScreen(Screen::GAME);
 }
 ```
 
-For now nothing is done and the application switches to the `Game` state immediately. A popular way to deal with the loading of a game is to add an internal attribute to the `GameState` class which represents the `Game` (typically a reference) and then call a newly created method such as `loadNewGame(const std::string& file)`. The input attribute `game` is the full path to the saved file data.
-
-The user should also modify the `App::loadMenuResources` method to account for the modified signature of the `GameState` constructor.
+This should be a trigger to load whatever content is in this file and update the game. In the sample project the game is automatically transitioning to the `GAME` screen without processing the file. This can be changed easily.

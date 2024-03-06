@@ -5691,7 +5691,7 @@ namespace olc
 			// https://stackoverflow.com/questions/50123173/how-to-set-icon-name-in-x11-ubuntu
 			// Assign the name of the app to the tooltip that
 			// is visible for the application.
-			char appTooltip[] = "bsgalone";
+			char appTooltip[] = "pge-app";
 			XClassHint *class_hint = XAllocClassHint();
 			if (class_hint) {
 				class_hint->res_name = appTooltip;

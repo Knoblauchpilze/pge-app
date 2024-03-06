@@ -1,5 +1,5 @@
 
-/// @brief - A minimalistic bsg client implementation
+/// @brief - A minimalistic implementation for an app using the PixelGameEngine.
 
 #include "App.hh"
 #include "AppDesc.hh"
@@ -26,7 +26,7 @@ int main(int /*argc*/, char ** /*argv*/)
 
     pge::AppDesc desc{.dims       = pge::Vec2i{800, 600},
                       .frame      = std::make_unique<pge::IsometricViewFrame>(tiles, pixels),
-                      .name       = "bsgalone",
+                      .name       = "pge-app",
                       .fixedFrame = false,
                       .maxFps     = 50};
     pge::App demo(std::move(desc));

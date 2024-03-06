@@ -27,11 +27,24 @@ void LoadGameScreenUiHandler::initializeMenus(const int width,
   m_menu = generateDefaultColoredMenu(width, height, colors::BLANK);
 
   MenuConfig config{};
-  auto bg = bgConfigFromColor(DISABLED_BUTTON_COLOR);
+  auto bg = bgConfigFromColor(colors::ULTRAMARINE);
 
-  auto text            = textConfigFromColor("Previous page", colors::WHITE);
-  config.clickCallback = [this]() { onPreviousButtonClicked(); };
+  config.highlightable = false;
+  auto text            = textConfigFromColor("Saved games", colors::WHITE);
   auto prop            = std::make_unique<UiTextMenu>(config, bg, text);
+  m_menu->addMenu(std::move(prop));
+
+  config.highlightable     = true;
+  text                     = textConfigFromColor("Back to main screen", colors::WHITE);
+  config.gameClickCallback = [](Game &g) { g.setScreen(Screen::HOME); };
+  prop                     = std::make_unique<UiTextMenu>(config, bg, text);
+  m_menu->addMenu(std::move(prop));
+
+  bg = bgConfigFromColor(DISABLED_BUTTON_COLOR);
+
+  text                 = textConfigFromColor("Previous page", colors::WHITE);
+  config.clickCallback = [this]() { onPreviousButtonClicked(); };
+  prop                 = std::make_unique<UiTextMenu>(config, bg, text);
   m_previousButton     = prop.get();
   m_menu->addMenu(std::move(prop));
 

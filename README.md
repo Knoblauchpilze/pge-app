@@ -6,6 +6,8 @@ It is meant as a simple way to build an application without having to reinvent t
 
 The general architecture of the repository has been inspired by the one described [here](https://raymii.org/s/tutorials/Cpp_project_setup_with_cmake_and_unit_tests.html): this covers how to put organize the sources, the headers and the tests.
 
+![Sample view](resources/cover_view.png)
+
 # Installation
 
 ## Prerequisite
@@ -13,7 +15,7 @@ The general architecture of the repository has been inspired by the one describe
 This projects uses:
 
 - [google test](https://github.com/google/googletest): installation instructions [here](https://www.eriksmistad.no/getting-started-with-google-test-on-ubuntu/), a simple `sudo apt-get install libgtest-dev` should be enough.
-- [cmake](https://cmake.org/): installation instructions [here](https://askubuntu.com/questions/355565/how-do-i-install-the-latest-version-of-cmake-from-the-command-line), a simple `apt-get` should also be enough.
+- [cmake](https://cmake.org/): installation instructions [here](https://askubuntu.com/questions/355565/how-do-i-install-the-latest-version-of-cmake-from-the-command-line), a simple `sudo apt-get cmake` should also be enough.
 - [eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page): installation instructions [here](https://www.cyberithub.com/how-to-install-eigen3-on-ubuntu-20-04-lts-focal-fossa/) for Ubuntu 20.04, a simple `sudo apt install libeigen3-dev` should be enough.
 
 ## Instructions
@@ -21,7 +23,6 @@ This projects uses:
 - Clone the repo: `git clone git@github.com:Knoblauchpilze/pge-app.git`.
 - Clone dependencies:
   - [core_utils](https://github.com/Knoblauchpilze/core_utils)
-  - [maths_utils](https://github.com/Knoblauchpilze/maths_utils)
 - Go to the project's directory `cd ~/path/to/the/repo`.
 - Compile: `make run`.
 

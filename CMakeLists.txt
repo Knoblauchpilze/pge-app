@@ -8,7 +8,7 @@ set (CMAKE_CXX_EXTENSIONS OFF)
 # https://stackoverflow.com/questions/5096881/does-set-target-properties-in-cmake-override-cmake-cxx-flags
 add_compile_options (-Wall -Wextra -Werror)
 
-project (bsgalone LANGUAGES CXX)
+project (pge-app LANGUAGES CXX)
 
 # https://cmake.org/cmake/help/latest/variable/CMAKE_LIBRARY_OUTPUT_DIRECTORY.html
 set (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/lib")

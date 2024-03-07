@@ -92,8 +92,8 @@ void App::drawDebug(const RenderState &state, const Vec2f &mouseScreenPos)
 
   SpriteDesc s;
   s.radius      = 1.0f;
-  s.x           = m_mousePos.x;
-  s.y           = m_mousePos.y;
+  s.xTiles      = m_mousePos.x;
+  s.yTiles      = m_mousePos.y;
   s.sprite.tint = makeTransparent(colors::AMBER, alpha::SEMI_OPAQUE);
   /// We use a decal here even if we're in the debug layer: this should be okay.
   state.renderer.drawWarpedRect(s, state.frame);

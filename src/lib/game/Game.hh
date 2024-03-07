@@ -78,7 +78,7 @@ class Game : public utils::CoreObject
   /// iteration of the game loop.
   void terminate() noexcept;
 
-  void resetViewsAndUi();
+  void resetUi();
 };
 
 using GameShPtr = std::shared_ptr<Game>;

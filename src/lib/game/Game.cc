@@ -165,7 +165,7 @@ void Game::onSavedGameSelected(const std::string &filePath)
   setScreen(Screen::GAME);
 }
 
-void Game::resetViewsAndUi()
+void Game::resetUi()
 {
   for (const auto &[_, handler] : m_uiHandlers)
   {

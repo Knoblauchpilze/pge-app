@@ -11,16 +11,21 @@ class PixelGameEngine;
 
 namespace pge {
 
-/// @brief - Convenience structure regrouping needed props to
-/// draw a sprite.
+/// @brief - Convenience structure regrouping needed props to draw a sprite.
 struct SpriteDesc
 {
-  float x{0.0f};
-  float y{0.0f};
+  /// @brief - abscissa of the sprite in tiles.
+  float xTiles{0.0f};
+  /// @brief - ordinate of the sprite in tiles.
+  float yTiles{0.0f};
+
+  /// @brief - radius of the sprite in tiles.
   float radius{1.0f};
+
+  /// @brief - rotation in radians.
   float rotation{0.0f};
 
-  sprites::Sprite sprite;
+  sprites::Sprite sprite{};
 };
 
 class Renderer

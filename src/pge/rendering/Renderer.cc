@@ -23,16 +23,16 @@ auto Renderer::getTextureHandler() noexcept -> sprites::TexturePack &
 
 void Renderer::drawSprite(const SpriteDesc &t, const CoordinateFrame &frame)
 {
-  const auto p = frame.tilesToPixels(t.x, t.y);
+  const auto p = frame.tilesToPixels(t.xTiles, t.yTiles);
   m_packs->draw(t.sprite, p, t.radius * frame.tileSize());
 }
 
 void Renderer::drawWarpedSprite(const SpriteDesc &t, const CoordinateFrame &frame)
 {
-  const auto p0 = frame.tilesToPixels(t.x, t.y + t.radius);
-  const auto p1 = frame.tilesToPixels(t.x, t.y);
-  const auto p2 = frame.tilesToPixels(t.x + t.radius, t.y);
-  const auto p3 = frame.tilesToPixels(t.x + t.radius, t.y + t.radius);
+  const auto p0 = frame.tilesToPixels(t.xTiles, t.yTiles + t.radius);
+  const auto p1 = frame.tilesToPixels(t.xTiles, t.yTiles);
+  const auto p2 = frame.tilesToPixels(t.xTiles + t.radius, t.yTiles);
+  const auto p3 = frame.tilesToPixels(t.xTiles + t.radius, t.yTiles + t.radius);
 
   const auto p = std::array<Vec2f, 4>{p0, p1, p2, p3};
   m_packs->draw(t.sprite, p);
@@ -40,13 +40,13 @@ void Renderer::drawWarpedSprite(const SpriteDesc &t, const CoordinateFrame &fram
 
 void Renderer::drawRotatedSprite(const SpriteDesc &t, const CoordinateFrame &frame)
 {
-  const auto p = frame.tilesToPixels(t.x, t.y);
+  const auto p = frame.tilesToPixels(t.xTiles, t.yTiles);
   m_packs->draw(t.sprite, p, t.radius * frame.tileSize(), t.rotation);
 }
 
 void Renderer::drawRect(const SpriteDesc &t, const CoordinateFrame &frame)
 {
-  auto p = frame.tilesToPixels(t.x, t.y);
+  auto p = frame.tilesToPixels(t.xTiles, t.yTiles);
   // The FillRect draws in screen space below the input position. We want it
   // the other way around.
   p.y -= frame.tileSize().y;
@@ -57,10 +57,10 @@ void Renderer::drawRect(const SpriteDesc &t, const CoordinateFrame &frame)
 
 void Renderer::drawWarpedRect(const SpriteDesc &t, const CoordinateFrame &frame)
 {
-  const auto p0 = toVf2d(frame.tilesToPixels(t.x, t.y + t.radius));
-  const auto p1 = toVf2d(frame.tilesToPixels(t.x, t.y));
-  const auto p2 = toVf2d(frame.tilesToPixels(t.x + t.radius, t.y));
-  const auto p3 = toVf2d(frame.tilesToPixels(t.x + t.radius, t.y + t.radius));
+  const auto p0 = toVf2d(frame.tilesToPixels(t.xTiles, t.yTiles + t.radius));
+  const auto p1 = toVf2d(frame.tilesToPixels(t.xTiles, t.yTiles));
+  const auto p2 = toVf2d(frame.tilesToPixels(t.xTiles + t.radius, t.yTiles));
+  const auto p3 = toVf2d(frame.tilesToPixels(t.xTiles + t.radius, t.yTiles + t.radius));
 
   // See: FillRectDecal(const olc::vf2d& pos, const olc::vf2d& size, const olc::Pixel col)
   // in the pixel game engine file.

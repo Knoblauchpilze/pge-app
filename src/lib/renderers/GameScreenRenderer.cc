@@ -47,8 +47,8 @@ void GameScreenRenderer::render(Renderer &engine,
     for (int x = 0; x < WIDTH_IN_TILES; ++x)
     {
       SpriteDesc t;
-      t.x = x;
-      t.y = y;
+      t.xTiles = x;
+      t.yTiles = y;
 
       t.radius = 1.0f;
 

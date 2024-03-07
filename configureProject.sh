@@ -27,24 +27,22 @@ fi
 
 echo "Renaming project to \"${PROJECT_NAME}\"..."
 
-echo "Updating source files..."
-sed -i "s/pge-app/${PROJECT_NAME}/g" src/main.cc
-
 echo "Updating CMakeLists files..."
 for file in $(find . -name CMakeLists.txt);
 do
-  sed -i "s/example-app/${PROJECT_NAME}/g" $file
+  sed -i "s/pge_app_lib/${PROJECT_NAME}_lib/g" $file
+  sed -i "s/pge_app_tests/${PROJECT_NAME}_tests/g" $file
+  sed -i "s/pge_app/${PROJECT_NAME}/g" $file
 done
-sed -i "s/example-project\b/${PROJECT_NAME}/g" CMakeLists.txt
+sed -i "s/pge-app\b/${PROJECT_NAME}/g" CMakeLists.txt
 
-echo "Updating scripts..."
-for file in data/*.sh;
-do
-  sed -i "s/example-app/${PROJECT_NAME}/g" $file
-done
+echo "Updating Makefile..."
+sed -i "s/pge_app_tests/${PROJECT_NAME}_tests/g" Makefile
+sed -i "s/pge_app/${PROJECT_NAME}/g" Makefile
 
 echo "Updating code..."
-sed -i "s/pge-app/${PROJECT_NAME}/g" src/lib/app/olcPixelGameEngine.h
+sed -i "s/pge-app/${PROJECT_NAME}/g" src/pge/olc/olcPixelGameEngine.h
+sed -i "s/pge-app/${PROJECT_NAME}/g" src/main.cc
 
 echo "Cleaning data..."
 make clean

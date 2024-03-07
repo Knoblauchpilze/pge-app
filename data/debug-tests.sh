@@ -1,5 +1,6 @@
 #!/bin/sh
+APP_NAME=$1
 
 CURR_DIR=$(dirname $0)
 
-gdb --args ./bin/example-app-tests
+gdb --args ./bin/${APP_NAME}

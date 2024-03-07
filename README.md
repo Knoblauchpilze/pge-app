@@ -254,373 +254,120 @@ This logic is already provided and should not have to be modified too much from 
 * adapt the values of the [Screen](src/lib/game/Screen.hh) enum
 * subclass [IInputHandler](src/lib/inputs/IInputHandler.hh), [IUiHandler](src/lib/ui/IUiHandler.hh) and [IRenderer](src/lib/renderers/IRenderer.hh) as needed
 
-## TODO replace with IInputHandler
+## IInputHandler
 
-The `App` class provides various methods which can be enriched with behaviors. Below is a description of the main hooks which can be specialized.
+The [IInputHandler](src/lib/inputs/IInputHandler.hh) interface is designed to make interacting with user's input easy. It is called each frame by the `App` to get a chance to process the inputs. It is divided into two main methods: `processUserInput` and `performAction`.
+
+### processUserInput
+
+The prototype looks like the following:
+```cpp
+virtual void processUserInput(const controls::State &controls, CoordinateFrame &frame) = 0;
+```
+
+The [State](src/pge/app/Controls.hh) defines the position of the mouse and the state of the keyboard among other things while the `frame` parameter allows to convert between pixel space to tiles space.
+
+Together these information should be enough to trigger changes based on whether the user hovers over something interesting or presses a key that modifies the state of the game.
+
+### performAction
+
+On top of the `processUserInput` method, we also have the following in the interface:
+```cpp
+virtual void performAction(float x, float y, const controls::State &controls) = 0;
+```
+
+This method is only called when a click was triggered by the user and was not processed by the UI (which would happen if for example the user clicks on a menu). The input coordinates are expressed in tiles space. A typical use of this method is to pick a target in the game world.
+
+## IUiHandler
+
+The [IUiHandler](src/lib/ui/IUiHandler.hh) interface is designed to make it easy to create UI menus in the application. Several method need to be implemented in order to cover all the steps to build a working UI.
+
+### initializeMenus
+
+The prototype is as follows:
+```cpp
+virtual void initializeMenus(const int width,
+                             const int height,
+                             sprites::TexturePack &texturesLoader)
+    = 0;
+```
+
+This method is called when the `Game` is first started and should be used by the inheriting classes to setup the UI so that it's ready to be displayed. The dimensions are the dimensions of the window in pixels to allow building somewhat reactive UI. The `texturesLoader` can be used to register some textures used by the UI.
+
+It is okay to not initialize the whole UI just yet (for example if some further information is needed from the game or so): in this case one could create a `m_initialized` boolean which would be used to determine when a certain condition is matched to finish the utilization: for example it could be in a network situation when the data is received from the remote server. While we wait for the initial communication we display some placeholder data or a loading screen for example.
+
+What we expect from this method is to have the ground structure of the UI to be created: for example if a list of items should be built, this method can take care of creating the general layout while initializing the individual elements is delayed for later.
+
+### processUserInput
+
+```cpp
+virtual bool processUserInput(UserInputData &inputData) = 0;
+```
+
+Similarly to the [IInputHandler](#iinputhandler), the UI needs access to the user's input to update itself: for example change the color of a menu when it is hovered over, or in general detect clicks on button.
+
+This should be handled in this method: we expect the inheriting classes to return a boolean indicating whether the input was relevant for the UI or not. This value is just an indication for the caller.
+
+### render
+
+Perhaps the most important feature of the UI is to display itself so that the user can see it. This is handled by the `render` method:
+
+```cpp
+virtual void render(Renderer &engine) const = 0;
+```
+
+The method is given in parameter an object to perform the rendering. We can also access the `texturesLoader` which was given in the [initializeMenus](#initializemenus) method to use the textures loaded at that point.
+
+This method should not update the UI but rather display its state to the screen.
+
+### updateUi
+
+The `updateUi` is also called every frame and does not receive any parameter:
+
+```cpp
+virtual void updateUi() = 0;
+```
+
+Its purpose is to update the UI so that it reflects the data it is supposed to represent. Typically if a button is displaying the name of a character, this method can be used to verify that it's still accurate: if not we can change the UI to match the new value.
+
+In order to update the values we count on the fact that the `IUiHandler` object has some way to access the data it is displaying: this can be achieved for example by giving the necessary objects as arguments when constructing the handler.
+
+### reset
+
+The reset method is not used in the sample project but is designed as a way for the UI to reset its appearance to accomodate for a change in the data. A typical example would be a shop UI if a player logs out, or a mini-map if the level changes: those changes impact quite dramatically the visual of the UI, so much so that it might be a bit too much to expect that the `updateUi` takes care of it.
+
+It can also be used to elaborate on what is described in the [initializeMenus](#initializemenus) section: if the handler has a `m_initialized` boolean, this method can also reset it.
+
+## IRenderer
+
+The [IRenderer](src/lib/renderers/IRenderer.hh) interface is supposed to handle the rendering of the graphic resources needed to display the game. This is most easily defined by a negative statement: everything that is not UI. This can be the terrain, the NPCs and player characters in the game, etc. The interface offers the following methods:
+
+```cpp
+virtual void loadResources(int width, int height, sprites::TexturePack &texturesLoader) = 0;
+virtual void render(Renderer &engine,
+                    const RenderState &state,
+                    const RenderingPass pass) const = 0;
+```
 
 ### loadResources
 
-The `loadResources` method can be used to load the graphic resources needed by the `App`. This includes textures, sprites or any sort of graphic elements. A typical example could look like this:
+In a similar way to how the [IUiHandler](#iuihandler) is built, the renderer might need to load some resources to properly display its content: this could for example be textures used to represent the player or the NPCs.
 
-```cpp
-void
-App::loadResources() {
-  // Create the texture pack.
-  sprites::Pack pack;
-  pack.file = "data/img/pieces.png";
-  const auto TILE_SIZE_IN_PIXELS = 64;
-  pack.sSize = olc::vi2d(TILE_SIZE_IN_PIXELS, TILE_SIZE_IN_PIXELS);
-  pack.layout = olc::vi2d(6, 2);
+This method is passed the dimensions of the window in pixels and a way to register textures. It is called once per renderer at the beginning of the game, before the first frame is displayed.
 
-  m_piecesPackID = m_packs->registerPack(pack);
-}
-```
+### render
 
-The `m_piecesPackID` defines an identifier which can then be used to reference a textures pack during the rendering phase (see the [drawDecal](#drawDecal)) section.
+This method is supposed to perform the rendering and is called by the game once per frame. It is given as argument an engine and a [RenderState](src/pge/app/RenderState.hh): this object is supposed to help determining if a specific game element is visible and should be displayed or not.
 
-### loadMenuResources
+Additionally we also have a rendering pass as argument: this helps determining what we want to display. In complex applications this state enumeration could also be enriched with for example rendering pass for the effects, for the particles, etc.
 
-The default implementation looks like so:
+## The App class
 
-```cpp
-void
-App::loadMenuResources() {
-  // Generate the game state.
-  m_state = std::make_shared<GameState>(
-    olc::vi2d(ScreenWidth(), ScreenHeight()),
-    Screen::Home
-  );
+TODO
 
-  m_menus = m_game->generateMenus(ScreenWidth(), ScreenHeight());
-}
-```
+## The Game class
 
-The main goal here is to create the `GameState` and the UI menus. When debugging the application or during the development process, it might be useful to change the `Screen::Home` statement to `Screen::Game` for example to avoid having to select each time a new game.
-
-This method also handles the generation of menus and their registration in the main input loop: the `m_menus` attribute provided by the `App` class registers all menus and will call them whenever there's a change in the inputs from the user (see the [game](#the-game-class) section).
-
-### drawDecal
-
-Along with the `draw`, `drawUI` and `drawDebug` method the `drawDecal` allows to render the elements of the application on screen. The code for all of these methods is similar so let's see what it does:
-
-```cpp
-void
-App::drawDecal(const RenderDesc& /*res*/) {
-  // Clear rendering target.
-  SetPixelMode(olc::Pixel::ALPHA);
-  Clear(olc::VERY_DARK_GREY);
-
-  // In case we're not in the game screen, do nothing.
-  if (m_state->getScreen() != Screen::Game) {
-    SetPixelMode(olc::Pixel::NORMAL);
-    return;
-  }
-
-  /// FIXME: Add rendering code here.
-
-  SetPixelMode(olc::Pixel::NORMAL);
-}
-```
-
-The first thing to notice is that no matter what, the layer is cleared on each call. In case the screen is different from the `Game` screen (so basically when the main purpose of the application is displayed on screen), we don't do anything. This is to allow the other screens to draw what they want: usually this can be a UI or some configuration info.
-
-The `drawDecal` method should be the preferred way to render complex elements as opposed to the `draw` method: using the `Decal` mechanism provided by the `Pixel Game Engine` we are able to render very quickly a lot of elements without impacting the framerate too much by leveraging the GPU.
-
-The method is already set up so that the user can just insert code in the `FIXME` statement (which doesn't exist in the code). It is recommended to use new methods like `drawBoard`, `drawElements` etc. and perform the rendering there. This cleanly separates the steps to draw the elements. This is done in the demo app with the `renderDefaultTexturePack` method.
-
-Additionally, the demo app also displays a cursor following the mouse. This can be decativated in the parent [PGEApp](src/lib/app/PGEApp.hh) class if needed using the [m_cursorOn](src/lib/app/PGEApp.hh#L224) attribute.
-
-Whenever the user needs to perform the rendering of sprites, we define a convenience structure to help with drawing that:
-
-```cpp
-namespace sprites {
-  struct Sprite {
-    // The `pack` defines the identifier of the pack from
-    // which the sprite should be picked.
-    PackId pack;
-
-    // The `sprite` defines an identifier for the sprite. The
-    // position of the sprite in the resource pack will be
-    // computed from this identifier.
-    olc::vi2d sprite;
-
-    // The `id` allows to select a variant for the sprite. By
-    // default this value is `0` meaning the principal display
-    // for the sprite.
-    int id{0};
-
-    // The `tint` defines a color to apply to tint the sprite
-    // as a whole. Can also be used to provide some alpha.
-    olc::Pixel tint{olc::WHITE};
-  };
-}
-
-struct SpriteDesc {
-  // The x coordinate of the sprite.
-  float x;
-
-  // The y coordinate of the sprite.
-  float y;
-
-  // The radius of the sprite: applied both along the x and y coordinates.
-  float radius;
-
-  // A description of the sprite.
-  sprites::Sprite sprite;
-};
-```
-
-These structures help encapsulate the logic to find and draw a sprite at a specific location on screen. An example code is provided below:
-
-```cpp
-void
-App::drawFlowers(const RenderDesc& res) noexcept {
-  SpriteDesc sd = {};
-  sd.radius = 0.9f;
-
-  // A 8x8 grid with a flower in each cell.
-  for (unsigned y = 0u ; y < 8u ; ++y) {
-    for (unsigned x = 0u ; x < 8u ; ++x) {
-      sd.x = x;
-      sd.y = y;
-
-      sd.sprite.pack = /** index of the texture pack holding the flowers **/;
-      sd.sprite.id = 0;
-      sd.sprite.tint = olc::WHITE;
-      sd.sprite.sprite = olc::vi2d(
-        /** FIXME: determine the sprite index in the pack **/,
-        /** FIXME: determine the sprite variation **/
-      );
-
-      drawSprite(sd, res.cf);
-    }
-  }
-}
-```
-
-The code above performs the rendering of a 8x8 square of sprites taken from the pack loaded in the example above. The part to determine the index of the sprite based on the element to display is left to the user: it could come from fetching the particular element at this coordinate in the world or determined at random or anything else.
-
-The `drawSprite` method expects the coordinates to be expressed in world coordinates and will automatically convert them in pixels coordinates based on the current position of the viewport in the world.
-
-We also provide a `drawWarpedSprite` which uses the radius to draw a warped sprite: this will cover a flat ground of surface based on the current coordinate frame as and zoom level. The sprite will be covering the area between the provided position `[x, y]` and `[x + radius, y + radius]`.
-
-The above two methods are also available for rects, which are just surfaces of a uniform color displayed in the game (see `drawRect` and `drawWarpedRect`).
-
-### Scheduling
-
-Whenever the app is running, the main loop is called. From the `App` perspective, this means that two methods are called in the following order:
-
-- onInputs
-- onFrame
-
-#### onInputs
-
-The user can easily add hot keys through the [Keys](src/lib/app/Controls.hh) enumeration: specific processes can then be triggered when the key is pressed. Note that the code in the [PGEApp::handleInputs](src/lib/app/PGEApp.cc) method should also be updated to detect the key being hit or released.
-
-```cpp
-void
-App::onInputs(const controls::State& c,
-              const CoordinateFrame& cf)
-{
-  /* ... */
-  if (c.keys[controls::keys::P]) {
-    m_game->togglePause();
-  }
-}
-```
-
-In general, it allows to react to some input and change the state of the game. It is in general not advised to perform graphic changes here but rather to configure everything so that the drawing routines can handle the visual representation.
-
-Typically in a sudoku app the `onInputs` method would be responsible to fill in a digit in a specific cell but wouldn't actually render it, this would be done by the `drawXYZ` routines.
-
-#### onFrame
-
-This method handle the game logic. By default the code looks like this:
-
-```cpp
-bool
-App::onFrame(float fElapsed) {
-  // Handle case where no game is defined.
-  if (m_game == nullptr) {
-    return false;
-  }
-
-  if (!m_game->step(fElapsed)) {
-    info("This is game over");
-  }
-
-  return m_game->terminated();
-}
-```
-
-As we can see, we already handle the case where the game is terminated (meaning that we need to stop the application) and also call the `step` method in the [Game](#the-game-class) class. This can be extended with other processes which need to be called on each frame: a world simulation, some network connection handling, etc.
-
-In general note that this method is synchronous with the rendering which means that any blocking/heavy operations done here will impact negatively the framerate. For a simple application it can be enough to just put processing here but if it becomes too complex it probably makes sense to resort to a more complex asynchronous system where the world has an execution thread separated from the actual execution of the rendering loop.
-
-## TODO replace with IUiHandler
-
-The [Game](src/lib/game/Game.hh) class provides a context to handle the execution of the code related to the game. The game is a bit of a blanket for the app specific logic. In the case of a sudoku app it can mean handling the verification to place a digit. In the case of a real game it can mean running the simulation and moving entities around.
-
-The recommended approach is to create a specialized class (e.g. `World`) and use composition to make the `Game` class aware of it.
-
-Another responsibility of the class is to handle the UI of the app: it should generate the various controls to interact with the app and also transmit the interaction of the user to apply them to the game (for example through the `World` class).
-
-Several hooks are provided to customize the behavior easily.
-
-### generateMenus
-
-The `generateMenus` class is called by the `App` class and is supposed to create the menus to display when the user is on the `Game` screen. Any menu returned here will be automatically considered by the `App` framework and passed on events in case they are relevant.
-
-The method is passed on the width and height of the rendering canvas which can help adapt the size of the menus to the actual size of the application.
-
-Typically the user can create dedicated methods like so:
-
-```cpp
-std::vector<MenuShPtr>
-Game::generateMenus(float /*width*/,
-                    float /*height*/)
-{
-  auto statusBarMenus = generateStatusBarMenus();
-  auto controlPanelMenus = generateControlPanelMenus();
-  /* ... */
-
-  std::vector<MenuShPtr> out;
-  out.insert(statusBarMenus.begin(), statusBarMenus.end());
-  out.insert(controlPanelMenus.begin(), controlPanelMenus.end());
-
-  return out;
-}
-```
-
-### How to store the menus
-
-The `Game` class also defines an internal convenience structure to regroup all the menus that might be needed by the `App`:
-
-```cpp
-/// @brief - Convenience structure allowing to regroup
-/// all info about the menu in a single struct.
-struct Menus {
-  /// FIXME: Add menus here.
-};
-```
-
-The user can add necessary menus here to group them in a neat object to pass around.
-
-**NOTE:** all menus do not need to be registered. It is mainly interesting to keep them in case their content needs to be updated (typically a label) during the game. Otherwise, the menus will automatically handle the release of their children sub-menus when being destroyed. The concept of actions (see the corresponding [section](#attach-an-action-to-a-menu)) should be sufficient to trigger processes on the `Game` (and also on elements of the `World` class for example) when the user clicks on a [Menu](https://github.com/Knoblauchpilze/pge-app/blob/master/src/lib/ui/Menu.hh).
-
-### Attach an action to a menu
-
-Each menu created with the [Menu](https://github.com/Knoblauchpilze/pge-app/blob/master/src/lib/ui/Menu.hh) class can be attached an [Action](https://github.com/Knoblauchpilze/pge-app/blob/master/src/lib/ui/Action.hh) which is triggered by the menu whenever it is clicked upon (provided that the menu is `clickable`).
-
-Such an action is defined as follows:
-
-```cpp
-bool clickable = true;
-pge::MenuShPtr m = std::make_shared<pge::Menu>(/* arguments */, clickable, /* arguments */);
-m->setSimpleAction(
-  [/* optional capture of variables */](Game& g) {
-    /// FIXME: Call any method of the game.
-  }
-);
-```
-
-The action receives a reference to the game and can trigger an action on it. A typical use case is to create a public method in the `Game` class (say `Game::foo`) and then have it called by the simple action. This could be for example the creation of a new element, the update of a certain attribute, etc.
-
-Actions can be reset and can also include variables from the context creating it, such as a certain value or a compile time parameter. This mechanism proved quite reliable and easy-to-use to trigger processes on the `Game` from the UI.
-
-### Timed menu
-
-The `Game` class defines a convenience internal structure called a `TimedMenu` which allows to display a menu for a certain period of time based on a certain condition.
-
-The user needs to configure the menu (usually in the [generateMenus](#generatemenus) method) and then update its status in the `updateUI` function like so:
-
-```cpp
-std::vector<MenuShPtr>
-Game::generateMenus(float width, float height) {
-  m_menus.timed.date = utils::TimeStamp();
-  m_menus.timed.wasActive = false;
-  /// NOTE: The duration is expressed in milliseconds.
-  m_menus.timed.duration = 3000;
-  m_menus.timed.menu = /** FIXME: Generate menu **/
-  /// NOTE: Disable the visibility at first if needed.
-  m_menus.timed.menu->setVisible(false);
-
-  /* ... */
-}
-
-void
-Game::updateUI() {
-  /* ... */
-
-  m_menus.timed.update(/* Your condition */);
-
-  /* ... */
-}
-```
-
-This allows to easily display alerts for example, or any information that needs to be presented to the user for a short period of time. Note that it is usually recommended to set the `clickable` and `selectable` flags of the menu attached to the component.
-
-The condition to provide in the update should be `true` when the menu is supposed to be visible and `false` otherwise. The base class already provides the mechanism so that the menu can be reactivated as needed without any additional processing.
-
-### The step method
-
-The main method is probably `step` where the user can perform the update of the elements that will be added to the `Game` class. Once again, this plays nicely with the concept of a `World` class which would be responsible for the simulation.
-
-The user is given the elapsed time since the last frame in seconds. This information is sufficient to handle menus for example but in general it shouldn't be considered as the main way to measure time passing in the simulation.
-
-```cpp
-bool
-Game::step(float /*tDelta*/) {
-  // When the game is paused it is not over yet.
-  if (m_state.paused) {
-    return true;
-  }
-
-  info("Perform step method of the game");
-
-  updateUI();
-
-  return true;
-}
-```
-
-One pre-filled process happening in the `step` method is the `updateUI` method: this is responsible to make sure that menus also get the chance to be updated each frame. More info in the dedicated [section](#updateUI-or-how-menus-live)
-
-### updateUI or how menus live
-
-The `updateUI` method is very similar to the `step` method but is dedicated to the UI. It allows the menus to also be aware of the passage of time in the simulation and to update their content with meaningful information.
-
-Such an update is important for two kinds of menus:
-
-- timed menus
-- menus which information changes over time
-
-The static menus don't need this. A non-static menu is for example a label indicating how much gold a player has in a game: this typically changes based on the events of the game and should be updated regularly.
-
-### Make changes to the game
-
-The last hook provided by the `Game` class is the `performAction` method. It looks like so:
-
-```cpp
-void
-Game::performAction(float /*x*/, float /*y*/) {
-  // Only handle actions when the game is not disabled.
-  if (m_state.disabled) {
-    log("Ignoring action while menu is disabled");
-    return;
-  }
-}
-```
-
-Whenever the user clicks on the game and doesn't target directly a menu, the `Game::performAction` method is called. It is passed on the coordinates of the click in tiles using a floating point format (meaning that the `Game` can access the intra-tile position).
-
-By default actions are ignored if the game is disabled: this corresponds to the `Game` being paused. The user is free to add any code to create in-game element whenever the user clicks somewhere. For example, display a label if the user clicks on a building somewhere in the game, or spawn a new entity.
-
-## TODO replace with IRenderer
-
-The [GameState](src/lib/game/GameState.hh) class provides the high level state management for the screens of the application. With _Screen_ we mean for example the welcome screen, the load game screen, the game over screen or the main game screen.
-
-In order to transition from one screen to the other and making sure that when a phase ends we can go to the next logical one is handled by this class.
+TODO
 
 ## An application as a state machine
 

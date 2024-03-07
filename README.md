@@ -282,6 +282,8 @@ This method is only called when a click was triggered by the user and was not pr
 
 The [IUiHandler](src/lib/ui/IUiHandler.hh) interface is designed to make it easy to create UI menus in the application. Several method need to be implemented in order to cover all the steps to build a working UI.
 
+Some examples of the specialization can be seen in the [ui](src/lib/ui/) folder: we define some classes to handle the various menus of the sample app.
+
 ### initializeMenus
 
 The prototype is as follows:
@@ -338,6 +340,8 @@ The reset method is not used in the sample project but is designed as a way for 
 
 It can also be used to elaborate on what is described in the [initializeMenus](#initializemenus) section: if the handler has a `m_initialized` boolean, this method can also reset it.
 
+Also worth noting that we also have a `resetUi` method in the `Game` class: this method is not used in the sample app but is meant to reset all the UI handlers for all screens. A typical use case would be to call it on a screen change or in case of a login/logout operation or something similarly important.
+
 ## IRenderer
 
 The [IRenderer](src/lib/renderers/IRenderer.hh) interface is supposed to handle the rendering of the graphic resources needed to display the game. This is most easily defined by a negative statement: everything that is not UI. This can be the terrain, the NPCs and player characters in the game, etc. The interface offers the following methods:
@@ -348,6 +352,8 @@ virtual void render(Renderer &engine,
                     const RenderState &state,
                     const RenderingPass pass) const = 0;
 ```
+
+Some examples of the specialization can be seen in the [renderers](src/lib/renderers/) folder: we define some classes to handle the game screen of the sample app. We could also add some renderers to show a prettier background in the other menus for example.
 
 ### loadResources
 
@@ -361,13 +367,176 @@ This method is supposed to perform the rendering and is called by the game once 
 
 Additionally we also have a rendering pass as argument: this helps determining what we want to display. In complex applications this state enumeration could also be enriched with for example rendering pass for the effects, for the particles, etc.
 
+### A word on textures
+
+When manipulating graphic elements, most applications should use the [IRenderer](#irenderer) mechanism. Sometimes, it is desirable to load textures from the file system to be used to display some prettier elements. This can be achieved in the `loadResources` method like so:
+
+```cpp
+const auto TILE_SIZE_IN_PIXELS = 64;
+
+const sprites::Pack pack{
+  .file = "data/img/pieces.png",
+  sSize = olc::vi2d(TILE_SIZE_IN_PIXELS, TILE_SIZE_IN_PIXELS),
+  layout = olc::vi2d(6, 2)
+};
+
+m_texturesPackID = texturesLoader.registerPack(pack);
+```
+
+It is important to keep track of the identifier return by the `texturesLoader` as this will be used later on to reference the texture pack. For example to render one of the texture loaded in the pack, the user can sue the `render` method in the following way:
+
+```cpp
+SpriteDesc t;
+t.xTiles = xPos;
+t.yTiles = yPos;
+
+t.radius = 1.0f;
+
+t.sprite.pack   = m_texturesPackID;
+t.sprite.sprite = {x, y};
+t.sprite.tint   = colors::BLUE;
+
+engine.drawWarpedSprite(t, state.frame);
+```
+
+The `xTiles` and `yTiles` coordinates represent the position of the sprite in the world while the `x` and `y` represent the position of the sprite in the textures pack. The engine in the `render` method provides a couple of variation to draw sprites in various ways: it covers the basic cases but can be expected as needed.
+
 ## The App class
 
-TODO
+The [App](src/lib/App.hh) class should not be modified by most application: its role is to make the connection between the execution framework provided by the [PGEApp](src/pge/app/PGEApp.hh) and the [Game](#the-game-class).
+
+To achieve this, we mainly forward the calls for the various steps of the application's game loop (inputs processing, rendering, etc.) to the game. It also takes care of adding a little bit of context in the form of the position of the window and a display of the cursor. Those are mainly development hints and can be removed if unnecessary.
+
+One important mission is to handle the end of life of the application: when the user requests to terminate the app. The `App` class should specialize the `onFrame` method which returns a boolean: this boolean indicates whether we should continue to run the application or not. In general the code looks like this:
+
+```cpp
+bool App::onFrame(const float elapsedSeconds)
+{
+  if (m_game == nullptr)
+  {
+    return false;
+  }
+
+  if (!m_game->step(elapsedSeconds))
+  {
+    info("This is game over");
+  }
+
+  return m_game->terminated();
+}
+```
+
+The `App` class relies on the `terminated` method of the `Game` to define this.
 
 ## The Game class
 
-TODO
+The [Game](src/lib/game/Game.hh) class provides a context to handle the execution of the code related to the game. The game is a bit of a blanket for the app specific logic. In the case of a sudoku app it can mean handling the verification to place a digit. In the case of a real game it can mean running the simulation and moving entities around.
+
+### Philosophy of the class
+
+The sample class already comes with a `State` and a set of renderers, UI and inputs handlers. The idea behind it is that for each screen, the user can specialize which of the three elements are needed and instantiate them with custom types.
+
+The game class is already wired to then select automatically the right handler based on the current screen.
+
+### How to extend the class
+
+What is not yet provided in the sample app is the actual game data. This can be anything but most of the time for local applications it will take the form of a `World` class which defines whatever is happening in the game world. This class would naturally fit in the `Game`.
+
+It is relatively straightforward to add new renderers or handlers for screens: the user just needs to add the corresponding call to register the new handlers in either `generateRenderers`, `generateInputHandlers` or `generateUiHandlers`. They will automatically be called at the right stage by the `Game`.
+
+### The main loop
+
+Each frame the `App` calls the `step` method of the `Game`. This method is defined in the sample app as:
+
+```cpp
+bool Game::step(float /*elapsedSeconds*/)
+{
+  const auto it = m_uiHandlers.find(m_state.screen);
+  if (it != m_uiHandlers.end())
+  {
+    it->second->updateUi();
+  }
+
+  return true;
+}
+```
+
+The method can be extended with other processes which need to be called on each frame: a world simulation, some network connection handling, etc. It is important to note that this method is synchronous with the rendering which means that any blocking/heavy operations done here will impact negatively the framerate. For a simple application it can be enough to just put processing here but if it becomes too complex it probably makes sense to resort to a more complex asynchronous system where the world has an execution thread separated from the actual execution of the rendering loop.
+
+## A note on the UI
+
+Over in the [ui/menus](src/lib/ui/menus/) folder the sample project already defines a basic system to represent menus. Several base block of a UI are there:
+* a generic menu which provides general behavior for highlight, visibility, events propagation and layout and allows nesting.
+* a text menu which builds on the generic menu to add the display of a text on the menu.
+* a timed menu which is just a menu staying visible for a period of time before disappearing.
+
+We also define some convenience methods in [ScreenCommon](src/lib/ui/common/ScreenCommon.hh) allowing to generate generic menus like a colored menu with a certain size, or a screen option which is used in the sample app to present the options in the various screens (home screen, etc.).
+
+### Configuration
+
+The existing system is designed to be quite versatile through a configuration paradigm: there are several configuration for the two main kind of menus defined ([general config](src/lib/ui/menus/MenuConfig.hh), [background config](src/lib/ui/menus/BackgroundConfig.hh) and [text config](src/lib/ui/menus/TextConfig.hh)). Each configuration define some properties to specialize the base behavior of the menu.
+
+For example the `MenuConfig` is defined like so:
+```cpp
+struct MenuConfig
+{
+  Vec2i pos{};
+  Vec2i dims{10, 10};
+
+  MenuLayout layout{MenuLayout::VERTICAL};
+
+  bool visible{true};
+  bool highlightable{true};
+  bool propagateEventsToChildren{true};
+  bool expandChildrenToFit{true};
+
+  std::optional<HighlightCallback> highlightCallback{};
+  std::optional<ClickCallback> clickCallback{};
+  std::optional<LostFocusCallback> lostFocusCallback{};
+  std::optional<GameCallback> gameClickCallback{};
+
+  /// @brief - Define when the custom rendering method is called. The two values
+  /// correspond to either before or after the main menu rendering method. This
+  /// allows inheriting classes to configure how their own rendering logic is
+  /// interacting with the base rendering logic.
+  CustomRenderMode customRenderMode{CustomRenderMode::POST_RENDER};
+};
+```
+
+The default values define a visible highlightable menu with no action. The user can very easily configure what happens when this menu is being clicked or change the way it reacts to user input. `BackgroundConfig` fills a similar purpose to define the color that a menu has, and `TextConfig` to configure the behavior of the text of a `UiTextMenu`.
+
+It is quite easy to specialize the behavior of a menu by inheriting from the base class in case the configuration possibilities are not enough for a project.
+
+### Callbacks
+
+One important distinction is the `clickCallback` versus the `gameClickCallback`.
+
+The former is meant as a generic callback to perform an action when the menu is clicked. This usually works for example when a UI handler wants to perform an internal change when one of its component is modified.
+
+The latter on the other hand is collected when the `processUserInput` method is called and, after all relevant UI handlers have been called, is applied to the `Game`.
+
+A typical example to use the game callback for is to change screen: in this case we don't want to notify the UI handler but rather the game that the screen should be changed (see [the dedicated section](#adding-new-screens)).
+
+In general, the user can always create a public method on the `Game`, say `Game::foo` and then attach a callback to the menu like so:
+```cpp
+const MenuConfig config{
+  .gameClickCallback = [](Game& g) {
+    g.foo();
+  }
+};
+```
+
+### Lifecycle
+
+Worth noting as well is that we define a `UiMenuPtr` as a unique pointer: this is to encourage unique ownership of menus. Most of the time, the user do not need to keep track of the menus once they are added to the hierarchy: the [UiMenu](src/lib/ui/menus/UiMenu.hh) class manages its children by itself. The only case where it's interesting is when a menu needs to be updated with some information from the game. In this case it is recommended to use the following idiom:
+
+```cpp
+auto menu = std::make_unique<UiMenu>(config, bg);
+auto menuToKeepForUpdate = menu.get();
+parent->addMenu(std::move(menu));
+```
+
+In case a menu should perform an action, the concept of callbacks should be enough to automatically trigger when the menu changes its state.
 
 ## An application as a state machine
 

@@ -10,7 +10,6 @@ App::App(AppDesc &&desc)
 
 bool App::onFrame(const float elapsedSeconds)
 {
-  // Handle case where no game is defined.
   if (m_game == nullptr)
   {
     return false;
@@ -26,7 +25,6 @@ bool App::onFrame(const float elapsedSeconds)
 
 void App::onInputs(const controls::State &controls, CoordinateFrame &frame)
 {
-  // Handle case where no game is defined.
   if (m_game == nullptr)
   {
     return;

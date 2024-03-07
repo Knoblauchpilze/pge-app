@@ -1,34 +1,22 @@
-cmake_minimum_required (VERSION 3.7)
 
-set (CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib")
-set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+add_executable (pge_app)
 
-set (CMAKE_CXX_STANDARD 20)
-set (CMAKE_CXX_STANDARD_REQUIRED ON)
-set (CMAKE_CXX_EXTENSIONS OFF)
+add_subdirectory (
+	${CMAKE_CURRENT_SOURCE_DIR}/pge
+	)
 
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
-
-#set (CMAKE_VERBOSE_MAKEFILE ON)
-
-set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules")
-
-project(example-app LANGUAGES CXX)
-
-add_executable(example-app)
-
-add_subdirectory(
+add_subdirectory (
 	${CMAKE_CURRENT_SOURCE_DIR}/lib
 	)
 
-target_sources (example-app PRIVATE
+target_sources (pge_app PRIVATE
 	${CMAKE_CURRENT_SOURCE_DIR}/main.cc
 	)
 
-target_include_directories (example-app PUBLIC
+target_include_directories (pge_app PUBLIC
 	)
 
-target_link_libraries(example-app
+target_link_libraries(pge_app
 	core_utils
-	example-app_lib
+	pge_app_lib
 	)

@@ -1,7 +1,12 @@
 
 #include "Game.hh"
-#include "Menu.hh"
-#include <cxxabi.h>
+
+#include "GameScreenInputHandler.hh"
+#include "GameScreenRenderer.hh"
+
+#include "GameOverScreenUiHandler.hh"
+#include "HomeScreenUiHandler.hh"
+#include "LoadGameScreenUiHandler.hh"
 
 namespace pge {
 
@@ -11,112 +16,161 @@ Game::Game()
   setService("game");
 }
 
-Game::~Game() {}
-
-std::vector<MenuShPtr> Game::generateMenus(float /*width*/, float /*height*/)
+auto Game::getScreen() const noexcept -> Screen
 {
-  info("Generate UI menus here");
-  return std::vector<MenuShPtr>();
+  return m_state.screen;
 }
 
-void Game::performAction(float /*x*/, float /*y*/)
+void Game::setScreen(const Screen &screen)
 {
-  // Only handle actions when the game is not disabled.
-  if (m_state.disabled)
+  info("Set screen to " + str(screen));
+
+  const auto ui = m_uiHandlers.find(screen);
+  if (ui != m_uiHandlers.cend())
   {
-    debug("Ignoring action while menu is disabled");
-    return;
+    ui->second->reset();
+  }
+
+  m_state.screen = screen;
+  if (m_state.screen == Screen::EXIT)
+  {
+    terminate();
   }
 }
 
-bool Game::step(float /*tDelta*/)
+void Game::generateRenderers(int width, int height, Renderer &engine)
 {
-  // When the game is paused it is not over yet.
-  if (m_state.paused)
+  auto game = std::make_unique<GameScreenRenderer>();
+  game->loadResources(width, height, engine.getTextureHandler());
+  m_renderers[Screen::GAME] = std::move(game);
+}
+
+void Game::generateInputHandlers()
+{
+  m_inputHandlers[Screen::GAME] = std::make_unique<GameScreenInputHandler>();
+}
+
+void Game::generateUiHandlers(int width, int height, Renderer &engine)
+{
+  m_uiHandlers[Screen::HOME]      = std::make_unique<HomeScreenUiHandler>();
+  m_uiHandlers[Screen::LOAD_GAME] = std::make_unique<LoadGameScreenUiHandler>();
+  m_uiHandlers[Screen::GAME_OVER] = std::make_unique<GameOverScreenUiHandler>();
+
+  for (const auto &[_, handler] : m_uiHandlers)
   {
-    return true;
+    handler->initializeMenus(width, height, engine.getTextureHandler());
+  }
+}
+
+namespace {
+bool applyUserInputToUi(const controls::State &controls,
+                        const Screen currentScreen,
+                        Game &g,
+                        const std::unordered_map<Screen, IUiHandlerPtr> &uiHandlers)
+{
+  UserInputData uid{.controls = controls};
+  bool userInputRelevant{false};
+  const auto uiHandler = uiHandlers.find(currentScreen);
+  if (uiHandler != uiHandlers.end())
+  {
+    userInputRelevant = uiHandler->second->processUserInput(uid);
+
+    for (const auto &action : uid.actions)
+    {
+      action(g);
+    }
   }
 
-  info("Perform step method of the game");
+  return userInputRelevant;
+}
+} // namespace
 
-  updateUI();
+void Game::processUserInput(const controls::State &controls, CoordinateFrame &frame)
+{
+  const auto maybeInputHandler = m_inputHandlers.find(getScreen());
+  const auto inputHandlerExist = maybeInputHandler != m_inputHandlers.cend();
+  if (inputHandlerExist)
+  {
+    maybeInputHandler->second->processUserInput(controls, frame);
+  }
+
+  const auto inputRelevantForUi = applyUserInputToUi(controls, getScreen(), *this, m_uiHandlers);
+
+  if (!inputRelevantForUi && inputHandlerExist && controls.released(controls::mouse::LEFT))
+  {
+    Vec2f it;
+    const auto tp = frame.pixelsToTilesAndIntra(Vec2f(controls.mPosX, controls.mPosY), &it);
+    maybeInputHandler->second->performAction(tp.x + it.x, tp.y + it.y, controls);
+  }
+}
+
+void Game::render(const RenderState &state, const RenderingPass pass) const
+{
+  const auto itRenderer = m_renderers.find(getScreen());
+  const auto itUi       = m_uiHandlers.find(getScreen());
+
+  switch (pass)
+  {
+    case RenderingPass::SPRITES:
+      break;
+    case RenderingPass::DECAL:
+      if (itRenderer != m_renderers.end())
+      {
+        itRenderer->second->render(state.renderer, state, pass);
+      }
+      break;
+    case RenderingPass::UI:
+      if (itUi != m_uiHandlers.end())
+      {
+        itUi->second->render(state.renderer);
+      }
+      break;
+    case RenderingPass::DEBUG:
+      if (itRenderer != m_renderers.end())
+      {
+        itRenderer->second->render(state.renderer, state, pass);
+      }
+      break;
+    default:
+      warn("Unknown rendering pass " + str(pass));
+      break;
+  }
+}
+
+void Game::terminate() noexcept
+{
+  info("Game has been terminated");
+  m_state.terminated = true;
+}
+
+bool Game::terminated() const noexcept
+{
+  return m_state.terminated;
+}
+
+bool Game::step(float /*elapsedSeconds*/)
+{
+  const auto it = m_uiHandlers.find(m_state.screen);
+  if (it != m_uiHandlers.end())
+  {
+    it->second->updateUi();
+  }
 
   return true;
 }
 
-void Game::togglePause()
+void Game::onSavedGameSelected(const std::string &filePath)
 {
-  if (m_state.paused)
-  {
-    resume();
-  }
-  else
-  {
-    pause();
-  }
-
-  enable(!m_state.paused);
+  info("Picked game \"" + filePath + "\"");
+  setScreen(Screen::GAME);
 }
 
-void Game::enable(bool enable)
+void Game::resetUi()
 {
-  m_state.disabled = !enable;
-
-  if (m_state.disabled)
+  for (const auto &[_, handler] : m_uiHandlers)
   {
-    verbose("Disabled game UI");
+    handler->reset();
   }
-  else
-  {
-    verbose("Enabled game UI");
-  }
-}
-
-void Game::updateUI()
-{
-  info("Perform update of UI menus");
-}
-
-bool Game::TimedMenu::update(bool active) noexcept
-{
-  // In case the menu should be active.
-  if (active)
-  {
-    if (!wasActive)
-    {
-      // Make it active if it's the first time that
-      // we detect that it should be active.
-      date      = utils::now();
-      wasActive = true;
-      menu->setVisible(true);
-    }
-    else if (utils::now() > date + utils::toMilliseconds(duration))
-    {
-      // Deactivate the menu in case it's been active
-      // for too long.
-      menu->setVisible(false);
-    }
-    else
-    {
-      // Update the alpha value in case it's active
-      // for not long enough.
-      olc::Pixel c = menu->getBackgroundColor();
-
-      float d = utils::diffInMs(date, utils::now()) / duration;
-      c.a     = static_cast<uint8_t>(std::clamp((1.0f - d) * pge::alpha::Opaque, 0.0f, 255.0f));
-      menu->setBackground(pge::menu::newColoredBackground(c));
-    }
-  }
-  // Or if the menu shouldn't be active anymore and
-  // it's the first time we detect that.
-  else if (wasActive)
-  {
-    // Deactivate the menu.
-    menu->setVisible(false);
-    wasActive = false;
-  }
-
-  return menu->visible();
 }
 
 } // namespace pge

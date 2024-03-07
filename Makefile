@@ -26,21 +26,21 @@ sandbox: release copy copyRelease
 sandboxDebug: debug copy copyDebug
 
 run: sandbox
-	cd sandbox && ./run.sh local
+	cd sandbox && ./run.sh pge_app
 
 drun: sandboxDebug
-	cd sandbox && ./debug.sh local
+	cd sandbox && ./debug.sh pge_app
 
 v: sandboxDebug
-	cd sandbox && ./valgrind.sh local
+	cd sandbox && ./valgrind.sh pge_app
 
 profile: sandboxDebug
-	cd sandbox && ./profile.sh local
+	cd sandbox && ./profile.sh pge_app
 
 tests: sandboxDebug
-	cd sandbox && ./tests.sh local
+	cd sandbox && ./tests.sh pge_app_tests
 # See here: https://stackoverflow.com/questions/3931741/why-does-make-think-the-target-is-up-to-date
 PHONY: .tests
 
 dtests: sandboxDebug
-	cd sandbox && ./debug-tests.sh local
+	cd sandbox && ./debug-tests.sh pge_app_tests

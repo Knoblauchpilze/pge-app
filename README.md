@@ -4,7 +4,7 @@ Simple implementation of an application relying on the [PixelGameEngine](https:/
 
 It is meant as a simple way to build an application without having to reinvent the wheel for every project. Most of the behaviors can be customized in order to handle more complex behaviors (resources loading, step function, pause system, etc.).
 
-The general architecture of the repository has been inspired by the one described [here](https://raymii.org/s/tutorials/Cpp_project_setup_with_cmake_and_unit_tests.html): this covers how to put organize the sources, the headers and the tests.
+The general architecture of the repository has been inspired by the one described [here](https://raymii.org/s/tutorials/Cpp_project_setup_with_cmake_and_unit_tests.html): this covers how to organize the sources, the headers and the tests.
 
 ![Sample view](resources/cover_view.png)
 
@@ -376,8 +376,8 @@ const auto TILE_SIZE_IN_PIXELS = 64;
 
 const sprites::Pack pack{
   .file = "data/img/pieces.png",
-  sSize = olc::vi2d(TILE_SIZE_IN_PIXELS, TILE_SIZE_IN_PIXELS),
-  layout = olc::vi2d(6, 2)
+  .sSize = olc::vi2d(TILE_SIZE_IN_PIXELS, TILE_SIZE_IN_PIXELS),
+  .layout = olc::vi2d(6, 2)
 };
 
 m_texturesPackID = texturesLoader.registerPack(pack);

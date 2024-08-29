@@ -11,7 +11,6 @@
 
 int main(int /*argc*/, char ** /*argv*/)
 {
-  // Create the logger.
   utils::log::StdLogger raw;
   raw.setLevel(utils::log::Severity::DEBUG);
   utils::log::PrefixedLogger logger("pge", "main");

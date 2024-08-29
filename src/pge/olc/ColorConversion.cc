@@ -6,7 +6,7 @@ namespace pge::colors {
 auto toOlcPixel(const Name &name) -> olc::Pixel
 {
   // Initially taken from here:
-  // // https://github.com/matt-hayward/olcPGEX_AdditionalColours
+  // https://github.com/matt-hayward/olcPGEX_AdditionalColours
   switch (name)
   {
     case Name::AMBER:

@@ -88,6 +88,111 @@ The usage of the script is as follows:
 ./configureProject.sh project_name
 ```
 
+## VSCode integration
+
+### Extensions
+
+In order to make it easy to debug and work on the project directly into the IDE, the following two extensions are recommended:
+
+- [cmake-tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools)
+- [test-mate](https://marketplace.visualstudio.com/items?itemName=matepek.vscode-catch2-test-adapter)
+
+They will respectively help you build the project and debug/start it in your IDE and allow to run and debug tests.
+
+The following sections assume that you installed both.
+
+### Configuration for intellisense
+
+In case you use VScode as an IDE to work on this project, it is recommended to create a `.vscode` folder at the root of the directory. You can then copy past the following configuration in a `c_cpp_properties.json` file:
+
+```json
+{
+  "configurations": [
+    {
+      "name": "Linux",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "${workspaceFolder}/src/lib",
+        "${workspaceFolder}/src/pge"
+      ],
+      "defines": [],
+      "compilerPath": "/usr/bin/g++",
+      "cppStandard": "c++20",
+      "intelliSenseMode": "linux-gcc-x64",
+      "configurationProvider": "ms-vscode.cmake-tools"
+    }
+  ],
+  "version": 4
+}
+```
+
+Note that this will require you to have a local `g++` version supporting at least `c++20`.
+
+### Configuration for CMake
+
+The `cmake` tool extension allows to configure a custom build folder and to set arguments for the configure step. In this project we use conditional targets to build the tests: this is activated (as defined in the [Makefile](Makefile)) by the `ENABLE_TESTS` flag.
+
+It is required to instruct the extension to use this flag when configuring the project so that it detects correctly all the target.
+
+You can use the following configuration and paste it in the `.vscode` folder created above under `settings.json`:
+
+```json
+{
+  "cmake.configureOnOpen": false,
+  "cmake.buildDirectory": "${workspaceFolder}/cmake-build",
+  "cmake.configureArgs": ["-DENABLE_TESTS=ON"],
+  "testMate.cpp.discovery.gracePeriodForMissing": 500,
+  "testMate.cpp.discovery.runtimeLimit": 500,
+  "testMate.cpp.test.advancedExecutables": [
+    {
+      "pattern": "cmake-build/**/*{test,Test,TEST}*"
+    }
+  ],
+  "C_Cpp.errorSquiggles": "enabled",
+  "C_Cpp.default.compilerPath": "/usr/bin/g++"
+}
+```
+
+### Launch/debug configuration
+
+In order to run and debug the executables created by the project you can use the following launch configurations: the two configurations will allow to launch the application and debug it directly in the IDE if needed. You can paste the following content in a file under `.vscode/launch.json`:
+
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "app",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/cmake-build/Debug/bin/pge_app",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${fileDirname}",
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        },
+        {
+          "description": "Set Disassembly Flavor to Intel",
+          "text": "-gdb-set disassembly-flavor intel",
+          "ignoreFailures": true
+        }
+      ]
+    }
+  ]
+}
+```
+
+This should allow you to pick the `Server` configuration win the `RUN AND DEBUG` tab:
+
+// TODO
+![Launch config](resources/launch-config.png)
+
 # Generalities
 
 The application is structured around a base [App](src/lib/App.hh) which can be customized to include more complex behaviors.
@@ -239,6 +344,8 @@ The default application comes with a functional testing framework. The tests are
 
 The framework uses the `gtest` library to perform the testing.
 
+The root [CMakeLists.txt](CMakeLists.txt) conditionally compiles the test when required: this means that unless you call one of the `make rununittests` target, the tests won't be compiled. This is mainly useful when building the application in the CI for packaging.
+
 ## Adding tests
 
 In order to add a new test, one can create a new file under the relevant test section (say `tests/unit/lib/MyClassTest.cc`). The structure of the file should look something like so:
@@ -266,10 +373,10 @@ TEST(Unit_MyClass, Test_MyFeature)
 Once the tests are written, the root `Makefile` defines a target to execute all the tests under:
 
 ```bash
-make tests
+make rununittests
 ```
 
-In case the test suite is growing one can add some targets to run only the unit or integration tests but it is not provided yet.
+If needed new targets can be added with for example integration tests, etc.
 
 # Specializing the project
 

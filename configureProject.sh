@@ -33,8 +33,12 @@ do
   sed -i "s/pge_app_lib/${PROJECT_NAME}_lib/g" $file
   sed -i "s/pge_app_tests/${PROJECT_NAME}_tests/g" $file
   sed -i "s/pge_app/${PROJECT_NAME}/g" $file
+  sed -i "s/pge_app_interface_library/${PROJECT_NAME}_interface_library/g" $file
+  sed -i "s/pge_app_interface_test_library/${PROJECT_NAME}_interface_test_library/g" $file
 done
 sed -i "s/pge-app\b/${PROJECT_NAME}/g" CMakeLists.txt
+sed -i "s/pge_app_interface_library/${PROJECT_NAME}_interface_library/g" CMakeLists.txt
+sed -i "s/pge_app_interface_test_library/${PROJECT_NAME}_interface_test_library/g" CMakeLists.txt
 
 echo "Updating Makefile..."
 sed -i "s/pge_app_tests/${PROJECT_NAME}_tests/g" Makefile

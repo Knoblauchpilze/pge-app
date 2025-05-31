@@ -190,7 +190,7 @@ In order to run and debug the executables created by the project you can use the
 
 This should allow you to pick the `Server` configuration win the `RUN AND DEBUG` tab:
 
-// TODO
+// TODO: Make a screenshot and upload it
 ![Launch config](resources/launch-config.png)
 
 # Generalities

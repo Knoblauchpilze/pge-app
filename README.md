@@ -46,7 +46,31 @@ apt-get install -y --no-install-recommends \
   libgl-dev \
   libpng-dev \
   rsync
+
+# If you want to profile the app
+apt-get install -y --no-install-recommends \
+  valgrind \
+  python3 \
+  python3-pip \
+  graphviz
+  gimp
+
+pip install gprof2dot
 ```
+
+### A note on gprof2dot
+
+The `pip` command will install `gprof2dot` in a folder that might not be in your path. If so, there's an explicit warning like the one shown below:
+
+![gprof2dot not in path](resources/gprof2dot-not-in-path.png)
+
+You can fix this either for all shells by modifying the `.bashrc` file or for the current shell by running:
+
+```bash
+export PATH="/home/YOUR-USER/.local/bin:$PATH"
+```
+
+Please adapt the exact path to match where `pip` installed the tool.
 
 ## Clone and install core_utils
 
@@ -338,6 +362,8 @@ main(int /*argc*/, char** /*argv*/) {
 Both the tiles and pixels viewports are important and define respectively how much of the world will be visible and how zoomed-in the initial setup will be. Also, the user can configure whether an isometric view frame should be used or rather a top view one.
 
 # Profiling
+
+**Note:** as mentioned in the [TL; DR](#tl-dr) section some additional tools are needed to profile the app and extract results. Be sure to follow those steps.
 
 A convenience script is provided in order to profile the app. This comes from [this](https://stackoverflow.com/a/771005) answer (although the other answers are interesting as well). This requires a few things to be installed on the system:
 

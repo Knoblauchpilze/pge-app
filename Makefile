@@ -62,5 +62,5 @@ rununittests: tests
 runintegrationtests: tests
 	cd sandbox && ./tests.sh integrationTests
 
-profile: sandboxDebug
+profile: copyDebug
 	cd sandbox && ./profile.sh pge_app

@@ -10,23 +10,97 @@ The general architecture of the repository has been inspired by the one describe
 
 # Installation
 
-## Prerequisite
+⚠️ The following sections are tailored for an installation on Ubuntu: this is what was used during the development. If you want to try to install this project on another OS it probably works but some of the command will need to be adapted.
+
+## Prerequisites
 
 This projects uses:
 
-- [google test](https://github.com/google/googletest): installation instructions [here](https://www.eriksmistad.no/getting-started-with-google-test-on-ubuntu/), a simple `sudo apt-get install libgtest-dev` should be enough.
-- [cmake](https://cmake.org/): installation instructions [here](https://askubuntu.com/questions/355565/how-do-i-install-the-latest-version-of-cmake-from-the-command-line), a simple `sudo apt-get cmake` should also be enough.
-- [eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page): installation instructions [here](https://www.cyberithub.com/how-to-install-eigen3-on-ubuntu-20-04-lts-focal-fossa/) for Ubuntu 20.04, a simple `sudo apt install libeigen3-dev` should be enough.
+- [cmake](https://cmake.org/) as a build management system
+- a cpp compiler, typically [gcc](https://gcc.gnu.org/) to build the project
+- [eigen](https://eigen.tuxfamily.org/index.php?title=Main_Page) for matrix manipulation
+- [google test](https://github.com/google/googletest) as a testing library
+- graphical libraries such as `X11`, `GL` and `PNG` for rendering
+- [rsync](https://linux.die.net/man/1/rsync) for file management
 
-## Instructions
+## TL; DR
 
-- Clone the repo: `git clone git@github.com:Knoblauchpilze/pge-app.git`.
-- Clone dependencies:
-  - [core_utils](https://github.com/Knoblauchpilze/core_utils)
-- Go to the project's directory `cd ~/path/to/the/repo`.
-- Compile: `make run`.
+For a quick setup, just run the following commands to install all needed dependencies:
 
-Don't forget to add `/usr/local/lib` to your `LD_LIBRARY_PATH` to be able to load shared libraries at runtime. This is handled automatically when using the `make run` target (which internally uses the [run.sh](data/run.sh) script).
+```bash
+apt update
+
+# Skip this if you already have the basics installed
+apt install -y --no-install-recommends \
+  cmake \
+  build-essential
+
+# To not request information when installing libgl-dev
+export DEBIAN_FRONTEND="interactive"
+
+# Those are the dependencies to compile the client and server applications
+apt-get install -y --no-install-recommends \
+  libeigen3-dev \
+  libgtest-dev \
+  libx11-dev \
+  libgl-dev \
+  libpng-dev \
+  rsync
+
+# If you want to profile the app
+apt-get install -y --no-install-recommends \
+  valgrind \
+  python3 \
+  python3-pip \
+  graphviz
+  gimp
+
+pip install gprof2dot
+```
+
+### A note on gprof2dot
+
+The `pip` command will install `gprof2dot` in a folder that might not be in your path. If so, there's an explicit warning like the one shown below:
+
+![gprof2dot not in path](resources/gprof2dot-not-in-path.png)
+
+You can fix this either for all shells by modifying the `.bashrc` file or for the current shell by running:
+
+```bash
+export PATH="/home/YOUR-USER/.local/bin:$PATH"
+```
+
+Please adapt the exact path to match where `pip` installed the tool.
+
+## Clone and install core_utils
+
+This project requires [core_utils](https://github.com/Knoblauchpilze/core_utils) to be installed on your machine. The project uses most of the same dependencies as this one so with the previous steps performed already you should be able to run:
+
+```bash
+git clone git@github.com:Knoblauchpilze/core_utils.git
+cd core_utils
+make install
+```
+
+## Clone the repository
+
+The first step (as is often the case) if you want to work on this project is to clone the repository with:
+
+```bash
+git clone git@github.com:Knoblauchpilze/pge-app.git
+# Move to the project's folder
+cd pge-app
+```
+
+## Run the project
+
+With all the steps above completed, you can simply use the convenience `Makefile` target to run the project:
+
+```bash
+make run
+```
+
+This will take care of building the project and packaging it in a `sandbox` directory with the needed data.
 
 ## Configuration
 
@@ -37,6 +111,128 @@ The usage of the script is as follows:
 ```bash
 ./configureProject.sh project_name
 ```
+
+## VSCode integration
+
+### Extensions
+
+In order to make it easy to debug and work on the project directly into the IDE, the following two extensions are recommended:
+
+- [cmake-tools](https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools)
+- [test-mate](https://marketplace.visualstudio.com/items?itemName=matepek.vscode-catch2-test-adapter)
+
+They will respectively help you build the project and debug/start it in your IDE and allow to run and debug tests.
+
+The following sections assume that you installed both.
+
+### Configuration for intellisense
+
+In case you use VScode as an IDE to work on this project, it is recommended to create a `.vscode` folder at the root of the directory. You can then copy past the following configuration in a `c_cpp_properties.json` file:
+
+```json
+{
+  "configurations": [
+    {
+      "name": "Linux",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "${workspaceFolder}/src/lib",
+        "${workspaceFolder}/src/pge"
+      ],
+      "defines": [],
+      "compilerPath": "/usr/bin/g++",
+      "cppStandard": "c++20",
+      "intelliSenseMode": "linux-gcc-x64",
+      "configurationProvider": "ms-vscode.cmake-tools"
+    }
+  ],
+  "version": 4
+}
+```
+
+Note that this will require you to have a local `g++` version supporting at least `c++20`.
+
+### Configuration for CMake
+
+The `cmake` tool extension allows to configure a custom build folder and to set arguments for the configure step. In this project we use conditional targets to build the tests: this is activated (as defined in the [Makefile](Makefile)) by the `ENABLE_TESTS` flag.
+
+It is required to instruct the extension to use this flag when configuring the project so that it detects correctly all the target.
+
+You can use the following configuration and paste it in the `.vscode` folder created above under `settings.json`:
+
+```json
+{
+  "cmake.configureOnOpen": true,
+  "cmake.buildDirectory": "${workspaceFolder}/cmake-build/Debug",
+  "cmake.configureArgs": ["-DENABLE_TESTS=ON"],
+  "cmake.buildEnvironment": {
+    "CMAKE_BUILD_TYPE": "Debug"
+  },
+  "cmake.generator": "Unix Makefiles",
+  "testMate.cpp.discovery.gracePeriodForMissing": 500,
+  "testMate.cpp.discovery.runtimeLimit": 500,
+  "testMate.cpp.test.advancedExecutables": [
+    {
+      "pattern": "cmake-build/**/*{test,Test,TEST}*"
+    }
+  ],
+  "C_Cpp.errorSquiggles": "enabled",
+  "C_Cpp.default.compilerPath": "/usr/bin/g++"
+}
+```
+
+### Launch/debug configuration
+
+In order to run and debug the executables created by the project you can use the following launch configurations: the two configurations will allow to launch the application and debug it directly in the IDE if needed. You can paste the following content in a file under `.vscode/launch.json`:
+
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "app",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/cmake-build/Debug/bin/pge_app",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        },
+        {
+          "description": "Set Disassembly Flavor to Intel",
+          "text": "-gdb-set disassembly-flavor intel",
+          "ignoreFailures": true
+        }
+      ]
+    }
+  ]
+}
+```
+
+This should allow you to pick the `app` configuration win the `RUN AND DEBUG` tab:
+
+![Launch config](resources/launch-config.png)
+
+### Note on IDE debugging
+
+By default the [LoadGameScreenUiHandler](src/lib/ui/LoadGameScreenUiHandler.cc) expects the saves directory to be located under `assets/saves`. This is taken care off both in the targets defined in the `Makefile` and in the `launch.json` in the section above (see `cwd` section).
+
+Considering how both scenarii are setup, the assets and saves produced or modified during the IDE debugging sessions might need to be ignored from the versioning system as they will modify the content of the `assets/saves` directly and not the sandbox.
+
+An alternative would be to modify the `cwd` to be `${workspaceFolder}/sandbox` and require to execute once:
+
+```bash
+make copyData
+```
+
+Considering how often debugging and production of new saves is needed this is a tradeoff that was deemded acceptable.
 
 # Generalities
 
@@ -167,6 +363,8 @@ Both the tiles and pixels viewports are important and define respectively how mu
 
 # Profiling
 
+**Note:** as mentioned in the [TL; DR](#tl-dr) section some additional tools are needed to profile the app and extract results. Be sure to follow those steps.
+
 A convenience script is provided in order to profile the app. This comes from [this](https://stackoverflow.com/a/771005) answer (although the other answers are interesting as well). This requires a few things to be installed on the system:
 
 - [GIMP](https://doc.ubuntu-fr.org/gimp)
@@ -188,6 +386,8 @@ make profile
 The default application comes with a functional testing framework. The tests are meant to be located in the [tests](tests/) folder and can be further specialized into unit tests (existing [here](tests/unit) already) but also integration tests, functional tests, etc.
 
 The framework uses the `gtest` library to perform the testing.
+
+The root [CMakeLists.txt](CMakeLists.txt) conditionally compiles the test when required: this means that unless you call one of the `make rununittests` target, the tests won't be compiled. This is mainly useful when building the application in the CI for packaging.
 
 ## Adding tests
 
@@ -216,10 +416,10 @@ TEST(Unit_MyClass, Test_MyFeature)
 Once the tests are written, the root `Makefile` defines a target to execute all the tests under:
 
 ```bash
-make tests
+make rununittests
 ```
 
-In case the test suite is growing one can add some targets to run only the unit or integration tests but it is not provided yet.
+If needed new targets can be added with for example integration tests, etc.
 
 # Specializing the project
 
@@ -234,25 +434,29 @@ This concept is represented in the [Screen](src/lib/game/Screen.hh) enum and can
 ![State machine](resources/screens_state_machine.png)
 
 Within each screen, the application does three things:
-* process the user input
-* render some UI components
-* render some graphics
+
+- process the user input
+- render some UI components
+- render some graphics
 
 Each of these operation has its dedicated base class in our sample project:
-* [IInputHandler](src/lib/inputs/IInputHandler.hh) is responsible to handle user input
-* [IUiHandler](src/lib/ui/IUiHandler.hh) is responsible to display the UI
-* [IRenderer](src/lib/renderers/IRenderer.hh) is responsible to display the graphics
+
+- [IInputHandler](src/lib/inputs/IInputHandler.hh) is responsible to handle user input
+- [IUiHandler](src/lib/ui/IUiHandler.hh) is responsible to display the UI
+- [IRenderer](src/lib/renderers/IRenderer.hh) is responsible to display the graphics
 
 The classes described above are interfaces that the user can subclass to adapt to their needs.
 
 In order to bring everything together, the [Game](src/lib/game/Game.hh) holds a list of input/ui handlers and renderers. The [App](src/lib/App.hh) is calling at each frame the various hooks of the game to allow the processing of the information. In order each frame will successively:
-* process the user input (through the `Game::processUserInput` method)
-* process the game logic (through the `Game::step` method)
-* render the graphic elements (through the `Game::render` method), which includes both the ui and the renderers
+
+- process the user input (through the `Game::processUserInput` method)
+- process the game logic (through the `Game::step` method)
+- render the graphic elements (through the `Game::render` method), which includes both the ui and the renderers
 
 This logic is already provided and should not have to be modified too much from one application to the other. In order to specialize what happens in the application, the user is encourage to:
-* adapt the values of the [Screen](src/lib/game/Screen.hh) enum
-* subclass [IInputHandler](src/lib/inputs/IInputHandler.hh), [IUiHandler](src/lib/ui/IUiHandler.hh) and [IRenderer](src/lib/renderers/IRenderer.hh) as needed
+
+- adapt the values of the [Screen](src/lib/game/Screen.hh) enum
+- subclass [IInputHandler](src/lib/inputs/IInputHandler.hh), [IUiHandler](src/lib/ui/IUiHandler.hh) and [IRenderer](src/lib/renderers/IRenderer.hh) as needed
 
 ## IInputHandler
 
@@ -261,6 +465,7 @@ The [IInputHandler](src/lib/inputs/IInputHandler.hh) interface is designed to ma
 ### processUserInput
 
 The prototype looks like the following:
+
 ```cpp
 virtual void processUserInput(const controls::State &controls, CoordinateFrame &frame) = 0;
 ```
@@ -272,6 +477,7 @@ Together these information should be enough to trigger changes based on whether 
 ### performAction
 
 On top of the `processUserInput` method, we also have the following in the interface:
+
 ```cpp
 virtual void performAction(float x, float y, const controls::State &controls) = 0;
 ```
@@ -287,6 +493,7 @@ Some examples of the specialization can be seen in the [ui](src/lib/ui/) folder:
 ### initializeMenus
 
 The prototype is as follows:
+
 ```cpp
 virtual void initializeMenus(const int width,
                              const int height,
@@ -375,7 +582,7 @@ When manipulating graphic elements, most applications should use the [IRenderer]
 const auto TILE_SIZE_IN_PIXELS = 64;
 
 const sprites::Pack pack{
-  .file = "data/img/pieces.png",
+  .file = "assets/img/pieces.png",
   .sSize = olc::vi2d(TILE_SIZE_IN_PIXELS, TILE_SIZE_IN_PIXELS),
   .layout = olc::vi2d(6, 2)
 };
@@ -466,9 +673,10 @@ The method can be extended with other processes which need to be called on each 
 ## A note on the UI
 
 Over in the [ui/menus](src/lib/ui/menus/) folder the sample project already defines a basic system to represent menus. Several base block of a UI are there:
-* a generic menu which provides general behavior for highlight, visibility, events propagation and layout and allows nesting.
-* a text menu which builds on the generic menu to add the display of a text on the menu.
-* a timed menu which is just a menu staying visible for a period of time before disappearing.
+
+- a generic menu which provides general behavior for highlight, visibility, events propagation and layout and allows nesting.
+- a text menu which builds on the generic menu to add the display of a text on the menu.
+- a timed menu which is just a menu staying visible for a period of time before disappearing.
 
 We also define some convenience methods in [ScreenCommon](src/lib/ui/common/ScreenCommon.hh) allowing to generate generic menus like a colored menu with a certain size, or a screen option which is used in the sample app to present the options in the various screens (home screen, etc.).
 
@@ -477,6 +685,7 @@ We also define some convenience methods in [ScreenCommon](src/lib/ui/common/Scre
 The existing system is designed to be quite versatile through a configuration paradigm: there are several configuration for the two main kind of menus defined ([general config](src/lib/ui/menus/MenuConfig.hh), [background config](src/lib/ui/menus/BackgroundConfig.hh) and [text config](src/lib/ui/menus/TextConfig.hh)). Each configuration define some properties to specialize the base behavior of the menu.
 
 For example the `MenuConfig` is defined like so:
+
 ```cpp
 struct MenuConfig
 {
@@ -518,6 +727,7 @@ The latter on the other hand is collected when the `processUserInput` method is 
 A typical example to use the game callback for is to change screen: in this case we don't want to notify the UI handler but rather the game that the screen should be changed (see [the dedicated section](#adding-new-screens)).
 
 In general, the user can always create a public method on the `Game`, say `Game::foo` and then attach a callback to the menu like so:
+
 ```cpp
 const MenuConfig config{
   .gameClickCallback = [](Game& g) {
@@ -578,9 +788,10 @@ Finally the user can select to load an existing 'game' (whatever it can mean):
 We provide a skeleton workflow to handle saved games. By default the [LoadGameScreenUiHandler](src/lib/ui/LoadGameScreenUiHandler.hh) has an attribute called `m_savedGames` which allows to perform the generation of a menu to present the saved games to the user.
 
 The configuration includes:
-* how many games should be displayed in a single page
-* the directory where saved games should be fetched
-* the extension of the files defining saved games
+
+- how many games should be displayed in a single page
+- the directory where saved games should be fetched
+- the extension of the files defining saved games
 
 Once the user picks a saved game, we call a method on the game (`onSavedGameSelected`) with the name of the file picked by the user:
 

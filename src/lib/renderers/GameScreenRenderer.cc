@@ -17,7 +17,7 @@ void GameScreenRenderer::loadResources(int /*width*/,
                                        int /*height*/,
                                        sprites::TexturePack &texturesLoader)
 {
-  const auto pack = sprites::PackDesc{.file = "data/tiles/default.png",
+  const auto pack = sprites::PackDesc{.file = "assets/default.png",
                                       .sSize{16, 16},
                                       .layout{WIDTH_IN_TILES, HEIGHT_IN_TILES}};
 

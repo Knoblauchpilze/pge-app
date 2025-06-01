@@ -188,9 +188,8 @@ In order to run and debug the executables created by the project you can use the
 }
 ```
 
-This should allow you to pick the `Server` configuration win the `RUN AND DEBUG` tab:
+This should allow you to pick the `app` configuration win the `RUN AND DEBUG` tab:
 
-// TODO: Make a screenshot and upload it
 ![Launch config](resources/launch-config.png)
 
 # Generalities
@@ -539,7 +538,7 @@ When manipulating graphic elements, most applications should use the [IRenderer]
 const auto TILE_SIZE_IN_PIXELS = 64;
 
 const sprites::Pack pack{
-  .file = "data/img/pieces.png",
+  .file = "assets/img/pieces.png",
   .sSize = olc::vi2d(TILE_SIZE_IN_PIXELS, TILE_SIZE_IN_PIXELS),
   .layout = olc::vi2d(6, 2)
 };

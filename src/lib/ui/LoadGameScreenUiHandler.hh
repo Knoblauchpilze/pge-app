@@ -23,8 +23,7 @@ class LoadGameScreenUiHandler : public IUiHandler
   UiMenuPtr m_menu{};
 
   int m_gamesPerPage{10};
-  // TODO: Crashes because it's not copied to the sandbox
-  std::string m_saveDirectory{"data/saves"};
+  std::string m_saveDirectory{"assets/saves"};
   std::string m_extension{".ext"};
 
   struct SavedGame

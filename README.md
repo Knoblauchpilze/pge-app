@@ -453,7 +453,7 @@ In order to bring everything together, the [Game](src/lib/game/Game.hh) holds a 
 - process the game logic (through the `Game::step` method)
 - render the graphic elements (through the `Game::render` method), which includes both the ui and the renderers
 
-This logic is already provided and should not have to be modified too much from one application to the other. In order to specialize what happens in the application, the user is encourage to:
+This logic is already provided and should not have to be modified too much from one application to the other. In order to specialize what happens in the application, the user is encouraged to:
 
 - adapt the values of the [Screen](src/lib/game/Screen.hh) enum
 - subclass [IInputHandler](src/lib/inputs/IInputHandler.hh), [IUiHandler](src/lib/ui/IUiHandler.hh) and [IRenderer](src/lib/renderers/IRenderer.hh) as needed
@@ -590,7 +590,7 @@ const sprites::Pack pack{
 m_texturesPackID = texturesLoader.registerPack(pack);
 ```
 
-It is important to keep track of the identifier return by the `texturesLoader` as this will be used later on to reference the texture pack. For example to render one of the texture loaded in the pack, the user can sue the `render` method in the following way:
+It is important to keep track of the identifier return by the `texturesLoader` as this will be used later on to reference the texture pack. For example to render one of the texture loaded in the pack, the user can use the `render` method in the following way:
 
 ```cpp
 SpriteDesc t;
@@ -606,7 +606,7 @@ t.sprite.tint   = colors::BLUE;
 engine.drawWarpedSprite(t, state.frame);
 ```
 
-The `xTiles` and `yTiles` coordinates represent the position of the sprite in the world while the `x` and `y` represent the position of the sprite in the textures pack. The engine in the `render` method provides a couple of variation to draw sprites in various ways: it covers the basic cases but can be expected as needed.
+The `xTiles` and `yTiles` coordinates represent the position of the sprite in the world while the `x` and `y` represent the position of the sprite in the textures pack. The engine in the `render` method provides a couple of variation to draw sprites in various ways: it covers the basic cases but can be extended as needed.
 
 ## The App class
 

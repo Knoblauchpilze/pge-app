@@ -53,7 +53,7 @@ make clean
 make cleanSandbox
 
 echo "Rebuilding..."
-make sandbox
+make copyRelease
 
 echo "Reset git versions..."
 rm -rf .git

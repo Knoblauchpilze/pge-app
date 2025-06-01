@@ -138,9 +138,13 @@ You can use the following configuration and paste it in the `.vscode` folder cre
 
 ```json
 {
-  "cmake.configureOnOpen": false,
-  "cmake.buildDirectory": "${workspaceFolder}/cmake-build",
+  "cmake.configureOnOpen": true,
+  "cmake.buildDirectory": "${workspaceFolder}/cmake-build/Debug",
   "cmake.configureArgs": ["-DENABLE_TESTS=ON"],
+  "cmake.buildEnvironment": {
+    "CMAKE_BUILD_TYPE": "Debug"
+  },
+  "cmake.generator": "Unix Makefiles",
   "testMate.cpp.discovery.gracePeriodForMissing": 500,
   "testMate.cpp.discovery.runtimeLimit": 500,
   "testMate.cpp.test.advancedExecutables": [
@@ -168,7 +172,7 @@ In order to run and debug the executables created by the project you can use the
       "program": "${workspaceFolder}/cmake-build/Debug/bin/pge_app",
       "args": [],
       "stopAtEntry": false,
-      "cwd": "${fileDirname}",
+      "cwd": "${workspaceFolder}",
       "externalConsole": false,
       "MIMode": "gdb",
       "setupCommands": [
@@ -191,6 +195,20 @@ In order to run and debug the executables created by the project you can use the
 This should allow you to pick the `app` configuration win the `RUN AND DEBUG` tab:
 
 ![Launch config](resources/launch-config.png)
+
+### Note on IDE debugging
+
+By default the [LoadGameScreenUiHandler](src/lib/ui/LoadGameScreenUiHandler.cc) expects the saves directory to be located under `assets/saves`. This is taken care off both in the targets defined in the `Makefile` and in the `launch.json` in the section above (see `cwd` section).
+
+Considering how both scenarii are setup, the assets and saves produced or modified during the IDE debugging sessions might need to be ignored from the versioning system as they will modify the content of the `assets/saves` directly and not the sandbox.
+
+An alternative would be to modify the `cwd` to be `${workspaceFolder}/sandbox` and require to execute once:
+
+```bash
+make copyData
+```
+
+Considering how often debugging and production of new saves is needed this is a tradeoff that was deemded acceptable.
 
 # Generalities
 

@@ -41,3 +41,9 @@ target_link_libraries(pge_lib
 	pthread
 	core_utils
 	)
+
+if (${ENABLE_TESTS})
+	target_link_libraries (pge_lib
+		pge_app_interface_test_library
+		)
+endif ()

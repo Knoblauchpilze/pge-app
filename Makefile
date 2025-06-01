@@ -1,46 +1,66 @@
+
+NB_PROCS=8
+
 debug:
-	mkdir -p build/Debug && cd build/Debug && cmake -DCMAKE_BUILD_TYPE=Debug ../.. && make -j 8
+	mkdir -p cmake-build/Debug && \
+	cd cmake-build/Debug && \
+	cmake \
+		-DCMAKE_BUILD_TYPE=Debug \
+		../.. \
+	&& \
+	make -j ${NB_PROCS}
+
+debugWithTests:
+	mkdir -p cmake-build/Debug && \
+	cd cmake-build/Debug && \
+	cmake \
+		-DCMAKE_BUILD_TYPE=Debug \
+		-DENABLE_TESTS=ON \
+		../.. \
+	&& \
+	make -j ${NB_PROCS}
 
 release:
-	mkdir -p build/Release && cd build/Release && cmake -DCMAKE_BUILD_TYPE=Release ../.. && make -j 8
+	mkdir -p cmake-build/Release && \
+	cd cmake-build/Release && \
+	cmake \
+		-DCMAKE_BUILD_TYPE=Release \
+		../.. \
+	&& \
+	make -j ${NB_PROCS}
 
 clean:
-	rm -rf build
+	rm -rf cmake-build
 
 cleanSandbox:
 	rm -rf sandbox
 
-copyRelease:
-	rsync -avH build/Release/lib build/Release/bin sandbox/
-
-copyDebug:
-	rsync -avH build/Debug/lib build/Debug/bin sandbox/
-
-copy:
+copyData:
 	mkdir -p sandbox/
-	rsync -avH data sandbox/
-	mv sandbox/data/*.sh sandbox/
+	rsync -avH assets sandbox/
+	rsync -avH scripts/ sandbox/
 
-sandbox: release copy copyRelease
+copyDebug: debug copyData
+	rsync -avH cmake-build/Debug/lib cmake-build/Debug/bin sandbox/
 
-sandboxDebug: debug copy copyDebug
+copyRelease: release copyData
+	rsync -avH cmake-build/Release/lib cmake-build/Release/bin sandbox/
 
-run: sandbox
+run: copyRelease
 	cd sandbox && ./run.sh pge_app
 
-drun: sandboxDebug
+drun: copyDebug
 	cd sandbox && ./debug.sh pge_app
 
-v: sandboxDebug
-	cd sandbox && ./valgrind.sh pge_app
-
-profile: sandboxDebug
-	cd sandbox && ./profile.sh pge_app
-
-tests: sandboxDebug
-	cd sandbox && ./tests.sh pge_app_tests
-# See here: https://stackoverflow.com/questions/3931741/why-does-make-think-the-target-is-up-to-date
+# https://stackoverflow.com/questions/3931741/why-does-make-think-the-target-is-up-to-date
 PHONY: .tests
+tests: debugWithTests copyDebug
 
-dtests: sandboxDebug
-	cd sandbox && ./debug-tests.sh pge_app_tests
+rununittests: tests
+	cd sandbox && ./tests.sh unitTests
+
+runintegrationtests: tests
+	cd sandbox && ./tests.sh integrationTests
+
+profile: copyDebug
+	cd sandbox && ./profile.sh pge_app

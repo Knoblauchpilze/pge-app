@@ -23,7 +23,7 @@ class LoadGameScreenUiHandler : public IUiHandler
   UiMenuPtr m_menu{};
 
   int m_gamesPerPage{10};
-  std::string m_saveDirectory{"data/saves"};
+  std::string m_saveDirectory{"assets/saves"};
   std::string m_extension{".ext"};
 
   struct SavedGame

@@ -17,6 +17,13 @@ target_include_directories (pge_app PUBLIC
 	)
 
 target_link_libraries(pge_app
+	pge_app_interface_library
 	core_utils
 	pge_app_lib
 	)
+
+if (${ENABLE_TESTS})
+	target_link_libraries (pge_app
+		pge_app_interface_test_library
+		)
+endif ()

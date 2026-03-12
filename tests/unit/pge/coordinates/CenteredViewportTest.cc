@@ -5,7 +5,7 @@
 
 using namespace ::testing;
 
-namespace pge::tests {
+namespace pge {
 const Vec2f CENTER{-12.0f, 5.0f};
 const Vec2f DIMS{4.0f, 10.0f};
 
@@ -35,7 +35,7 @@ auto generateCenteredTestCaseVisibility(const std::string &name,
   return TestCaseVisibility{name, generateCenteredViewport, coords, expectedVisibility};
 }
 
-TEST(Unit_CenteredViewport, Constructor)
+TEST(Unit_Pge_Coordinates_CenteredViewport, Constructor)
 {
   auto viewport = generateCenteredViewport();
 
@@ -49,7 +49,7 @@ TEST(Unit_CenteredViewport, Constructor)
 }
 
 INSTANTIATE_TEST_CASE_P(
-  Unit_CenteredViewport,
+  Unit_Pge_Coordinates_CenteredViewport,
   RelativeCoordinates,
   Values(generateCenteredTestCaseRelative("top_left", {-14, 10}, {-1.0f, 1.0f}),
          generateCenteredTestCaseRelative("top_right", {-10, 10}, {1.0f, 1.0f}),
@@ -63,7 +63,7 @@ INSTANTIATE_TEST_CASE_P(
   generateTestNameRelative);
 
 INSTANTIATE_TEST_CASE_P(
-  Unit_CenteredViewport,
+  Unit_Pge_Coordinates_CenteredViewport,
   AbsoluteCoordinates,
   Values(generateCenteredTestCaseAbsolute("top_left", {-1.0f, 1.0f}, {-14, 10}),
          generateCenteredTestCaseAbsolute("top_right", {1.0f, 1.0f}, {-10, 10}),
@@ -76,7 +76,7 @@ INSTANTIATE_TEST_CASE_P(
          generateCenteredTestCaseAbsolute("y_too_large", {-0.5f, 6.2f}, {-13, 36})),
   generateTestNameAbsolute);
 
-TEST(Unit_CenteredViewport, MoveTo)
+TEST(Unit_Pge_Coordinates_CenteredViewport, MoveTo)
 {
   auto viewport = generateCenteredViewport();
 
@@ -92,7 +92,7 @@ TEST(Unit_CenteredViewport, MoveTo)
   EXPECT_EQ(viewport->dims(), DIMS);
 }
 
-TEST(Unit_CenteredViewport, Translate)
+TEST(Unit_Pge_Coordinates_CenteredViewport, Translate)
 {
   auto viewport = generateCenteredViewport();
 
@@ -109,7 +109,7 @@ TEST(Unit_CenteredViewport, Translate)
   EXPECT_EQ(viewport->dims(), DIMS);
 }
 
-TEST(Unit_CenteredViewport, Scale)
+TEST(Unit_Pge_Coordinates_CenteredViewport, Scale)
 {
   auto viewport = generateCenteredViewport();
 
@@ -125,7 +125,7 @@ TEST(Unit_CenteredViewport, Scale)
   EXPECT_EQ(viewport->dims(), DIMS * factor);
 }
 
-INSTANTIATE_TEST_CASE_P(Unit_CenteredViewport,
+INSTANTIATE_TEST_CASE_P(Unit_Pge_Coordinates_CenteredViewport,
                         Visibility,
                         Values(generateCenteredTestCaseVisibility("top_left", {-14, 10}, true),
                                generateCenteredTestCaseVisibility("top_right", {-10, 10}, true),
@@ -137,4 +137,4 @@ INSTANTIATE_TEST_CASE_P(Unit_CenteredViewport,
                                generateCenteredTestCaseVisibility("y_too_small", {-13, -7}, false),
                                generateCenteredTestCaseVisibility("y_too_large", {-13, 36}, false)),
                         generateTestNameVisibility);
-} // namespace pge::tests
+} // namespace pge

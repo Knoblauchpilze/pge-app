@@ -6,7 +6,7 @@ using namespace ::testing;
 
 namespace pge::controls {
 
-TEST(Controls, Test_Constructor)
+TEST(Unit_Pge_App_Controls, Constructor)
 {
   const State state{};
 

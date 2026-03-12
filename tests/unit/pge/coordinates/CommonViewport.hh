@@ -5,7 +5,7 @@
 #include <gtest/gtest.h>
 #include <optional>
 
-namespace pge::tests {
+namespace pge {
 
 using ViewportGenerator = std::function<ViewportPtr()>;
 
@@ -51,4 +51,4 @@ using Visibility = ::testing::TestWithParam<TestCaseVisibility>;
 auto generateTestNameVisibility(const ::testing::TestParamInfo<TestCaseVisibility> &info)
   -> std::string;
 
-} // namespace pge::tests
+} // namespace pge

@@ -6,7 +6,7 @@
 
 using namespace ::testing;
 
-namespace pge::tests {
+namespace pge {
 
 auto generateIsometricViewFrame() -> CoordinateFrameShPtr
 {
@@ -15,7 +15,7 @@ auto generateIsometricViewFrame() -> CoordinateFrameShPtr
   return std::make_shared<IsometricViewFrame>(tiles, pixels);
 }
 
-TEST(Unit_IsometricViewFrame, Constructor)
+TEST(Unit_Pge_Coordinates_IsometricViewFrame, Constructor)
 {
   auto frame = generateIsometricViewFrame();
 
@@ -35,7 +35,7 @@ auto generateIsometricTestCaseTilesToPixels(const std::string &name,
 }
 
 INSTANTIATE_TEST_CASE_P(
-  Unit_IsometricViewFrame,
+  Unit_Pge_Coordinates_IsometricViewFrame,
   TilesToPixels,
   Values(generateIsometricTestCaseTilesToPixels(
            "top_left",
@@ -76,7 +76,7 @@ auto generateIsometricTestCasePixelsToTiles(const std::string &name,
 }
 
 INSTANTIATE_TEST_CASE_P(
-  Unit_IsometricViewFrame,
+  Unit_Pge_Coordinates_IsometricViewFrame,
   PixelsToTiles,
   Values(
     generateIsometricTestCasePixelsToTiles("top_left",
@@ -122,7 +122,7 @@ auto generateIsometricTestCasePixelsToTilesIntra(const std::string &name,
 }
 
 INSTANTIATE_TEST_CASE_P(
-  Unit_IsometricViewFrame,
+  Unit_Pge_Coordinates_IsometricViewFrame,
   PixelsToTilesIntra,
   Values(generateIsometricTestCasePixelsToTilesIntra("top_left_quadrant",
                                                      Vec2f{67.904251f, 21.468311f},
@@ -142,7 +142,7 @@ INSTANTIATE_TEST_CASE_P(
                                                      Vec2f{0.468749762f, 0.965517282f})),
   generateTestNamePixelsToTilesIntra);
 
-TEST(Unit_IsometricViewFrame, Translate)
+TEST(Unit_Pge_Coordinates_IsometricViewFrame, Translate)
 {
   auto frame = generateIsometricViewFrame();
 
@@ -157,7 +157,7 @@ TEST(Unit_IsometricViewFrame, Translate)
   EXPECT_EQ(tiles.center(), finalTiles);
 }
 
-TEST(Unit_IsometricViewFrame, Translate_PreserveTileSize)
+TEST(Unit_Pge_Coordinates_IsometricViewFrame, Translate_PreserveTileSize)
 {
   auto frame = generateIsometricViewFrame();
 
@@ -174,7 +174,7 @@ TEST(Unit_IsometricViewFrame, Translate_PreserveTileSize)
   EXPECT_EQ(tile, constants::Pixels::DIMS / constants::Tiles::DIMS);
 }
 
-TEST(Unit_IsometricViewFrame, ZoomIn)
+TEST(Unit_Pge_Coordinates_IsometricViewFrame, ZoomIn)
 {
   auto frame = generateIsometricViewFrame();
 
@@ -187,7 +187,7 @@ TEST(Unit_IsometricViewFrame, ZoomIn)
   EXPECT_EQ(newTilesPos, tilesPos);
 }
 
-TEST(Unit_IsometricViewFrame, ZoomIn_DoubleTileDimensions)
+TEST(Unit_Pge_Coordinates_IsometricViewFrame, ZoomIn_DoubleTileDimensions)
 {
   auto frame = generateIsometricViewFrame();
 
@@ -198,7 +198,7 @@ TEST(Unit_IsometricViewFrame, ZoomIn_DoubleTileDimensions)
   EXPECT_EQ(tile, 2.0f * constants::Pixels::DIMS / constants::Tiles::DIMS);
 }
 
-TEST(Unit_IsometricViewFrame, ZoomIn_HalveTilesViewport)
+TEST(Unit_Pge_Coordinates_IsometricViewFrame, ZoomIn_HalveTilesViewport)
 {
   auto frame = generateIsometricViewFrame();
 
@@ -209,7 +209,7 @@ TEST(Unit_IsometricViewFrame, ZoomIn_HalveTilesViewport)
   EXPECT_EQ(dims, constants::Tiles::DIMS / 2.0f);
 }
 
-TEST(Unit_IsometricViewFrame, ZoomOut)
+TEST(Unit_Pge_Coordinates_IsometricViewFrame, ZoomOut)
 {
   auto frame = generateIsometricViewFrame();
 
@@ -222,7 +222,7 @@ TEST(Unit_IsometricViewFrame, ZoomOut)
   EXPECT_EQ(newTilesPos, tilesPos);
 }
 
-TEST(Unit_IsometricViewFrame, ZoomOut_HalveTileDimensions)
+TEST(Unit_Pge_Coordinates_IsometricViewFrame, ZoomOut_HalveTileDimensions)
 {
   auto frame = generateIsometricViewFrame();
 
@@ -233,7 +233,7 @@ TEST(Unit_IsometricViewFrame, ZoomOut_HalveTileDimensions)
   EXPECT_EQ(tile, (constants::Pixels::DIMS / constants::Tiles::DIMS) / 2.0f);
 }
 
-TEST(Unit_IsometricViewFrame, ZoomOut_DoubleTilesViewport)
+TEST(Unit_Pge_Coordinates_IsometricViewFrame, ZoomOut_DoubleTilesViewport)
 {
   auto frame = generateIsometricViewFrame();
 
@@ -244,4 +244,4 @@ TEST(Unit_IsometricViewFrame, ZoomOut_DoubleTilesViewport)
   EXPECT_EQ(dims, constants::Tiles::DIMS * 2.0f);
 }
 
-} // namespace pge::tests
+} // namespace pge

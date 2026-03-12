@@ -6,7 +6,7 @@
 
 using namespace ::testing;
 
-namespace pge::tests {
+namespace pge {
 
 auto generateTopViewFrame() -> CoordinateFrameShPtr
 {
@@ -15,7 +15,7 @@ auto generateTopViewFrame() -> CoordinateFrameShPtr
   return std::make_shared<TopViewFrame>(tiles, pixels);
 }
 
-TEST(Unit_TopViewFrame, Constructor)
+TEST(Unit_Pge_Coordinates_TopViewFrame, Constructor)
 {
   auto frame = generateTopViewFrame();
 
@@ -38,7 +38,7 @@ auto generateTopTestCaseTilesToPixels(const std::string &name,
 // http://weitz.de/ieee/
 // https://www.h-schmidt.net/FloatConverter/IEEE754.html
 INSTANTIATE_TEST_CASE_P(
-  Unit_TopViewFrame,
+  Unit_Pge_Coordinates_TopViewFrame,
   TilesToPixels,
   Values(generateTopTestCaseTilesToPixels("top_left",
                                           constants::Tiles::TOP_LEFT,
@@ -67,7 +67,7 @@ auto generateTopTestCasePixelsToTiles(const std::string &name,
 }
 
 INSTANTIATE_TEST_CASE_P(
-  Unit_TopViewFrame,
+  Unit_Pge_Coordinates_TopViewFrame,
   PixelsToTiles,
   Values(generateTopTestCasePixelsToTiles("top_left",
                                           constants::Pixels::TOP_LEFT,
@@ -100,7 +100,7 @@ auto generateTopTestCasePixelsToTilesIntra(const std::string &name,
                                     expectedIntra};
 }
 
-INSTANTIATE_TEST_CASE_P(Unit_TopViewFrame,
+INSTANTIATE_TEST_CASE_P(Unit_Pge_Coordinates_TopViewFrame,
                         PixelsToTilesIntra,
                         Values(generateTopTestCasePixelsToTilesIntra("top_left_quadrant",
                                                                      Vec2f{12.0f, 35.0f},
@@ -120,7 +120,7 @@ INSTANTIATE_TEST_CASE_P(Unit_TopViewFrame,
                                                                      Vec2f{0.53125f, 0.965517282f})),
                         generateTestNamePixelsToTilesIntra);
 
-TEST(Unit_TopViewFrame, Translate)
+TEST(Unit_Pge_Coordinates_TopViewFrame, Translate)
 {
   auto frame = generateTopViewFrame();
 
@@ -145,7 +145,7 @@ TEST(Unit_TopViewFrame, Translate)
   EXPECT_EQ(tiles.center(), finalTiles);
 }
 
-TEST(Unit_TopViewFrame, Translate_PreserveTileSize)
+TEST(Unit_Pge_Coordinates_TopViewFrame, Translate_PreserveTileSize)
 {
   auto frame = generateTopViewFrame();
 
@@ -162,7 +162,7 @@ TEST(Unit_TopViewFrame, Translate_PreserveTileSize)
   EXPECT_EQ(tile, constants::Pixels::DIMS / constants::Tiles::DIMS);
 }
 
-TEST(Unit_TopViewFrame, ZoomIn)
+TEST(Unit_Pge_Coordinates_TopViewFrame, ZoomIn)
 {
   auto frame = generateTopViewFrame();
 
@@ -175,7 +175,7 @@ TEST(Unit_TopViewFrame, ZoomIn)
   EXPECT_EQ(newTilesPos, tilesPos);
 }
 
-TEST(Unit_TopViewFrame, ZoomIn_DoubleTileDimensions)
+TEST(Unit_Pge_Coordinates_TopViewFrame, ZoomIn_DoubleTileDimensions)
 {
   auto frame = generateTopViewFrame();
 
@@ -186,7 +186,7 @@ TEST(Unit_TopViewFrame, ZoomIn_DoubleTileDimensions)
   EXPECT_EQ(tile, 2.0f * constants::Pixels::DIMS / constants::Tiles::DIMS);
 }
 
-TEST(Unit_TopViewFrame, ZoomIn_HalveTilesViewport)
+TEST(Unit_Pge_Coordinates_TopViewFrame, ZoomIn_HalveTilesViewport)
 {
   auto frame = generateTopViewFrame();
 
@@ -197,7 +197,7 @@ TEST(Unit_TopViewFrame, ZoomIn_HalveTilesViewport)
   EXPECT_EQ(dims, constants::Tiles::DIMS / 2.0f);
 }
 
-TEST(Unit_TopViewFrame, ZoomOut)
+TEST(Unit_Pge_Coordinates_TopViewFrame, ZoomOut)
 {
   auto frame = generateTopViewFrame();
 
@@ -210,7 +210,7 @@ TEST(Unit_TopViewFrame, ZoomOut)
   EXPECT_EQ(newTilesPos, tilesPos);
 }
 
-TEST(Unit_TopViewFrame, ZoomOut_HalveTileDimensions)
+TEST(Unit_Pge_Coordinates_TopViewFrame, ZoomOut_HalveTileDimensions)
 {
   auto frame = generateTopViewFrame();
 
@@ -221,7 +221,7 @@ TEST(Unit_TopViewFrame, ZoomOut_HalveTileDimensions)
   EXPECT_EQ(tile, (constants::Pixels::DIMS / constants::Tiles::DIMS) / 2.0f);
 }
 
-TEST(Unit_TopViewFrame, ZoomOut_DoubleTilesViewport)
+TEST(Unit_Pge_Coordinates_TopViewFrame, ZoomOut_DoubleTilesViewport)
 {
   auto frame = generateTopViewFrame();
 
@@ -232,4 +232,4 @@ TEST(Unit_TopViewFrame, ZoomOut_DoubleTilesViewport)
   EXPECT_EQ(dims, constants::Tiles::DIMS * 2.0f);
 }
 
-} // namespace pge::tests
+} // namespace pge

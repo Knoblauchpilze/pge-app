@@ -6,7 +6,7 @@
 
 using namespace ::testing;
 
-namespace pge::tests {
+namespace pge {
 const Vec2f TOP_LEFT{-12.0f, 5.0f};
 const Vec2f DIMS{4.0f, 15.0f};
 
@@ -36,7 +36,7 @@ auto generateTopLeftTestCaseVisibility(const std::string &name,
   return TestCaseVisibility{name, generateTopLeftViewport, coords, expectedVisibility};
 }
 
-TEST(Unit_TopLeftViewport, Constructor)
+TEST(Unit_Pge_Coordinates_TopLeftViewport, Constructor)
 {
   auto viewport = generateTopLeftViewport();
 
@@ -47,7 +47,7 @@ TEST(Unit_TopLeftViewport, Constructor)
 }
 
 INSTANTIATE_TEST_CASE_P(
-  Unit_TopLeftViewport,
+  Unit_Pge_Coordinates_TopLeftViewport,
   RelativeCoordinates,
   Values(generateTopLeftTestCaseRelative("top_left", {-12.0f, 5.0f}, {0.0f, 0.0f}),
          generateTopLeftTestCaseRelative("top_right", {-8.0f, 5.0f}, {1.0f, 0.0f}),
@@ -61,7 +61,7 @@ INSTANTIATE_TEST_CASE_P(
   generateTestNameRelative);
 
 INSTANTIATE_TEST_CASE_P(
-  Unit_TopLeftViewport,
+  Unit_Pge_Coordinates_TopLeftViewport,
   AbsoluteCoordinates,
   Values(generateTopLeftTestCaseAbsolute("top_left", {0.0f, 0.0f}, {-12.0f, 5.0f}),
          generateTopLeftTestCaseAbsolute("top_right", {1.0f, 0.0f}, {-8.0f, 5.0f}),
@@ -74,7 +74,7 @@ INSTANTIATE_TEST_CASE_P(
          generateTopLeftTestCaseAbsolute("y_too_large", {0.5f, 1.4f}, {-10.0f, 26.0f})),
   generateTestNameAbsolute);
 
-TEST(Unit_TopLeftViewport, MoveTo)
+TEST(Unit_Pge_Coordinates_TopLeftViewport, MoveTo)
 {
   auto viewport = generateTopLeftViewport();
 
@@ -87,7 +87,7 @@ TEST(Unit_TopLeftViewport, MoveTo)
   EXPECT_EQ(viewport->dims(), DIMS);
 }
 
-TEST(Unit_TopLeftViewport, Translate)
+TEST(Unit_Pge_Coordinates_TopLeftViewport, Translate)
 {
   auto viewport = generateTopLeftViewport();
 
@@ -101,7 +101,7 @@ TEST(Unit_TopLeftViewport, Translate)
   EXPECT_EQ(viewport->dims(), DIMS);
 }
 
-TEST(Unit_TopLeftViewport, Scale)
+TEST(Unit_Pge_Coordinates_TopLeftViewport, Scale)
 {
   auto viewport = generateTopLeftViewport();
 
@@ -115,7 +115,7 @@ TEST(Unit_TopLeftViewport, Scale)
 }
 
 INSTANTIATE_TEST_CASE_P(
-  Unit_TopLeftViewport,
+  Unit_Pge_Coordinates_TopLeftViewport,
   Visibility,
   Values(generateTopLeftTestCaseVisibility("top_left", {-12.0f, 5.0f}, true),
          generateTopLeftTestCaseVisibility("top_right", {-8.0f, 5.0f}, true),
@@ -128,4 +128,4 @@ INSTANTIATE_TEST_CASE_P(
          generateTopLeftTestCaseVisibility("y_too_large", {-11.0f, 37.0f}, false)),
   generateTestNameVisibility);
 
-} // namespace pge::tests
+} // namespace pge

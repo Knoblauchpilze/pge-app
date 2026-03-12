@@ -4,7 +4,7 @@
 
 using namespace ::testing;
 
-namespace pge::tests {
+namespace pge {
 
 TEST_P(RelativeCoordinates, Test)
 {
@@ -60,4 +60,4 @@ auto generateTestNameVisibility(const ::testing::TestParamInfo<TestCaseVisibilit
   return info.param.name;
 }
 
-} // namespace pge::tests
+} // namespace pge

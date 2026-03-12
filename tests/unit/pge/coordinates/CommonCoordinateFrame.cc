@@ -4,7 +4,7 @@
 
 using namespace ::testing;
 
-namespace pge::tests {
+namespace pge {
 namespace constants {
 const Vec2f Tiles::CENTER = {1.0f, 2.0f};
 const Vec2f Tiles::DIMS   = {4.0f, 10.0f};
@@ -73,4 +73,4 @@ auto generateTestNamePixelsToTilesIntra(
   return info.param.name;
 }
 
-} // namespace pge::tests
+} // namespace pge

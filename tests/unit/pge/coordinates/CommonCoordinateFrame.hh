@@ -5,7 +5,7 @@
 #include <gtest/gtest.h>
 #include <optional>
 
-namespace pge::tests {
+namespace pge {
 using CoordinateFrameShPtr = std::shared_ptr<CoordinateFrame>;
 
 struct TestCaseTilesToPixels
@@ -74,4 +74,4 @@ struct Pixels
 };
 } // namespace constants
 
-} // namespace pge::tests
+} // namespace pge

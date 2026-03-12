@@ -181,6 +181,12 @@ You can use the following configuration and paste it in the `.vscode` folder cre
 }
 ```
 
+In case cmake has been installed through snap, it might be necessary to add the following:
+
+```
+"cmake.cmakePath": "/snap/cmake/current/bin/cmake"
+```
+
 ### Launch/debug configuration
 
 In order to run and debug the executables created by the project you can use the following launch configurations: the two configurations will allow to launch the application and debug it directly in the IDE if needed. You can paste the following content in a file under `.vscode/launch.json`:

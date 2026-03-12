@@ -1,4 +1,9 @@
 
+# Keep in sync with the CI workflow
+CPP_VERSION=20
+CCACHE_VERSION=4.12.2
+DOCKER_IMAGE_TAG=${CPP_VERSION}-${CCACHE_VERSION}
+
 NB_PROCS=8
 
 debug:
@@ -81,6 +86,12 @@ runintegrationtests: tests cleanCoverage
 
 profile: copyDebug
 	cd sandbox && ./profile.sh pge_app
+
+ci-cpp-build-image:
+	docker build \
+		--tag totocorpsoftwareinc/ci-cpp-build-image:${DOCKER_IMAGE_TAG} \
+		-f build/ci-cpp-build-image/Dockerfile \
+		build/ci-cpp-build-image
 
 # https://stackoverflow.com/questions/28896909/how-to-call-clang-format-over-a-cpp-project-folder
 format:

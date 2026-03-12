@@ -11,7 +11,7 @@
 namespace pge {
 
 Game::Game()
-  : utils::CoreObject("game")
+  : core::CoreObject("game")
 {
   setService("game");
 }

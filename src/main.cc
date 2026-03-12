@@ -3,18 +3,18 @@
 
 #include "App.hh"
 #include "AppDesc.hh"
+#include "CoreException.hh"
 #include "IsometricViewFrame.hh"
-#include <core_utils/CoreException.hh>
-#include <core_utils/log/Locator.hh>
-#include <core_utils/log/PrefixedLogger.hh>
-#include <core_utils/log/StdLogger.hh>
+#include "log/Locator.hh"
+#include "log/PrefixedLogger.hh"
+#include "log/StdLogger.hh"
 
 int main(int /*argc*/, char ** /*argv*/)
 {
-  utils::log::StdLogger raw;
-  raw.setLevel(utils::log::Severity::DEBUG);
-  utils::log::PrefixedLogger logger("pge", "main");
-  utils::log::Locator::provide(&raw);
+  core::log::StdLogger raw;
+  raw.setLevel(core::log::Severity::DEBUG);
+  core::log::PrefixedLogger logger("pge", "main");
+  core::log::Locator::provide(&raw);
 
   try
   {
@@ -32,7 +32,7 @@ int main(int /*argc*/, char ** /*argv*/)
 
     demo.run();
   }
-  catch (const utils::CoreException &e)
+  catch (const core::CoreException &e)
   {
     logger.error("Caught internal exception while setting up application", e.what());
     return EXIT_FAILURE;

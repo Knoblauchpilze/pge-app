@@ -2,6 +2,10 @@
 add_executable (pge_app)
 
 add_subdirectory (
+	${CMAKE_CURRENT_SOURCE_DIR}/core
+	)
+
+add_subdirectory (
 	${CMAKE_CURRENT_SOURCE_DIR}/pge
 	)
 
@@ -18,7 +22,7 @@ target_include_directories (pge_app PUBLIC
 
 target_link_libraries(pge_app
 	pge_app_interface_library
-	core_utils
+	core_lib
 	pge_app_lib
 	)
 

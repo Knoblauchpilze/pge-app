@@ -24,7 +24,7 @@ target_sources (pge_app_lib PRIVATE
 	)
 
 target_link_libraries (pge_app_lib
-	core_utils
+	core_lib
 	pge_lib
 	)
 

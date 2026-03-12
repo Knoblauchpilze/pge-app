@@ -16,6 +16,6 @@ target_include_directories (unitTests PUBLIC
 target_link_libraries (unitTests
 	GTest::gtest_main
 	pge_app_interface_test_library
-	core_utils
+	core_lib
 	pge_lib
 	)

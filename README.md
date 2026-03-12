@@ -72,16 +72,6 @@ export PATH="/home/YOUR-USER/.local/bin:$PATH"
 
 Please adapt the exact path to match where `pip` installed the tool.
 
-## Clone and install core_utils
-
-This project requires [core_utils](https://github.com/Knoblauchpilze/core_utils) to be installed on your machine. The project uses most of the same dependencies as this one so with the previous steps performed already you should be able to run:
-
-```bash
-git clone git@github.com:Knoblauchpilze/core_utils.git
-cd core_utils
-make install
-```
-
 ## Clone the repository
 
 The first step (as is often the case) if you want to work on this project is to clone the repository with:
@@ -330,10 +320,10 @@ This is the default `main` program provided in this template app:
 int
 main(int /*argc*/, char** /*argv*/) {
   // Create the logger.
-  utils::log::StdLogger raw;
-  raw.setLevel(utils::log::Severity::DEBUG);
-  utils::log::PrefixedLogger logger("pge", "main");
-  utils::log::Locator::provide(&raw);
+  core::log::StdLogger raw;
+  raw.setLevel(core::log::Severity::DEBUG);
+  core::log::PrefixedLogger logger("pge", "main");
+  core::log::Locator::provide(&raw);
 
   logger.notice("Starting application");
 

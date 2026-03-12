@@ -2,6 +2,7 @@
 #pragma once
 
 #include "Controls.hh"
+#include "CoreObject.hh"
 #include "IInputHandler.hh"
 #include "IRenderer.hh"
 #include "IUiHandler.hh"
@@ -9,7 +10,6 @@
 #include "Renderer.hh"
 #include "RenderingPass.hh"
 #include "Screen.hh"
-#include <core_utils/CoreObject.hh>
 #include <memory>
 #include <unordered_map>
 
@@ -24,7 +24,7 @@ using IUiHandlerPtr = std::unique_ptr<IUiHandler>;
 class IInputHandler;
 using IInputHandlerPtr = std::unique_ptr<IInputHandler>;
 
-class Game : public utils::CoreObject
+class Game : public core::CoreObject
 {
   public:
   Game();

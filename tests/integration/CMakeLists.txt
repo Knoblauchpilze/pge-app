@@ -12,5 +12,5 @@ target_sources (integrationTests PRIVATE
 target_link_libraries (integrationTests
 	GTest::gtest
 	pge_app_interface_test_library
-	core_utils
+	core_lib
 	)

@@ -87,11 +87,11 @@ runintegrationtests: tests cleanCoverage
 profile: copyDebug
 	cd sandbox && ./profile.sh pge_app
 
-ci-cpp-build-image:
+pge-app-ci-build-image:
 	docker build \
-		--tag totocorpsoftwareinc/ci-cpp-build-image:${DOCKER_IMAGE_TAG} \
-		-f build/ci-cpp-build-image/Dockerfile \
-		build/ci-cpp-build-image
+		--tag totocorpsoftwareinc/pge-app-ci-build-image:${DOCKER_IMAGE_TAG} \
+		-f build/pge-app-ci-build-image/Dockerfile \
+		build/pge-app-ci-build-image
 
 # https://stackoverflow.com/questions/28896909/how-to-call-clang-format-over-a-cpp-project-folder
 format:

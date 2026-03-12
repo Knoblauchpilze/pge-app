@@ -1,0 +1,51 @@
+
+FROM ubuntu:24.04 AS dev-tools
+# https://stackoverflow.com/questions/34773745/debconf-unable-to-initialize-frontend-dialog
+ENV DEBIAN_FRONTEND="noninteractive"
+# https://docs.docker.com/build/building/best-practices/#apt-get
+# https://docs.datadoghq.com/security/code_security/static_analysis/static_analysis_rules/docker-best-practices/apt-pin-version/
+# https://stackoverflow.com/questions/37970990/ssl-certificate-verification-fails-inside-docker-container-on-specific-server
+RUN apt-get update && apt-get install -y --no-install-recommends \
+  ca-certificates=20240203 \
+  gcc-13=13.3.0-6ubuntu2~24.04.1 \
+  g++-13=13.3.0-6ubuntu2~24.04.1 \
+  wget=1.21.4-1ubuntu4.1 \
+  make=4.3-4.1build2 \
+  cmake=3.28.3-1build7 \
+  pkg-config=1.8.1-2build1 \
+  libx11-dev=2:1.8.7-1build1 \
+  libgl-dev=1.7.0-1build1 \
+  libeigen3-dev=3.4.0-4build0.1 \
+  libpng-dev=1.6.43-5ubuntu0.5 \
+  libgtest-dev=1.14.0-1 \
+  libgmock-dev=1.14.0-1 \
+  rsync=3.2.7-1ubuntu1.2 \
+  lcov=2.0-4ubuntu2 \
+  # https://github.com/linux-test-project/lcov/issues/193
+  libcpanel-json-xs-perl=4.37-1build3 \
+  python3=3.12.3-0ubuntu2.1 \
+  # https://superuser.com/questions/801159/cannot-decompress-tar-xz-file-getting-xz-cannot-exec-no-such-file-or-direct
+  xz-utils=5.6.1+really5.4.5-1ubuntu0.2 \
+  && rm -rf /var/lib/apt/lists/*
+# https://www.dedicatedcore.com/blog/install-gcc-compiler-ubuntu/
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 13 --slave /usr/bin/g++ g++ /usr/bin/g++-13
+
+ARG CPP_VERSION="20"
+ARG CCACHE_VERSION="4.12.2"
+ENV CPP_VERSION=$CPP_VERSION
+ENV CCACHE_VERSION=$CCACHE_VERSION
+FROM dev-tools AS ci-build-base
+WORKDIR /tmp
+RUN wget https://github.com/ccache/ccache/releases/download/v${CCACHE_VERSION}/ccache-${CCACHE_VERSION}-linux-x86_64.tar.xz -O ccache.tar.xz
+RUN tar -xf ccache.tar.xz
+WORKDIR ccache-${CCACHE_VERSION}-linux-x86_64
+RUN make install
+
+FROM dev-tools AS pge-app-ci-build-image
+ARG GIT_COMMIT_HASH="undefined"
+ENV GIT_COMMIT_HASH=$GIT_COMMIT_HASH
+WORKDIR /
+COPY --from=ci-build-base /usr/local/lib /usr/local/lib/
+COPY --from=ci-build-base /usr/local/bin/ccache /usr/bin/ccache
+# https://stackoverflow.com/questions/17889799/libraries-in-usr-local-lib-not-found
+RUN ldconfig

@@ -16,16 +16,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   libx11-dev=2:1.8.7-1build1 \
   libgl-dev=1.7.0-1build1 \
   libeigen3-dev=3.4.0-4build0.1 \
-  libpng-dev=1.6.43-5ubuntu0.5 \
+  libpng-dev=1.6.43-5ubuntu0.6 \
   libgtest-dev=1.14.0-1 \
   libgmock-dev=1.14.0-1 \
-  rsync=3.2.7-1ubuntu1.2 \
+  rsync=3.2.7-1ubuntu1.5 \
   lcov=2.0-4ubuntu2 \
   # https://github.com/linux-test-project/lcov/issues/193
   libcpanel-json-xs-perl=4.37-1build3 \
   python3=3.12.3-0ubuntu2.1 \
   # https://superuser.com/questions/801159/cannot-decompress-tar-xz-file-getting-xz-cannot-exec-no-such-file-or-direct
-  xz-utils=5.6.1+really5.4.5-1ubuntu0.2 \
+  xz-utils=5.6.1+really5.4.5-1ubuntu0.3 \
   && rm -rf /var/lib/apt/lists/*
 # https://www.dedicatedcore.com/blog/install-gcc-compiler-ubuntu/
 RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-13 13 --slave /usr/bin/g++ g++ /usr/bin/g++-13
